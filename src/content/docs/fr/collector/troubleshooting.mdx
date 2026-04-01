@@ -1,0 +1,104 @@
+---
+title: Dépannage du Collector
+description: Diagnostiquer et résoudre les problèmes courants du Collector MS Teams Observability — authentification, connectivité, configuration et service.
+sidebar:
+  label: Dépannage
+  order: 7
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Erreurs de configuration
+
+**Symptôme :** `ms-teams-agent validate` se termine avec des erreurs.
+
+**Vérifications :**
+1. Assurez-vous que toutes les sections requises sont présentes : `microsoft_authentication`, `license`, `output`, `collection_config`.
+2. Vérifiez le formatage YAML — les erreurs d'indentation sont une cause fréquente d'échec de validation.
+3. Confirmez que le chemin vers le fichier de licence existe et est lisible par le processus du collector.
+4. Confirmez qu'au moins un backend d'output est défini à `enabled: true`.
+
+Exécutez :
+```bash
+ms-teams-agent validate --config ./config.yaml
+```
+
+## Erreurs d'authentification Microsoft
+
+**Symptôme :** `test-connection` échoue avec des erreurs d'authentification, ou les logs du collector affichent `401` / `403` depuis Microsoft Graph.
+
+**Vérifications :**
+1. Vérifiez que `tenant_id` et `client_id` sont corrects (pas d'espaces ou de caractères parasites).
+2. Pour le secret client : confirmez que le secret n'a pas expiré dans Azure.
+3. Pour le certificat : confirmez que le fichier PEM contient bien clé privée et publique, et que la phrase secrète (si applicable) est correcte.
+4. Confirmez que le consentement administrateur a été accordé pour toutes les permissions Graph requises (`CallRecords.Read.All`, `Reports.Read.All`, `ServiceHealth.Read.All`).
+5. Confirmez que l'app registration n'est pas désactivée dans Microsoft Entra ID.
+
+Exécutez avec le logging debug pour plus de détails :
+```bash
+ms-teams-agent run --config ./config.yaml --log-level DEBUG
+```
+
+## Problèmes de connectivité Microsoft Graph
+
+**Symptôme :** `test-connection` échoue avec des erreurs réseau ou des timeouts.
+
+**Vérifications :**
+1. Confirmez l'accès sortant vers `graph.microsoft.com` et `login.microsoftonline.com` depuis l'hôte du collector.
+2. Vérifiez les règles de firewall et de proxy.
+3. Validez la résolution DNS pour `graph.microsoft.com`.
+4. Si vous utilisez un proxy, vérifiez qu'il est correctement configuré dans l'environnement du collector.
+
+## Aucune donnée exportée
+
+**Symptôme :** Le collector s'exécute sans erreur mais aucune donnée n'apparaît dans le backend.
+
+**Vérifications :**
+1. Confirmez que le backend d'output est défini à `enabled: true` dans la configuration.
+2. Exécutez `test-connection` pour vérifier la connectivité backend.
+3. Consultez les logs du collector pour détecter des erreurs d'export.
+4. Confirmez que l'intervalle de collecte s'est écoulé (attendez au moins un cycle complet de `interval_collection_minutes`).
+5. Si vous utilisez `--dry-run`, notez que ce mode n'exporte pas les données.
+
+## Problèmes de service / systemd
+
+**Symptôme :** Le service du collector ne démarre pas ou s'arrête de manière inattendue.
+
+**Vérifications :**
+1. Consultez les logs du service : `journalctl -u ms-teams-observability-agent@default.service -f`
+2. Vérifiez que le chemin du fichier de configuration dans l'unité systemd est un chemin absolu.
+3. Confirmez que l'utilisateur du service dispose des droits de lecture sur les fichiers de configuration et de licence.
+4. Relancez avec `sudo` : `sudo ms-teams-agent service enable-service --config /chemin/absolu/config.yaml`
+
+Voir [Service Linux](/fr/collector/service/) pour les détails de configuration et de gestion.
+
+## État périmé ou corrompu
+
+**Symptôme :** Le collector se comporte de manière inattendue après un redémarrage ou les données semblent dupliquées ou ignorées.
+
+**Vérifications :**
+1. Inspectez l'état actuel :
+   ```bash
+   ms-teams-agent state show
+   ```
+2. Si l'état semble corrompu, réinitialisez-le (avec précaution en production) :
+   ```bash
+   ms-teams-agent state reset
+   ```
+
+<Aside type="caution">
+La réinitialisation de l'état entraîne le retraitement des données depuis le début de la fenêtre de collecte. Cela peut générer des données dupliquées dans votre backend pour la période concernée.
+</Aside>
+
+## Flux de diagnostic
+
+En cas de problème inconnu, suivez cet ordre :
+
+1. `validate` — vérifier la configuration
+2. `test-connection` — vérifier l'authentification et la connectivité backend
+3. Logs du collector — détecter les erreurs d'exécution
+4. Logs / interface du backend — confirmer l'arrivée des données
+
+<Aside type="tip">
+Pour les problèmes spécifiques à un backend (Dynatrace ou Splunk), consultez les guides correspondants : [Dépannage Dynatrace](/fr/backends/dynatrace/troubleshooting/) / [Dépannage Splunk](/fr/backends/splunk/troubleshooting/).
+</Aside>

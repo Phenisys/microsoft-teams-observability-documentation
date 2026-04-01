@@ -1,0 +1,73 @@
+---
+title: Dépannage — Intégration Dynatrace
+description: Diagnostiquer et résoudre les problèmes courants de l'intégration MS Teams Observability avec Dynatrace.
+sidebar:
+  label: Dépannage
+  order: 6
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Aucune donnée dans Dynatrace Grail
+
+**Symptôme :** Les logs n'apparaissent pas dans le bucket `ms_teams`.
+
+**Vérifications :**
+1. Exécutez `ms-teams-agent test-connection --config ./config.yaml` et confirmez que l'output Dynatrace indique un succès.
+2. Vérifiez que le `dynatrace_api_token` dispose du scope `logs.ingest`.
+3. Confirmez que le `dynatrace_tenant_id` correspond à l'URL de votre tenant Dynatrace.
+4. Consultez les logs du collector pour détecter des erreurs d'export (`tail -f logs/agent.log`).
+5. Confirmez que le bucket Grail `ms_teams` existe et est actif.
+
+## Erreur d'authentification du Collector vers Dynatrace
+
+**Symptôme :** Les logs du collector affichent `401 Unauthorized` ou `403 Forbidden` sur l'export Dynatrace.
+
+**Vérifications :**
+1. Vérifiez que le token API est valide et non expiré.
+2. Confirmez que le token dispose de la permission `logs.ingest`.
+3. Vérifiez que le token a été correctement copié (pas d'espace ou de caractère manquant).
+
+## OpenPipeline ne traite pas les données
+
+**Symptôme :** Les logs arrivent dans Grail mais les métriques ne sont pas extraites, ou les données vont dans le mauvais bucket.
+
+**Vérifications :**
+1. Ouvrez **Logs → OpenPipeline** et confirmez que le pipeline est actif.
+2. Vérifiez que le pattern de la règle de routage dynamique correspond bien à `MSTeams_*`.
+3. Vérifiez que l'attribution de stockage dans le pipeline pointe vers le bucket `ms_teams`.
+4. Recherchez des erreurs de pipeline dans la vue de diagnostic OpenPipeline.
+
+## Les tableaux de bord ne montrent aucune donnée (mode live)
+
+**Symptôme :** L'application est installée et configurée, mais les dashboards restent vides.
+
+**Vérifications :**
+1. Confirmez que le mode Live est activé dans **Installation & Configuration**.
+2. Vérifiez que la référence au Credential Vault est correcte et que le credential est accessible à l'application.
+3. Confirmez qu'au moins un cycle complet du collector s'est terminé.
+4. Vérifiez que le bucket `ms_teams` contient des enregistrements récents (utilisez l'explorateur de logs).
+5. Consultez les indicateurs de statut ou de santé intégrés à l'application si disponibles.
+
+## La sauvegarde de configuration échoue dans l'application
+
+**Symptôme :** La sauvegarde dans **Installation & Configuration** retourne une erreur.
+
+**Vérifications :**
+1. Vérifiez que la licence est valide et correctement appliquée.
+2. Confirmez la connectivité de l'endpoint backend depuis l'application (liste d'hôtes sortants autorisés).
+3. Vérifiez les permissions d'accès au Credential Vault pour l'application.
+
+## Problèmes de connectivité sortante
+
+**Symptôme :** L'application ou le collector ne peut pas atteindre les endpoints externes.
+
+**Vérifications :**
+1. Dans **Paramètres → Préférences → Connexions sortantes**, confirmez que ces hôtes sont autorisés :
+   - `graph.microsoft.com`
+   - `login.microsoftonline.com`
+2. Si la géolocalisation est activée, autorisez également `ip-api.com`.
+
+<Aside type="tip">
+Pour les problèmes côté collector (authentification Microsoft Graph, erreurs d'export), consultez le [Dépannage du Collector](/fr/collector/troubleshooting/).
+</Aside>

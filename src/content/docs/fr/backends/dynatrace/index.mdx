@@ -1,0 +1,63 @@
+---
+title: Dynatrace — Vue d'ensemble
+description: Intégration Dynatrace de bout en bout pour MS Teams Observability — de l'output du collector aux tableaux de bord opérationnels.
+sidebar:
+  label: Vue d'ensemble
+  order: 0
+---
+
+import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
+
+L'intégration Dynatrace est le backend le plus complet pour MS Teams Observability. Elle couvre :
+
+- **Stockage** : bucket Grail pour les données de logs Teams.
+- **Traitement** : OpenPipeline pour l'extraction de métriques, le routage et l'enrichissement.
+- **Application** : application dédiée avec tableaux de bord opérationnels pour la qualité des appels, les performances des sites, l'activité des utilisateurs et la corrélation avec les incidents Microsoft.
+
+## Architecture
+
+```
+ms-teams-agent (Collector)
+        │
+        │  HTTPS / Dynatrace Log Ingest API
+        ▼
+  Dynatrace Grail (bucket ms_teams)
+        │
+        │  OpenPipeline (routage + extraction de métriques)
+        ▼
+  Application MS Teams Observability (tableaux de bord)
+```
+
+## Parcours de déploiement
+
+<CardGrid>
+  <LinkCard
+    title="1) Prérequis"
+    description="Permissions Dynatrace, accès Grail et Hub requis avant la configuration."
+    href="/fr/backends/dynatrace/prerequisites/"
+  />
+  <LinkCard
+    title="2) Installer l'application"
+    description="Installer l'app MS Teams Observability depuis Dynatrace Hub ou via upload ZIP."
+    href="/fr/backends/dynatrace/installation/"
+  />
+  <LinkCard
+    title="3) Configurer Dynatrace"
+    description="Créer le bucket Grail, OpenPipeline, les règles de routage et l'entrée Credential Vault."
+    href="/fr/backends/dynatrace/configuration/"
+  />
+  <LinkCard
+    title="4) Connecter le Collector"
+    description="Configurer la section output du collector pour pointer vers votre tenant Dynatrace."
+    href="/fr/backends/dynatrace/collector-connection/"
+  />
+  <LinkCard
+    title="5) Utiliser les tableaux de bord"
+    description="Naviguer dans les dashboards opérationnels qualité, utilisateurs, sites et incidents."
+    href="/fr/backends/dynatrace/dashboards/"
+  />
+</CardGrid>
+
+<Aside type="tip">
+Si quelque chose ne fonctionne pas après la configuration, consultez le [Dépannage](/fr/backends/dynatrace/troubleshooting/) ou la [FAQ](/fr/backends/dynatrace/faq/).
+</Aside>

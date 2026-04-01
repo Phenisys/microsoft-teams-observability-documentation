@@ -1,0 +1,61 @@
+---
+title: Prérequis
+description: Tout ce dont vous avez besoin avant de déployer MS Teams Observability — Azure, réseau et accès au backend.
+sidebar:
+  label: Prérequis
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Avant de déployer le collector, assurez-vous d'avoir les éléments suivants en place.
+
+## Azure / Microsoft 365
+
+- Un **tenant Microsoft 365** avec une activité Teams (appels).
+- Un **compte Azure** avec les droits pour créer des app registrations dans Microsoft Entra ID.
+- Les droits pour **accorder le consentement administrateur** sur les permissions Microsoft Graph.
+
+Le collector nécessite les permissions Graph suivantes (type Application, pas Déléguée) :
+
+| Permission | Objectif |
+|---|---|
+| `CallRecords.Read.All` | Récupérer les enregistrements d'appels et les détails des flux |
+| `Reports.Read.All` | Accéder aux rapports d'activité Teams |
+| `ServiceHealth.Read.All` | Accéder aux annonces de santé du service Microsoft |
+
+Voir [Permissions Azure](/fr/collector/azure-permissions/) pour le guide de configuration pas à pas.
+
+## Hôte du Collector
+
+- Serveur Linux (recommandé) ou Windows.
+- Accès réseau sortant vers :
+  - `graph.microsoft.com`
+  - `login.microsoftonline.com`
+  - Votre endpoint backend (Dynatrace, Splunk ou OTLP)
+- CPU et mémoire suffisants pour votre volume d'appels (voir la [FAQ du Collector](/fr/collector/faq/) pour le dimensionnement).
+
+<Aside type="tip">
+Le collector n'a pas besoin de tourner sur un ActiveGate ou un composant Dynatrace. Tout hôte disposant des accès réseau et des ressources nécessaires convient.
+</Aside>
+
+## Accès au Backend
+
+Selon le backend choisi :
+
+**Dynatrace**
+- Tenant Dynatrace SaaS avec Grail activé.
+- Permissions pour créer des buckets, des pipelines OpenPipeline et des entrées dans le Credential Vault.
+- Accès au Dynatrace Hub (pour installer l'application).
+
+**Splunk**
+- Instance Splunk (Search Head) avec accès administrateur.
+- Possibilité de créer des inputs HTTP Event Collector (HEC) et des index.
+
+**OTel / OTLP**
+- Un endpoint OTLP accessible.
+- Token d'authentification ou identifiants si requis.
+
+## Licence
+
+Une **licence MS Teams Observability** valide est requise pour activer le mode live. Contactez votre représentant commercial pour obtenir un fichier de licence avant de démarrer le déploiement.

@@ -1,0 +1,145 @@
+---
+title: Référence du schéma de configuration
+description: Référence complète de tous les paramètres de configuration de ms-teams-agent, types et valeurs par défaut.
+sidebar:
+  label: Schéma de configuration
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Cette page est une référence complète du fichier `config.yaml`. Pour un guide de configuration pas à pas, voir [Configurer le Collector](/fr/collector/configuration/).
+
+## Structure de premier niveau
+
+```yaml
+microsoft_authentication:
+  graph: { ... }
+  vaac: { ... }       # optionnel
+
+license:
+  filepath: <chemin>
+
+output:
+  dynatrace: { ... }  # optionnel
+  splunk: { ... }     # optionnel
+  otel: [ ... ]       # optionnel
+  console: { ... }    # optionnel
+
+collection_config:
+  interval_collection_minutes: 10
+  log_level: "INFO"
+  features: { ... }
+  sites_file: <chemin>  # optionnel
+
+advanced:             # optionnel
+  quality_thresholds: { ... }
+```
+
+## `microsoft_authentication.graph`
+
+| Paramètre | Type | Requis | Description |
+|---|---|---|---|
+| `tenant_id` | chaîne | Oui | Identifiant du tenant Microsoft Entra (GUID) |
+| `client_id` | chaîne | Oui | Identifiant client de l'app registration (GUID) |
+| `client_secret` | chaîne | L'un ou l'autre | Valeur du secret client |
+| `client_certificate_path` | chaîne | L'un ou l'autre | Chemin vers le fichier PEM (clé privée + publique) |
+| `client_certificate_passphrase` | chaîne | Non | Phrase secrète pour le PEM chiffré |
+
+<Aside type="note">
+Fournissez soit `client_secret`, soit `client_certificate_path` — pas les deux.
+</Aside>
+
+## `microsoft_authentication.vaac`
+
+Requis uniquement si la collecte Auto Attendant ou Call Queue est activée.
+
+| Paramètre | Type | Requis pour | Description |
+|---|---|---|---|
+| `tenant_id` | chaîne | Oui | Identifiant du tenant |
+| `client_id` | chaîne | Oui | Identifiant client avec permissions VAAC |
+| `client_secret` | chaîne | L'un ou l'autre | Secret client |
+| `client_certificate_path` | chaîne | L'un ou l'autre | Chemin vers le fichier PEM |
+| `client_certificate_passphrase` | chaîne | Non | Phrase secrète PEM |
+
+## `license`
+
+| Paramètre | Type | Requis | Description |
+|---|---|---|---|
+| `filepath` | chaîne | Oui | Chemin absolu vers le fichier de licence JSON |
+
+## `output.dynatrace`
+
+| Paramètre | Type | Requis | Description |
+|---|---|---|---|
+| `enabled` | booléen | Oui | Activer cet output |
+| `dynatrace_tenant_id` | chaîne | Oui | Identifiant du tenant Dynatrace SaaS |
+| `dynatrace_api_token` | chaîne | Oui | Token API avec le scope `logs.ingest` |
+| `time_fields_format` | chaîne | Non | Format de timestamp (par défaut : `epoch_ms`) |
+
+## `output.splunk`
+
+| Paramètre | Type | Requis | Description |
+|---|---|---|---|
+| `enabled` | booléen | Oui | Activer cet output |
+| `splunk_hec_url` | chaîne | Oui | URL complète de l'endpoint HEC |
+| `splunk_hec_token` | chaîne | Oui | Token d'authentification HEC |
+| `splunk_ssl_check` | booléen | Non | Vérification TLS (par défaut : `true`) |
+| `time_fields_format` | chaîne | Non | Format de timestamp (par défaut : `epoch_ms`) |
+
+## `output.otel` (liste)
+
+| Paramètre | Type | Requis | Description |
+|---|---|---|---|
+| `name` | chaîne | Oui | Identifiant de cet output |
+| `enabled` | booléen | Oui | Activer cet output |
+| `endpoint` | chaîne | Oui | URL de l'endpoint OTLP logs (`/v1/logs`) |
+| `headers` | map | Non | En-têtes HTTP (ex. `Authorization`) |
+| `time_fields_format` | chaîne | Non | Format de timestamp (par défaut : `epoch_ms`) |
+
+## `output.console`
+
+| Paramètre | Type | Requis | Description |
+|---|---|---|---|
+| `enabled` | booléen | Oui | Activer la sortie console (stdout) |
+
+## `collection_config`
+
+| Paramètre | Type | Requis | Défaut | Description |
+|---|---|---|---|---|
+| `interval_collection_minutes` | entier | Non | `10` | Intervalle de collecte en minutes |
+| `log_level` | chaîne | Non | `INFO` | Verbosité des logs (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
+| `sites_file` | chaîne | Non | — | Chemin vers `sites.csv` pour le mapping sous-réseau/site |
+
+## `collection_config.features`
+
+| Feature flag | Défaut | Description |
+|---|---|---|
+| `calls_collection.enabled` | `true` | Collecter les enregistrements d'appels |
+| `issues_collection.enabled` | `true` | Collecter les annonces de service |
+| `pstn_calls_collection.enabled` | `false` | Collecter les enregistrements PSTN |
+| `direct_routing_calls_collection.enabled` | `false` | Collecter les enregistrements Direct Routing |
+| `autoattendant_collection.enabled` | `false` | Collecter les données Auto Attendant (nécessite VAAC) |
+| `callqueue_collection.enabled` | `false` | Collecter les données Call Queue (nécessite VAAC) |
+
+## Valeurs de `time_fields_format`
+
+| Valeur | Description |
+|---|---|
+| `epoch_ms` | Timestamp Unix en millisecondes (par défaut) |
+| `epoch_s` | Timestamp Unix en secondes |
+| `epoch_ns` | Timestamp Unix en nanosecondes |
+| `iso8601` | Chaîne ISO 8601 |
+| `rfc3339` | Chaîne RFC 3339 |
+
+## `advanced.quality_thresholds`
+
+Remplacez les seuils de classification de la qualité des appels par défaut. Conservez les valeurs par défaut sauf si vous avez des exigences opérationnelles spécifiques.
+
+```yaml
+advanced:
+  quality_thresholds:
+    audio:
+      max_rtt_ms: 500
+      max_jitter_ms: 30
+```

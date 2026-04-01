@@ -1,0 +1,64 @@
+---
+title: Vue d'ensemble du produit
+description: Présentation de MS Teams Observability — ce qu'il collecte, comment il fonctionne et quels backends il supporte.
+sidebar:
+  label: Vue d'ensemble
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+MS Teams Observability donne aux équipes d'exploitation et d'administration une visibilité complète sur la qualité des appels Microsoft Teams, les incidents et les usages — sans accès à des systèmes Microsoft internes au-delà de l'API Graph standard.
+
+## Fonctionnement
+
+```
+Microsoft Teams (Graph API)
+        │
+        ▼
+  ms-teams-agent (Collector)
+        │
+        ├──▶ Dynatrace (Grail + Application)
+        ├──▶ Splunk (HEC + Application)
+        └──▶ Tout endpoint OTLP
+```
+
+1. Le **Collector** s'authentifie sur Microsoft Graph via une app registration Azure et interroge la télémétrie Teams à intervalle configurable.
+2. Il enrichit et normalise les données, puis les exporte vers un ou plusieurs backends.
+3. L'**application backend** (Dynatrace ou Splunk) restitue les données dans des tableaux de bord opérationnels.
+
+## Données collectées
+
+Le collector récupère et exporte les familles d'événements suivantes :
+
+| Famille d'événements | Contenu |
+|---|---|
+| `MSTeams_CallRecords_CallMetadata` | Résumé au niveau appel : type, santé, durée |
+| `MSTeams_CallRecords_StreamDetails` | Qualité des flux : RTT, jitter, perte de paquets |
+| `MSTeams_CallRecords_PSTN` | Appels PSTN |
+| `MSTeams_CallRecords_DirectRouting` | Appels SIP / Direct Routing |
+| `MSTeams_CallRecords_AutoAttendant` | Usage des standards automatiques |
+| `MSTeams_CallRecords_CallQueue` | Comportement des files d'appels |
+| `MSTeams_ServiceAnnouncement` | Incidents et avis publiés par Microsoft |
+| `MSTeams_CollectionHealth` | Santé opérationnelle du collector |
+
+Voir le [Dictionnaire des métriques](/fr/reference/metrics-dictionary/) pour la référence complète des champs.
+
+## Modes de déploiement
+
+L'application Dynatrace supporte deux modes :
+
+- **Mode démo** — utilise des données d'exemple intégrées. Pas de collector requis. Disponible immédiatement après installation.
+- **Mode live** — utilise les données réelles du tenant collectées par le collector. Nécessite une licence valide.
+
+## Backends supportés
+
+| Backend | Application incluse | Notes |
+|---|---|---|
+| **Dynatrace** | Oui — Grail + application dédiée | Intégration complète avec tableaux de bord |
+| **Splunk** | Oui — application Splunk | Ingestion HEC avec application dédiée |
+| **OTel / OTLP** | Non | Export générique vers tout endpoint OTLP |
+
+<Aside type="note">
+Chaque backend nécessite sa propre configuration. Voir la section [Backends](/fr/backends/) pour les guides d'intégration.
+</Aside>

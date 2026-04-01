@@ -1,0 +1,83 @@
+---
+title: Tableaux de bord Dynatrace
+description: Comment utiliser les tableaux de bord MS Teams Observability dans Dynatrace pour les opérations et le dépannage.
+sidebar:
+  label: Tableaux de bord
+  order: 5
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+L'application MS Teams Observability propose un ensemble de tableaux de bord opérationnels couvrant la qualité des appels, l'activité des utilisateurs, les performances des sites et la corrélation avec les incidents Microsoft.
+
+Les noms des tableaux de bord peuvent varier légèrement entre les versions de l'application, mais l'intention analytique reste cohérente.
+
+## Accueil (Overview)
+
+Utilisez cette page pour la supervision tenant-wide.
+
+Widgets typiques :
+- Volume total d'appels et tendance dans le temps
+- Répartition de la santé des appels (Bon / Mauvais / Non classifié)
+- Pic d'appels simultanés
+- Répartition par modalité et par type d'appel
+
+Idéal pour : les opérations quotidiennes, la planification de capacité et la détection de dégradations.
+
+## Liste des appels
+
+Utilisez cette page pour trier rapidement les incidents signalés par les utilisateurs.
+
+Filtres courants :
+- Identité de l'appelant ou du destinataire
+- Identifiant d'appel
+- Statut de santé
+- Type d'appel
+- Plage temporelle
+
+Depuis cette vue, naviguez vers le Détail d'appel pour une analyse approfondie.
+
+## Liste des utilisateurs
+
+Utilisez cette page pour comprendre l'activité par population d'utilisateurs.
+
+Cas d'usage typiques :
+- Identifier les utilisateurs ou segments les plus actifs
+- Comparer les pics d'usage par période
+- Isoler les groupes d'utilisateurs affectés par un incident
+
+## Détail d'appel
+
+La page de dépannage approfondi pour un appel unique.
+
+Champs clés à analyser :
+- `streamHealth` — indicateur de santé au niveau du flux
+- `averageRoundTripTimeMs`, `averageJitterMs`, `averagePacketLossRatePercent` — qualité réseau
+- Métadonnées de l'endpoint (appareil, OS, version Teams)
+- Compteurs d'événements audio (ratios de glitch, problèmes d'entrée/sortie)
+
+## Incidents Microsoft
+
+Corrèle les incidents de service et avis publiés par Microsoft avec les dégradations de qualité observées dans votre tenant.
+
+Log source : `MSTeams_ServiceAnnouncement`.
+
+Si la qualité des dashboards chute et que cette page affiche un incident Microsoft actif, analysez l'impact Microsoft avant de modifier la configuration locale.
+
+## Performance des Sites / Localisations
+
+Affiche la qualité des appels et la conformité au niveau sous-réseau/site.
+
+<Aside type="note">
+Si vous observez beaucoup de "No Mapped Calls", les sous-réseaux sources ne sont pas mappés à des sites. Mettez à jour et chargez `sites.csv` dans la configuration du collector. Voir [Configuration du Collector](/fr/collector/configuration/#optional-sitescsv-mapping).
+</Aside>
+
+## Conseils de navigation
+
+<Aside type="tip">
+Utilisez **Accueil** pour la détection → **Liste des appels** pour le triage → **Détail d'appel** pour l'investigation root cause.
+</Aside>
+
+- Basculez entre les modes Démo et Live dans **Installation & Configuration**.
+- Utilisez le sélecteur de plage temporelle pour cibler une fenêtre d'investigation précise.
+- Croisez avec **Incidents Microsoft** lors d'une dégradation tenant-wide.

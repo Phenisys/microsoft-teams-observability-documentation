@@ -1,0 +1,152 @@
+---
+title: Référence CLI
+description: Référence complète de toutes les commandes ms-teams-agent, sous-commandes, options et flags.
+sidebar:
+  label: Référence CLI
+  order: 3
+---
+
+Référence complète de `ms-teams-agent`. Pour des exemples d'usage courants, voir [Utiliser la CLI](/fr/collector/cli/).
+
+## Syntaxe des commandes
+
+```bash
+ms-teams-agent <commande> [sous-commande] [options]
+```
+
+## Options globales
+
+| Option | Description |
+|---|---|
+| `--version` | Afficher la version du collector |
+| `--help` | Afficher l'aide |
+
+---
+
+## `run`
+
+Démarrer la collecte et l'export en mode continu.
+
+```bash
+ms-teams-agent run --config <chemin> [options]
+```
+
+| Option | Requis | Description |
+|---|---|---|
+| `--config <chemin>` | Oui | Chemin vers `config.yaml` |
+| `--log-level <NIVEAU>` | Non | Surcharger le niveau de log (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
+| `--call-id <id>` | Non | Traiter un seul appel par son identifiant (pour le dépannage) |
+| `--ignore-state` | Non | Exécuter un cycle sans lire l'état précédent |
+| `--state-file <chemin>` | Non | Utiliser un fichier d'état personnalisé |
+| `--dry-run` | Non | Collecter les données sans les exporter (test uniquement) |
+
+**Exemples :**
+
+```bash
+ms-teams-agent run --config ./config.yaml
+ms-teams-agent run --config ./config.yaml --dry-run
+ms-teams-agent run --config ./config.yaml --log-level DEBUG
+ms-teams-agent run --config ./config.yaml --call-id <CALL_ID> --log-level DEBUG
+```
+
+---
+
+## `validate`
+
+Valider le fichier de configuration et quitter. Ne contacte pas Microsoft Graph ni le backend.
+
+```bash
+ms-teams-agent validate --config <chemin>
+```
+
+| Option | Requis | Description |
+|---|---|---|
+| `--config <chemin>` | Oui | Chemin vers `config.yaml` |
+
+---
+
+## `test-connection`
+
+Valider la configuration, puis tester l'authentification Microsoft Graph et tous les endpoints backend configurés.
+
+```bash
+ms-teams-agent test-connection --config <chemin>
+```
+
+| Option | Requis | Description |
+|---|---|---|
+| `--config <chemin>` | Oui | Chemin vers `config.yaml` |
+
+---
+
+## `service`
+
+Gérer le collector en tant que service systemd Linux.
+
+```bash
+ms-teams-agent service <action> [options]
+```
+
+| Action | Description |
+|---|---|
+| `enable-service` | Installer et activer le service systemd |
+| `disable-service` | Désactiver et supprimer le service systemd |
+| `status` | Afficher le statut du service |
+| `restart` | Redémarrer le service |
+| `install-config` | Installer le fichier de configuration au chemin système |
+
+**Options courantes :**
+
+| Option | Description |
+|---|---|
+| `--config <chemin>` | Chemin absolu vers `config.yaml` (requis pour `enable-service`) |
+| `--instance <nom>` | Nom de l'instance du service (par défaut : `default`) |
+
+**Exemples :**
+
+```bash
+sudo ms-teams-agent service enable-service --config /etc/ms-teams-observability-agent/config.yaml
+sudo ms-teams-agent service status --instance default
+sudo ms-teams-agent service restart --instance default
+sudo ms-teams-agent service disable-service --instance default
+```
+
+---
+
+## `state`
+
+Inspecter ou réinitialiser l'état opérationnel local du collector.
+
+```bash
+ms-teams-agent state <action> [options]
+```
+
+| Action | Description |
+|---|---|
+| `show` | Afficher l'état actuel |
+| `reset` | Réinitialiser l'état (provoque un retraitement depuis le début de la fenêtre) |
+| `export` | Exporter l'état vers un fichier JSON |
+
+| Option | Description |
+|---|---|
+| `--output <chemin>` | Fichier de sortie pour l'action `export` |
+
+**Exemples :**
+
+```bash
+ms-teams-agent state show
+ms-teams-agent state export --output snapshot-etat.json
+ms-teams-agent state reset
+```
+
+> **Attention :** `state reset` en production peut générer des données dupliquées dans votre backend pour la fenêtre de collecte concernée.
+
+---
+
+## Flux de validation recommandé
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+ms-teams-agent run --config ./config.yaml
+```

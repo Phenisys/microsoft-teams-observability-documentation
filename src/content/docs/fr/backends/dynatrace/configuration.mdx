@@ -1,0 +1,80 @@
+---
+title: Configurer Dynatrace
+description: Créer le bucket Grail, OpenPipeline, les règles de routage, les hôtes sortants et le Credential Vault pour MS Teams Observability.
+sidebar:
+  label: Configuration
+  order: 3
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Ce guide vous permet de préparer le côté Dynatrace de l'intégration pour recevoir et traiter les données du collector.
+
+## 1. Créer un bucket de logs
+
+Créez un bucket Grail dédié aux données MS Teams.
+
+Paramètres recommandés :
+
+| Paramètre | Valeur |
+|---|---|
+| Nom | `ms_teams` |
+| Nom d'affichage | `Microsoft Teams Observability` |
+| Type de table | `logs` |
+| Rétention | `90` jours (à adapter à votre politique de rétention) |
+
+## 2. Créer un pipeline OpenPipeline
+
+Créez un pipeline de logs avec les étapes suivantes :
+
+1. **Étape de traitement** — parser `startDateTime` depuis le payload JSON.
+2. **Étapes d'extraction de métriques** pour :
+   - `ms.teams.callDurationS`
+   - `ms.teams.streamDurationS`
+3. **Attribution du stockage** — assigner les enregistrements traités au bucket `ms_teams`.
+
+<Aside type="note">
+Respectez les conventions de nommage de votre équipe plateforme si vous disposez de standards imposés.
+</Aside>
+
+## 3. Créer une règle de routage dynamique
+
+Créez une règle de routage qui envoie les logs correspondant au pattern `MSTeams_*` vers votre pipeline Teams.
+
+## 4. Autoriser les hôtes sortants requis
+
+Dans **Paramètres → Préférences → Connexions sortantes**, ajoutez les hôtes suivants à la liste d'autorisation :
+
+- `graph.microsoft.com`
+- `login.microsoftonline.com`
+- `ip-api.com` *(uniquement si l'enrichissement géolocalisation est activé)*
+
+## 5. Ajouter les identifiants Microsoft dans le Credential Vault
+
+Créez une entrée d'identifiants pour l'app registration Microsoft utilisée par l'application Dynatrace :
+
+| Champ | Valeur |
+|---|---|
+| Scope | `AppEngine` |
+| Accès application | `Microsoft Teams Observability` |
+| Valeur | `client_id/client_secret` ou certificat avec phrase secrète |
+
+<Steps>
+1. Accédez à **Paramètres → Credential Vault**.
+2. Créez un nouvel identifiant.
+3. Définissez le scope sur `AppEngine` et accordez l'accès à l'application MS Teams Observability.
+4. Saisissez la valeur de l'identifiant (secret client ou certificat).
+5. Sauvegardez et notez l'identifiant du credential pour la configuration de l'application.
+</Steps>
+
+## 6. Compléter la configuration de l'application
+
+<Steps>
+1. Ouvrez **Apps → Microsoft Teams Observability**.
+2. Accédez à **Installation & Configuration**.
+3. Renseignez l'identifiant du tenant et la référence au Credential Vault.
+4. Sauvegardez la configuration.
+5. Vérifiez que les données live apparaissent dans les tableaux de bord.
+</Steps>
+
+En cas de problème, consultez [Connexion du Collector](/fr/backends/dynatrace/collector-connection/) et [Dépannage](/fr/backends/dynatrace/troubleshooting/).

@@ -1,0 +1,50 @@
+---
+title: MS Teams Observability
+description: Supervisez Microsoft Teams de la collecte Graph API aux tableaux de bord opérationnels.
+template: splash
+hero:
+  tagline: Observabilité Microsoft Teams, de la collecte aux tableaux de bord.
+  actions:
+    - text: Premiers pas
+      link: /fr/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: Installer le Collector
+      link: /fr/collector/installation/
+      icon: right-arrow
+      variant: secondary
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Qu'est-ce que MS Teams Observability ?
+
+MS Teams Observability est une solution en deux parties :
+
+- **Collector (`ms-teams-agent`)** : collecte la télémétrie Teams depuis Microsoft Graph API et l'exporte vers Dynatrace, Splunk ou des endpoints OpenTelemetry.
+- **Intégrations backend** : stockent et visualisent la qualité des appels, les incidents, la conformité des sites et l'activité des utilisateurs dans votre plateforme d'observabilité.
+
+## Parcours d'installation recommandé
+
+<CardGrid>
+  <LinkCard
+    title="1) Vérifier les prérequis"
+    description="Enregistrement Azure, permissions Graph, accès réseau et accès au backend."
+    href="/fr/getting-started/prerequisites/"
+  />
+  <LinkCard
+    title="2) Déployer le Collector"
+    description="Valider la configuration, tester la connectivité et démarrer la collecte."
+    href="/fr/collector/installation/"
+  />
+  <LinkCard
+    title="3) Connecter un backend"
+    description="Configurer Dynatrace, Splunk ou OTel/OTLP pour recevoir les données."
+    href="/fr/backends/"
+  />
+  <LinkCard
+    title="4) Utiliser les tableaux de bord"
+    description="Exploiter les dashboards qualité des appels, sites, utilisateurs et incidents Microsoft."
+    href="/fr/backends/dynatrace/dashboards/"
+  />
+</CardGrid>

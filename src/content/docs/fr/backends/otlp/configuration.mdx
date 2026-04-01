@@ -1,0 +1,68 @@
+---
+title: Connecter le Collector à un endpoint OTLP
+description: Configurer l'output OTLP du collector pour exporter la télémétrie MS Teams vers tout endpoint OpenTelemetry compatible.
+sidebar:
+  label: Configuration
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Configuration de l'output du Collector
+
+Ajoutez une entrée `otel` dans la section `output` de votre `config.yaml` :
+
+```yaml
+output:
+  otel:
+    - name: "mon-backend-otel"
+      enabled: true
+      endpoint: "https://votre-endpoint-otel/v1/logs"
+      headers:
+        Authorization: "Bearer votre-token"
+```
+
+### Paramètres
+
+| Paramètre | Requis | Description |
+|---|---|---|
+| `name` | Oui | Identifiant de cet output OTLP (utilisé dans les logs) |
+| `enabled` | Oui | Définir à `true` pour activer l'output |
+| `endpoint` | Oui | URL complète de l'endpoint OTLP logs (doit se terminer par `/v1/logs`) |
+| `headers` | Non | En-têtes HTTP (généralement utilisés pour l'authentification) |
+
+### Plusieurs outputs OTLP
+
+Vous pouvez définir plusieurs destinations OTLP dans la même configuration :
+
+```yaml
+output:
+  otel:
+    - name: "grafana"
+      enabled: true
+      endpoint: "https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push"
+      headers:
+        Authorization: "Basic <credentials-base64>"
+    - name: "collecteur-interne"
+      enabled: true
+      endpoint: "https://otel-interne.exemple.com/v1/logs"
+```
+
+## Configuration TLS
+
+Par défaut, la vérification TLS est activée. Si votre endpoint utilise un certificat auto-signé ou une CA interne, vous devrez configurer la confiance TLS de manière appropriée sur l'hôte du collector.
+
+## Valider la connexion
+
+Après avoir modifié la configuration, exécutez :
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+```
+
+`test-connection` vérifie à la fois l'authentification Microsoft Graph et les endpoints d'output configurés.
+
+<Aside type="tip">
+Utilisez `--dry-run` lors du premier démarrage pour vérifier que les données sont correctement formatées avant de valider l'ingestion en production.
+</Aside>
