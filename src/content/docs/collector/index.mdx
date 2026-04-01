@@ -1,0 +1,54 @@
+---
+title: Collector
+description: User documentation for ms-teams-agent installation, configuration, operations, and troubleshooting.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+The **MS Teams Observability Collector** (`ms-teams-agent`) retrieves Microsoft Teams telemetry and sends it to Dynatrace, Splunk, or OpenTelemetry backends.
+
+<CardGrid>
+  <LinkCard
+    title="Azure Permissions"
+    description="Create the Microsoft app registration and required Graph permissions."
+    href="/collector/azure-permissions/"
+  />
+  <LinkCard
+    title="Installation"
+    description="Prepare host, configure credentials, validate, and start collection."
+    href="/collector/installation/"
+  />
+  <LinkCard
+    title="Configuration"
+    description="Set authentication, outputs, feature flags, and optional mappings."
+    href="/collector/configuration/"
+  />
+  <LinkCard
+    title="CLI Reference"
+    description="Available commands for run, validation, service management, and health checks."
+    href="/collector/cli/"
+  />
+  <LinkCard
+    title="Service Management"
+    description="Run the collector as a Linux systemd service."
+    href="/collector/service/"
+  />
+  <LinkCard
+    title="Runbook"
+    description="Operate and troubleshoot the collector in production."
+    href="/collector/runbook/"
+  />
+  <LinkCard
+    title="Troubleshooting"
+    description="Diagnose authentication, connectivity, configuration, and service issues."
+    href="/collector/troubleshooting/"
+  />
+  <LinkCard
+    title="FAQ"
+    description="Common user questions about deployment, sizing, and security."
+    href="/collector/faq/"
+  />
+</CardGrid>

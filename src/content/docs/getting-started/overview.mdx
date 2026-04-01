@@ -1,0 +1,64 @@
+---
+title: Product Overview
+description: High-level overview of MS Teams Observability — what it collects, how it works, and which backends it supports.
+sidebar:
+  label: Overview
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+MS Teams Observability gives operations and IT teams full visibility into Microsoft Teams call quality, incidents, and usage — without requiring access to internal Microsoft systems beyond the standard Graph API.
+
+## How It Works
+
+```
+Microsoft Teams (Graph API)
+        │
+        ▼
+  ms-teams-agent (Collector)
+        │
+        ├──▶ Dynatrace (Grail + App)
+        ├──▶ Splunk (HEC + App)
+        └──▶ Any OTLP endpoint
+```
+
+1. The **Collector** authenticates to Microsoft Graph using an Azure app registration and polls Teams telemetry on a configurable interval.
+2. It enriches and normalises the data, then exports it to one or more backends.
+3. The **backend application** (Dynatrace or Splunk) renders the data in operational dashboards.
+
+## What Data Is Collected
+
+The collector retrieves and exports the following event families:
+
+| Event family | Content |
+|---|---|
+| `MSTeams_CallRecords_CallMetadata` | Call-level summary: type, health, duration |
+| `MSTeams_CallRecords_StreamDetails` | Stream-level quality: RTT, jitter, packet loss |
+| `MSTeams_CallRecords_PSTN` | PSTN telephony calls |
+| `MSTeams_CallRecords_DirectRouting` | SIP / Direct Routing calls |
+| `MSTeams_CallRecords_AutoAttendant` | Auto attendant usage |
+| `MSTeams_CallRecords_CallQueue` | Call queue behaviour |
+| `MSTeams_ServiceAnnouncement` | Microsoft published incidents and advisories |
+| `MSTeams_CollectionHealth` | Collector operational health |
+
+See [Metrics Dictionary](/reference/metrics-dictionary/) for a full field reference.
+
+## Deployment Modes
+
+The Dynatrace application supports two modes:
+
+- **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
+- **Live mode** — uses real tenant data collected by the collector. Requires a valid license.
+
+## Supported Backends
+
+| Backend | Application included | Notes |
+|---|---|---|
+| **Dynatrace** | Yes — Grail + dedicated app | Full-featured integration with dashboards |
+| **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
+| **OTel / OTLP** | No | Generic export to any OTLP-compatible endpoint |
+
+<Aside type="note">
+Each backend requires its own setup. See [Backends](/backends/) for integration guides.
+</Aside>

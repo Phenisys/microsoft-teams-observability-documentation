@@ -1,0 +1,60 @@
+---
+title: Azure Permissions Reference
+description: Complete table of Microsoft Graph permissions required by the MS Teams Observability Collector.
+sidebar:
+  label: Azure Permissions
+  order: 4
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+This page is a lookup reference for all Microsoft Graph permissions required by the collector. For the step-by-step setup guide, see [Azure Permissions](/collector/azure-permissions/).
+
+<Aside type="note">
+All permissions listed are **Application permissions** (not Delegated). They must be granted with **admin consent** by a Global Administrator or Privileged Role Administrator.
+</Aside>
+
+## Required Permissions
+
+| Permission | Type | Required | Purpose |
+|---|---|---|---|
+| `CallRecords.Read.All` | Application | Yes | Retrieve Teams call records, stream details, PSTN, and Direct Routing data |
+| `Reports.Read.All` | Application | Yes | Access Microsoft Teams activity reports (user activity, usage) |
+| `ServiceHealth.Read.All` | Application | Yes | Access Microsoft 365 service health announcements and incidents |
+
+## Optional Permissions (VAAC Features)
+
+The following permissions are required only if Auto Attendant or Call Queue collection is enabled (`autoattendant_collection` / `callqueue_collection` feature flags):
+
+| Permission | Type | Required For | Purpose |
+|---|---|---|---|
+| *(VAAC-specific permissions)* | Application | Auto Attendant, Call Queue | Voice application analytics |
+
+Contact your vendor for the exact VAAC permissions required for your environment.
+
+## Permission Type Notes
+
+| Attribute | Value |
+|---|---|
+| Permission type | Application (not Delegated) |
+| Admin consent | Required |
+| Token type | Client credentials flow |
+
+## Authentication Methods Supported
+
+| Method | Description |
+|---|---|
+| Client secret | Standard client secret generated in Azure App Registration |
+| Certificate (PEM) | RSA certificate — private + public key in a single PEM file |
+
+<Aside type="caution">
+EC/DSA certificates are not supported. Use RSA certificates only.
+</Aside>
+
+## Security Recommendations
+
+- Apply the **principle of least privilege** — only grant the permissions listed above.
+- Use **certificate-based authentication** in preference to client secrets for production deployments.
+- **Rotate client secrets** regularly and update the collector configuration before expiry.
+- Restrict the Azure app registration to **accounts in your organisational directory only**.
+- Monitor app registration activity in Microsoft Entra ID audit logs.

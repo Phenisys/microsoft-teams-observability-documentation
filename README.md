@@ -1,49 +1,40 @@
-# Starlight Starter Kit: Basics
+# MS Teams Observability — Documentation
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+User documentation for the **MS Teams Observability Collector**, built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
 
-```
-npm create astro@latest -- --template starlight
-```
+## Stack
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- [Astro](https://astro.build) — static site generator
+- [Starlight](https://starlight.astro.build) — documentation theme
+- Languages: English (default) + French
 
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+## Content Structure
 
 ```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+src/content/docs/
+├── index.mdx                    # Landing page
+├── getting-started/             # Overview, prerequisites, quickstart
+├── collector/                   # Collector (installation, config, CLI, service, runbook, troubleshooting, FAQ)
+├── backends/
+│   ├── dynatrace/               # Dynatrace integration (8 pages)
+│   ├── splunk/                  # Splunk integration (4 pages)
+│   └── otlp/                    # OTel / OTLP export (2 pages)
+├── reference/                   # YAML schema, CLI, metrics, permissions, license estimation
+└── fr/                          # French translations (mirrors the English structure)
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## Commands
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+| Command | Action |
+| --- | --- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Start local dev server at `localhost:4321` |
+| `npm run build` | Build the production site to `./dist/` |
+| `npm run preview` | Preview the build locally |
 
-Static assets, like favicons, can be placed in the `public/` directory.
+## Adding or Editing Content
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+- Each `.md` or `.mdx` file in `src/content/docs/` maps to a route.
+- French pages live in `src/content/docs/fr/` and follow the same structure as English pages.
+- Pages without a French translation automatically fall back to the English version.
+- The sidebar is configured in `astro.config.mjs`.

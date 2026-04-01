@@ -1,40 +1,50 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: MS Teams Observability
+description: Monitor Microsoft Teams call quality, incidents, and routing from Graph API collection to operational dashboards.
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  tagline: End-to-end Microsoft Teams observability from Graph API collection to operational dashboards.
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Get Started
+      link: /getting-started/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+      variant: primary
+    - text: Install the Collector
+      link: /collector/installation/
+      icon: right-arrow
+      variant: secondary
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-## Next steps
+## What is MS Teams Observability?
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+MS Teams Observability is a two-part solution:
+
+- **Collector (`ms-teams-agent`)**: pulls Teams telemetry from Microsoft Graph API and exports to Dynatrace, Splunk, or OpenTelemetry endpoints.
+- **Backend integrations**: store and visualise call quality, incidents, site compliance, and user activity in your chosen observability platform.
+
+## Recommended setup path
+
+<CardGrid>
+  <LinkCard
+    title="1) Check Prerequisites"
+    description="Azure app registration, Graph permissions, network access, and backend access."
+    href="/getting-started/prerequisites/"
+  />
+  <LinkCard
+    title="2) Deploy the Collector"
+    description="Validate config, test connectivity, run in service mode, and start ingestion."
+    href="/collector/installation/"
+  />
+  <LinkCard
+    title="3) Connect a Backend"
+    description="Configure Dynatrace, Splunk, or OTel/OTLP to receive collector data."
+    href="/backends/"
+  />
+  <LinkCard
+    title="4) Use the Dashboards"
+    description="Navigate operational dashboards for call quality, sites, users, and incident correlation."
+    href="/backends/dynatrace/dashboards/"
+  />
 </CardGrid>

@@ -1,0 +1,83 @@
+---
+title: Dynatrace Dashboards
+description: How to use each MS Teams Observability dashboard page in Dynatrace for operations and troubleshooting.
+sidebar:
+  label: Dashboards
+  order: 5
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The MS Teams Observability app provides a set of operational dashboards covering call quality, user activity, site performance, and Microsoft incident correlation.
+
+Dashboard names can vary slightly between app versions, but the analytical intent remains consistent.
+
+## Overview (Home)
+
+Use this page for tenant-wide service monitoring.
+
+Typical widgets:
+- Total calls and trend over time
+- Call health split (Good / Poor / Unclassified)
+- Peak simultaneous calls
+- Modality and call type distribution
+
+Best used for: daily operations, capacity planning, and spotting degradation trends.
+
+## Calls List
+
+Use this page to triage user-reported issues quickly.
+
+Common filters:
+- Caller or callee identity
+- Call ID
+- Health status
+- Call type
+- Time range
+
+Drill down to Call Details from any row.
+
+## Users List
+
+Use this page to understand activity by user population.
+
+Typical use cases:
+- Identify most active users or segments
+- Compare usage spikes by time period
+- Isolate user groups affected by an incident
+
+## Call Details
+
+The deep troubleshooting page for a single call.
+
+Key fields to investigate:
+- `streamHealth` — stream-level health indicator
+- `averageRoundTripTimeMs`, `averageJitterMs`, `averagePacketLossRatePercent` — network quality
+- Endpoint metadata (device, OS, Teams version)
+- Audio event counters (glitch ratios, input/output issues)
+
+## Microsoft Issues
+
+Correlates published Microsoft incidents and service advisories with observed quality degradation in your tenant.
+
+Source log: `MSTeams_ServiceAnnouncement`.
+
+If dashboard quality drops and this page shows an active Microsoft incident, investigate the Microsoft-side impact before making local configuration changes.
+
+## Sites / Locations Performance
+
+Shows call quality and compliance at the subnet/site level.
+
+<Aside type="note">
+If you see many "No Mapped Calls", the originating subnets are not mapped to sites. Update and load `sites.csv` in the collector configuration. See [Collector Configuration](/collector/configuration/#optional-sitescsv-mapping) for details.
+</Aside>
+
+## Navigation Tips
+
+<Aside type="tip">
+Use **Overview** for detection → **Calls List** for triage → **Call Details** for root-cause investigation.
+</Aside>
+
+- Switch between Demo and Live mode in **Installation & Configuration**.
+- Use the time range picker to narrow investigations to a specific window.
+- Cross-reference with **Microsoft Issues** when tenant-wide degradation is observed.

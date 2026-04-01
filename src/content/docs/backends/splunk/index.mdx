@@ -1,0 +1,44 @@
+---
+title: Splunk — Overview
+description: Integrate MS Teams Observability with Splunk via HEC ingestion and the dedicated Splunk app.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+The Splunk integration delivers MS Teams telemetry to Splunk via **HTTP Event Collector (HEC)**, with a dedicated Splunk app providing operational dashboards.
+
+## Architecture
+
+```
+ms-teams-agent (Collector)
+        │
+        │  HTTPS / HEC
+        ▼
+  Splunk HEC endpoint (ms_teams index)
+        │
+        ▼
+  MS Teams Observability Splunk App (dashboards)
+```
+
+## Deployment Path
+
+<CardGrid>
+  <LinkCard
+    title="1) Install the Splunk App"
+    description="Install the app on your Splunk Search Head and configure the HEC index."
+    href="/backends/splunk/installation/"
+  />
+  <LinkCard
+    title="2) Connect the Collector"
+    description="Configure the collector HEC output to point to your Splunk instance."
+    href="/backends/splunk/configuration/"
+  />
+  <LinkCard
+    title="Troubleshooting"
+    description="Diagnose and fix common Splunk integration issues."
+    href="/backends/splunk/troubleshooting/"
+  />
+</CardGrid>

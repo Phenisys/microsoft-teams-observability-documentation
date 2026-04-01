@@ -1,0 +1,49 @@
+---
+title: Dynatrace Prerequisites
+description: What you need in Dynatrace before setting up the MS Teams Observability integration.
+sidebar:
+  label: Prerequisites
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Before configuring the Dynatrace integration, ensure the following are in place.
+
+## Dynatrace Platform
+
+- **Dynatrace SaaS** tenant (Dynatrace Platform — formerly known as Dynatrace SaaS / Managed is supported where Grail is available).
+- **Grail** enabled on your tenant (required for log storage and OpenPipeline).
+
+<Aside type="caution">
+Classic log management (without Grail) is not supported. Grail must be active on your Dynatrace tenant.
+</Aside>
+
+## Required Dynatrace Permissions
+
+Your Dynatrace account must have permissions to:
+
+| Action | Where |
+|---|---|
+| Create and manage **log buckets** | Grail settings |
+| Create and manage **OpenPipeline** pipelines | OpenPipeline settings |
+| Create **Credential Vault** entries | Settings > Credential Vault |
+| Manage **outbound host allowlist** | Settings > Preferences |
+| Install apps from **Hub / Marketplace** | Dynatrace Hub |
+| Create **API tokens** | Access tokens settings |
+
+## Required API Token Scopes
+
+Create an API token with the following scopes for the collector to send data:
+
+| Scope | Purpose |
+|---|---|
+| `logs.ingest` | Send log records to Dynatrace |
+
+<Aside type="note">
+Keep this token in a secure location. It will be used in the collector configuration and optionally stored in Credential Vault.
+</Aside>
+
+## Dynatrace Hub Access
+
+Access to **Dynatrace Hub** is required to install the MS Teams Observability application. If Hub access is restricted in your environment, the app can alternatively be installed via ZIP upload (see [Installation](/backends/dynatrace/installation/)).

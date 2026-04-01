@@ -1,0 +1,52 @@
+---
+title: Install the Splunk App
+description: Install the MS Teams Observability Splunk app and configure HEC ingestion.
+sidebar:
+  label: Installation
+  order: 1
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+## 1. Install the Splunk App
+
+Install the MS Teams Observability app on your Splunk Search Head or Search Head Cluster:
+
+- **Splunkbase**: [splunkbase.splunk.com/app/7850](https://splunkbase.splunk.com/app/7850/)
+
+<Aside type="note">
+Validate current package availability on Splunkbase for your environment before starting.
+</Aside>
+
+## 2. Create a Dedicated HEC Input
+
+Configure an HTTP Event Collector input that writes to the `ms_teams` index.
+
+<Steps>
+1. Go to **Settings → Data Inputs → HTTP Event Collector**.
+2. Create a new HEC token.
+3. Set the default index to `ms_teams` (create the index first if it does not exist).
+4. Save and copy the HEC token and endpoint URL.
+</Steps>
+
+Splunk HEC reference: [Splunk HEC documentation](https://docs.splunk.com/Documentation/Splunk/latest/Data/UsetheHTTPEventCollector)
+
+Keep the **token** and **endpoint URL** — you will need them for the [collector configuration](/backends/splunk/configuration/).
+
+## 3. Configure the App Dashboard
+
+The Splunk app includes a built-in **MS Teams Configuration** dashboard with step-by-step setup instructions.
+
+Recommended validation steps:
+
+<Steps>
+1. Confirm events arrive in the `ms_teams` index.
+2. Open the core dashboards (overview, call details, site quality).
+3. Validate field extractions and time parsing.
+</Steps>
+
+## 4. Optional: Site Mapping Lookup
+
+Some dashboards use a subnet-to-site lookup table (for example `SubnetToSite`) to enable site-level analysis. Import and maintain this lookup table to improve site/location dashboard coverage.
+
+This corresponds to the optional `sites.csv` configuration in the [Collector Configuration](/collector/configuration/#optional-sitescsv-mapping).

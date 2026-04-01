@@ -1,0 +1,123 @@
+---
+title: Collector Installation
+description: Install and start the collector from Azure setup to first successful export.
+sidebar:
+  label: Installation
+  order: 2
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Before You Start
+
+1. Configure Microsoft Graph access (see [Azure Permissions](/collector/azure-permissions/)).
+2. Download collector binary and template config.
+3. Obtain your license file.
+
+## Prerequisites
+
+- Host with outbound access to:
+  - `graph.microsoft.com`
+  - `login.microsoftonline.com`
+  - your backend endpoint (Dynatrace, Splunk, or OTel)
+- Microsoft tenant and app registration credentials
+- Valid license file (`license.filepath`)
+
+## Build Your Config
+
+Start from template and set at least:
+
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>" # or client_certificate_path
+
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+
+output:
+  dynatrace:
+    enabled: true
+    api_url: "https://<env>.live.dynatrace.com"
+    api_token: "dt0c01..."
+
+collection_config:
+  interval_collection_minutes: 10
+  features:
+    calls_collection:
+      enabled: true
+```
+
+Full settings reference: [Configuration Reference](/collector/configuration/)
+
+## Validate and Test
+
+<Steps>
+1. Validate file structure and business rules:
+
+   ```bash
+   ms-teams-agent validate --config ./config.yaml
+   ```
+
+2. Test Graph auth and exporters:
+
+   ```bash
+   ms-teams-agent test-connection --config ./config.yaml
+   ```
+
+3. Run one dry cycle:
+
+   ```bash
+   ms-teams-agent run --config ./config.yaml --dry-run
+   ```
+</Steps>
+
+## Start the Collector
+
+<Tabs>
+  <TabItem label="Linux/macOS">
+```bash
+ms-teams-agent run --config ./config.yaml
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+.\ms-teams-agent.exe run --config .\config.yaml
+```
+  </TabItem>
+</Tabs>
+
+## Service Automation (Linux)
+
+For persistent production execution, install as a systemd service:
+
+```bash
+sudo ms-teams-agent service enable-service --config /absolute/path/config.yaml
+sudo ms-teams-agent service status
+```
+
+See [Service Management](/collector/service/) for Linux service operation.
+
+## Verify Ingestion
+
+- Agent logs:
+
+```bash
+tail -f logs/agent.log
+```
+
+- State snapshot:
+
+```bash
+ms-teams-agent state show
+```
+
+- Backend verification:
+  - Dynatrace: check app overview for real tenant data
+  - Splunk: check `ms_teams` index receives events
+
+<Aside type="tip">
+If data still does not appear after one interval, follow [Runbook Troubleshooting](/collector/runbook/#common-errors-and-fixes).
+</Aside>

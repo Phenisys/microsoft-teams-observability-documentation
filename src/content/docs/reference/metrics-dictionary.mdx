@@ -1,0 +1,52 @@
+---
+title: Metrics Dictionary Guide
+description: User guide to the key MS Teams Observability event types and dashboard fields.
+sidebar:
+  label: Metrics Dictionary
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+This page helps users understand the main event types and metrics exposed in dashboards.
+
+## Event Families
+
+| Log source | Purpose | Typical use |
+| --- | --- | --- |
+| `MSTeams_CallRecords_CallMetadata` | Call-level summary | Call volume, type, and overall health |
+| `MSTeams_CallRecords_StreamDetails` | Stream-level quality | Troubleshoot jitter, RTT, packet loss |
+| `MSTeams_CallRecords_PSTN` | PSTN activity | Telephony usage and call details |
+| `MSTeams_CallRecords_DirectRouting` | Direct Routing activity | SIP/routing troubleshooting |
+| `MSTeams_CallRecords_AutoAttendant` | Auto attendant usage | Voice workflow visibility |
+| `MSTeams_CallRecords_CallQueue` | Call queue usage | Queue behavior monitoring |
+| `MSTeams_ServiceAnnouncement` | Microsoft incidents | Correlate degradations with official incidents |
+| `MSTeams_CollectionHealth` | Collector status | Verify ingestion health |
+
+## Common Dashboard Dimensions
+
+- `call.id`
+- `type`
+- `callHealth`
+- `startDateTime`
+- `timestamp`
+- `mediaLabel`
+- `streamDirection`
+- `streamHealth`
+- caller/callee identity fields
+
+## Common Quality Metrics
+
+- `averageRoundTripTimeMs`
+- `averageJitterMs`
+- `averagePacketLossRatePercent`
+- `averageVideoFrameLossPercentage`
+- `averageVideoFrameRate`
+
+## Operational Tip
+
+If dashboard quality drops while `MSTeams_ServiceAnnouncement` shows an active incident, investigate Microsoft-side impact before changing local configuration.
+
+<Aside type="note">
+Legacy documentation may mention `MSGraphAPI_*` sources. Current naming uses `MSTeams_*`.
+</Aside>

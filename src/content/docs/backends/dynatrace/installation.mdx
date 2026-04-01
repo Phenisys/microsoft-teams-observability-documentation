@@ -1,0 +1,64 @@
+---
+title: Install the Dynatrace Application
+description: Install the MS Teams Observability app from Dynatrace Hub or via ZIP upload, and activate Live mode.
+sidebar:
+  label: Installation
+  order: 2
+---
+
+import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+## Operating Modes
+
+The application supports two modes:
+
+- **Demo mode (default):** uses built-in sample data. No collector required. Available immediately after installation.
+- **Live mode:** uses real tenant data sent by the collector. Requires a configured collector and a valid license.
+
+## Install the Application
+
+<Tabs>
+  <TabItem label="Dynatrace Hub">
+<Steps>
+1. Open **Dynatrace → Hub / Marketplace**.
+2. Search for **Microsoft Teams Observability**.
+3. Install the app and grant the required permissions.
+4. Open it from **Apps**.
+</Steps>
+  </TabItem>
+  <TabItem label="Upload ZIP package">
+<Steps>
+1. Download the latest app ZIP from the [GitHub releases page](https://github.com/Phenisys/microsoft-teams-observability-dynatrace-app/releases/latest).
+2. In Dynatrace, open **Hub → Upload app**.
+3. Select the ZIP file and install.
+4. Verify the app status is healthy.
+</Steps>
+  </TabItem>
+</Tabs>
+
+## Activate Live Mode
+
+Complete the following steps **after** configuring Dynatrace (Grail, OpenPipeline, Credential Vault) and the collector output:
+
+<Steps>
+1. Open the app and go to **Installation & Configuration**.
+2. Configure tenant and backend settings.
+3. Add and activate your license.
+4. Save and reload the app.
+5. Wait for at least one full collector cycle.
+</Steps>
+
+<Aside type="caution">
+If the license is missing or invalid, the app may fail to initialise tenant-specific data and configuration saves can fail.
+</Aside>
+
+## Verification Checklist
+
+After activating Live mode, confirm:
+
+- Overview page shows non-demo events and real metrics.
+- Calls List contains real call IDs from your tenant.
+- Microsoft Issues page shows service announcements.
+- Sites/Locations page is populated (requires `sites.csv` mapping for full coverage).
+
+If data is missing, see [Troubleshooting](/backends/dynatrace/troubleshooting/).

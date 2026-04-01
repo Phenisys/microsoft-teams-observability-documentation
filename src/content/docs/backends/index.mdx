@@ -1,0 +1,41 @@
+---
+title: Backends & Integrations
+description: Connect the MS Teams Observability Collector to Dynatrace, Splunk, or any OTLP-compatible backend.
+sidebar:
+  label: Backends
+  order: 0
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+The collector exports Teams telemetry to one or more **backends**. Each backend integration covers both the receiving side (platform configuration) and the collector output configuration.
+
+## Supported Backends
+
+| Backend | Type | Application included |
+|---|---|---|
+| **Dynatrace** | SaaS observability platform | Yes — Grail storage + dedicated dashboards app |
+| **Splunk** | SIEM / analytics platform | Yes — Splunk app with HEC ingestion |
+| **OTel / OTLP** | Open standard | No — export to any compatible endpoint |
+
+<CardGrid>
+  <LinkCard
+    title="Dynatrace"
+    description="Full integration with Grail, OpenPipeline, and operational dashboards. Most complete integration."
+    href="/backends/dynatrace/"
+  />
+  <LinkCard
+    title="Splunk"
+    description="HEC-based ingestion with a dedicated Splunk app and dashboards."
+    href="/backends/splunk/"
+  />
+  <LinkCard
+    title="OTel / OTLP"
+    description="Generic OpenTelemetry export to any OTLP-compatible endpoint."
+    href="/backends/otlp/"
+  />
+</CardGrid>
+
+## Adding a New Backend
+
+The collector supports multiple simultaneous outputs. You can enable more than one backend in your configuration by adding multiple entries under the `output` section. See [Collector Configuration](/collector/configuration/) for details.

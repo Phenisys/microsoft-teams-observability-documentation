@@ -1,0 +1,145 @@
+---
+title: Configuration Schema Reference
+description: Complete reference of all ms-teams-agent configuration parameters, types, and defaults.
+sidebar:
+  label: Configuration Schema
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+This page is a complete reference for the `config.yaml` file. For a guided configuration walk-through, see [Configuring the Collector](/collector/configuration/).
+
+## Top-Level Structure
+
+```yaml
+microsoft_authentication:
+  graph: { ... }
+  vaac: { ... }       # optional
+
+license:
+  filepath: <path>
+
+output:
+  dynatrace: { ... }  # optional
+  splunk: { ... }     # optional
+  otel: [ ... ]       # optional
+  console: { ... }    # optional
+
+collection_config:
+  interval_collection_minutes: 10
+  log_level: "INFO"
+  features: { ... }
+  sites_file: <path>  # optional
+
+advanced:             # optional
+  quality_thresholds: { ... }
+```
+
+## `microsoft_authentication.graph`
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `tenant_id` | string | Yes | Microsoft Entra tenant ID (GUID) |
+| `client_id` | string | Yes | App registration client ID (GUID) |
+| `client_secret` | string | Either/or | Client secret value |
+| `client_certificate_path` | string | Either/or | Path to PEM file (private + public key) |
+| `client_certificate_passphrase` | string | No | Passphrase for encrypted PEM |
+
+<Aside type="note">
+Provide either `client_secret` or `client_certificate_path` — not both.
+</Aside>
+
+## `microsoft_authentication.vaac`
+
+Required only for Auto Attendant and Call Queue collection.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `tenant_id` | string | Yes | Tenant ID |
+| `client_id` | string | Yes | Client ID with VAAC permissions |
+| `client_secret` | string | Either/or | Client secret |
+| `client_certificate_path` | string | Either/or | Path to PEM file |
+| `client_certificate_passphrase` | string | No | PEM passphrase |
+
+## `license`
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `filepath` | string | Yes | Absolute path to the license JSON file |
+
+## `output.dynatrace`
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `enabled` | bool | Yes | Enable this output |
+| `dynatrace_tenant_id` | string | Yes | Dynatrace SaaS tenant ID |
+| `dynatrace_api_token` | string | Yes | API token with `logs.ingest` scope |
+| `time_fields_format` | string | No | Timestamp format (default: `epoch_ms`) |
+
+## `output.splunk`
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `enabled` | bool | Yes | Enable this output |
+| `splunk_hec_url` | string | Yes | Full HEC endpoint URL |
+| `splunk_hec_token` | string | Yes | HEC authentication token |
+| `splunk_ssl_check` | bool | No | TLS verification (default: `true`) |
+| `time_fields_format` | string | No | Timestamp format (default: `epoch_ms`) |
+
+## `output.otel` (list)
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `name` | string | Yes | Identifier for this output |
+| `enabled` | bool | Yes | Enable this output |
+| `endpoint` | string | Yes | OTLP logs endpoint URL (`/v1/logs`) |
+| `headers` | map | No | HTTP headers (e.g., `Authorization`) |
+| `time_fields_format` | string | No | Timestamp format (default: `epoch_ms`) |
+
+## `output.console`
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `enabled` | bool | Yes | Enable console output (stdout) |
+
+## `collection_config`
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `interval_collection_minutes` | int | No | `10` | Collection interval in minutes |
+| `log_level` | string | No | `INFO` | Log verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
+| `sites_file` | string | No | — | Path to `sites.csv` for subnet-to-site mapping |
+
+## `collection_config.features`
+
+| Feature flag | Default | Description |
+|---|---|---|
+| `calls_collection.enabled` | `true` | Collect call records |
+| `issues_collection.enabled` | `true` | Collect service announcements |
+| `pstn_calls_collection.enabled` | `false` | Collect PSTN call records |
+| `direct_routing_calls_collection.enabled` | `false` | Collect Direct Routing records |
+| `autoattendant_collection.enabled` | `false` | Collect Auto Attendant data (requires VAAC) |
+| `callqueue_collection.enabled` | `false` | Collect Call Queue data (requires VAAC) |
+
+## `time_fields_format` Values
+
+| Value | Description |
+|---|---|
+| `epoch_ms` | Unix timestamp in milliseconds (default) |
+| `epoch_s` | Unix timestamp in seconds |
+| `epoch_ns` | Unix timestamp in nanoseconds |
+| `iso8601` | ISO 8601 string |
+| `rfc3339` | RFC 3339 string |
+
+## `advanced.quality_thresholds`
+
+Override default call quality classification thresholds. Keep defaults unless you have specific operational requirements.
+
+```yaml
+advanced:
+  quality_thresholds:
+    audio:
+      max_rtt_ms: 500
+      max_jitter_ms: 30
+```

@@ -1,0 +1,62 @@
+---
+title: License Estimation
+description: Estimate the required MS Teams Observability license size from Microsoft Teams user activity reports.
+sidebar:
+  label: License Estimation
+  order: 4
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Licensing is based on the **maximum number of distinct users observed over the last 30 days**. A **10% tolerance** is recommended to absorb natural fluctuations.
+
+## Estimation Formula
+
+Use this baseline formula:
+
+```text
+required_license_users = ceil(max_distinct_users_30d * 1.10)
+```
+
+Example:
+
+- Maximum users seen in last 30 days: `2,500`
+- With tolerance: `ceil(2500 * 1.10) = 2,750`
+- Choose the next available license tier at or above this value.
+
+## Get User Activity from Microsoft Graph
+
+Use the Teams activity report endpoint:
+
+- API doc: [Microsoft Graph report endpoint](https://learn.microsoft.com/en-us/graph/api/reportroot-getteamsuseractivityusercounts)
+
+<Steps>
+1. Request the pre-authenticated report URL:
+
+   ```bash
+   curl "https://graph.microsoft.com/v1.0/reports/getTeamsUserActivityUserCounts(period='D180')" \
+     -H "Authorization: Bearer ${access_token}"
+   ```
+
+   Expect an HTTP `302` response with a `Location` header.
+
+2. Download the report from the `Location` URL:
+
+   ```bash
+   curl "https://reports.office.com/data/download/<report-id>" -o teams-user-activity.csv
+   ```
+
+3. Calculate the maximum daily user count over your chosen window (at least 30 days).
+</Steps>
+
+## Recommended Sizing Workflow
+
+1. Run the report on `D180` to capture seasonal peaks.
+2. Compute max users for 30, 90, and 180-day windows.
+3. Use the highest relevant value for your contract period.
+4. Add 10% headroom.
+5. Re-check quarterly or after major organizational changes.
+
+<Aside type="tip">
+You can validate effective collector scope with `MSTeams_CollectionHealth` logs and compare observed users with your licensed user cap.
+</Aside>

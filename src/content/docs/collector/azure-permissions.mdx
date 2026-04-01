@@ -1,0 +1,116 @@
+---
+title: Azure Permissions
+description: Configure Microsoft Entra ID app registration and Graph permissions required by ms-teams-agent.
+sidebar:
+  label: Azure Permissions
+  order: 1
+---
+
+import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+Use this guide to create the Microsoft Entra application used by the collector to call Microsoft Graph API.
+
+## Required Outcome
+
+At the end you must have:
+
+- `tenant_id`
+- `client_id`
+- One authentication method:
+  - `client_secret`, or
+  - `client_certificate_path` (PEM with private + public key)
+- Admin-consented Graph application permissions
+
+## Create the App Registration
+
+<Steps>
+1. Open the [Azure Portal](https://aad.portal.azure.com/) and go to **Microsoft Entra ID**.
+
+2. In **Overview**, copy your **Tenant ID**.
+
+3. Open **App registrations** and click **New registration**.
+
+4. Set a name (for example `MS Teams Observability`) and select **Accounts in this organizational directory only**.
+
+5. Create the application and copy the **Application (client) ID**.
+</Steps>
+
+## Configure Authentication
+
+<Tabs>
+  <TabItem label="Client Secret">
+1. Open **Certificates & secrets**.
+2. In **Client secrets**, click **New client secret**.
+3. Copy the secret **Value** immediately after creation.
+4. Put this value in `microsoft_authentication.graph.client_secret`.
+  </TabItem>
+  <TabItem label="Certificate (PEM)">
+1. Open **Certificates & secrets**.
+2. In **Certificates**, upload the public certificate (`.cer`, `.pem`, or `.crt`).
+3. Keep a PEM file that contains both private and public keys for the collector host.
+4. Put the PEM path in `microsoft_authentication.graph.client_certificate_path`.
+
+Expected PEM layout:
+
+```text
+-----BEGIN PRIVATE KEY-----
+...
+-----END PRIVATE KEY-----
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+```
+  </TabItem>
+</Tabs>
+
+<Aside type="caution">
+Use RSA certificates. EC/DSA certificates are not supported by this integration flow.
+</Aside>
+
+## Add Microsoft Graph API Permissions
+
+In **API permissions**:
+
+1. Click **Add a permission**.
+2. Choose **Microsoft Graph**.
+3. Choose **Application permissions** (not Delegated).
+4. Add:
+   - `CallRecords.Read.All`
+   - `Reports.Read.All`
+   - `ServiceHealth.Read.All`
+5. Click **Grant admin consent** and confirm.
+
+## Validate Collector Configuration
+
+Use one of the two authentication patterns below.
+
+<Tabs>
+  <TabItem label="Client secret">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>"
+```
+  </TabItem>
+  <TabItem label="Certificate">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
+    client_certificate_passphrase: "optional"
+```
+  </TabItem>
+</Tabs>
+
+Then run:
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+```
+
+For all available configuration fields, see [Configuration Reference](/collector/configuration/).

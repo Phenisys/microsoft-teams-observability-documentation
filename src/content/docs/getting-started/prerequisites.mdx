@@ -1,0 +1,61 @@
+---
+title: Prerequisites
+description: Everything you need before deploying MS Teams Observability — Azure, network, and backend access.
+sidebar:
+  label: Prerequisites
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Before deploying the collector, ensure you have the following in place.
+
+## Azure / Microsoft 365
+
+- A **Microsoft 365 tenant** with Teams calling activity.
+- An **Azure account** with rights to create app registrations in Microsoft Entra ID.
+- Rights to **grant admin consent** for Microsoft Graph application permissions.
+
+The collector requires the following Graph permissions (application type, not delegated):
+
+| Permission | Purpose |
+|---|---|
+| `CallRecords.Read.All` | Retrieve call records and stream details |
+| `Reports.Read.All` | Access Teams activity reports |
+| `ServiceHealth.Read.All` | Access Microsoft service health announcements |
+
+See [Azure Permissions](/collector/azure-permissions/) for the step-by-step setup guide.
+
+## Collector Host
+
+- Linux (recommended) or Windows server.
+- Outbound network access to:
+  - `graph.microsoft.com`
+  - `login.microsoftonline.com`
+  - Your backend endpoint (Dynatrace, Splunk, or OTLP)
+- Sufficient CPU and memory for your call volume (see [Collector FAQ](/collector/faq/) for sizing guidance).
+
+<Aside type="tip">
+The collector does not need to run on an ActiveGate or any Dynatrace component. Any host with the required network access and resources is suitable.
+</Aside>
+
+## Backend Access
+
+Depending on your chosen backend:
+
+**Dynatrace**
+- Dynatrace SaaS tenant with Grail enabled.
+- Permissions to create buckets, OpenPipeline pipelines, and Credential Vault entries.
+- Access to Dynatrace Hub (to install the app).
+
+**Splunk**
+- Splunk instance (Search Head) with admin access.
+- Ability to create HTTP Event Collector (HEC) inputs and indexes.
+
+**OTel / OTLP**
+- An accessible OTLP-compatible endpoint.
+- Authentication token or credentials if required.
+
+## License
+
+A valid **MS Teams Observability license** is required to activate Live mode. Contact your vendor representative to obtain a license file before starting the deployment.

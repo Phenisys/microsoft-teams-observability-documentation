@@ -1,0 +1,69 @@
+---
+title: Connect the Collector to Dynatrace
+description: Configure the collector output section to send MS Teams telemetry to your Dynatrace tenant.
+sidebar:
+  label: Collector Connection
+  order: 4
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Collector Output Configuration
+
+Add a `dynatrace` entry under the `output` section of your `config.yaml`:
+
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "your-dynatrace-tenant-id"
+    dynatrace_api_token: "your-logs-ingest-token"
+```
+
+### Parameters
+
+| Parameter | Required | Description |
+|---|---|---|
+| `enabled` | Yes | Set to `true` to activate the Dynatrace output |
+| `dynatrace_tenant_id` | Yes | Your Dynatrace SaaS tenant ID (e.g. `abc12345`) |
+| `dynatrace_api_token` | Yes | API token with `logs.ingest` scope |
+
+<Aside type="caution">
+Protect your API token — use file permissions and avoid committing it to version control. Store the config file at a path accessible only by the collector service account.
+</Aside>
+
+## Optional: Time Format
+
+You can configure the timestamp format for log records sent to Dynatrace:
+
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "your-tenant-id"
+    dynatrace_api_token: "your-token"
+    time_fields_format: "iso8601"
+```
+
+Supported values: `epoch_ms` (default), `epoch_s`, `epoch_ns`, `iso8601`, `rfc3339`.
+
+## Test the Connection
+
+After editing the configuration, validate and test:
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+```
+
+`test-connection` verifies both Microsoft Graph authentication and the Dynatrace API endpoint connectivity.
+
+## Verify Data Arrival
+
+After a successful first collection cycle:
+
+1. In Dynatrace, open **Logs** and filter by `log.source = "MSTeams_CallRecords_CallMetadata"`.
+2. Confirm records are arriving in the `ms_teams` bucket.
+3. Open the MS Teams Observability app — the Overview page should show live data.
+
+If data is not arriving, see [Troubleshooting](/backends/dynatrace/troubleshooting/).

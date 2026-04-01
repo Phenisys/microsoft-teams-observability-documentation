@@ -1,0 +1,152 @@
+---
+title: CLI Reference
+description: Complete reference for all ms-teams-agent commands, sub-commands, options, and flags.
+sidebar:
+  label: CLI Reference
+  order: 3
+---
+
+Complete reference for `ms-teams-agent`. For common usage examples, see [Using the CLI](/collector/cli/).
+
+## Command Shape
+
+```bash
+ms-teams-agent <command> [sub-command] [options]
+```
+
+## Global Options
+
+| Option | Description |
+|---|---|
+| `--version` | Print the collector version |
+| `--help` | Show help |
+
+---
+
+## `run`
+
+Start collection and export in continuous mode.
+
+```bash
+ms-teams-agent run --config <path> [options]
+```
+
+| Option | Required | Description |
+|---|---|---|
+| `--config <path>` | Yes | Path to `config.yaml` |
+| `--log-level <LEVEL>` | No | Override log level (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
+| `--call-id <id>` | No | Process a single call by ID (for troubleshooting) |
+| `--ignore-state` | No | Run one cycle without reading previous state |
+| `--state-file <path>` | No | Use a custom state file location |
+| `--dry-run` | No | Collect data but do not export (testing only) |
+
+**Examples:**
+
+```bash
+ms-teams-agent run --config ./config.yaml
+ms-teams-agent run --config ./config.yaml --dry-run
+ms-teams-agent run --config ./config.yaml --log-level DEBUG
+ms-teams-agent run --config ./config.yaml --call-id <CALL_ID> --log-level DEBUG
+```
+
+---
+
+## `validate`
+
+Validate the configuration file and exit. Does not contact Microsoft Graph or the backend.
+
+```bash
+ms-teams-agent validate --config <path>
+```
+
+| Option | Required | Description |
+|---|---|---|
+| `--config <path>` | Yes | Path to `config.yaml` |
+
+---
+
+## `test-connection`
+
+Validate configuration, then test Microsoft Graph authentication and all configured output backend endpoints.
+
+```bash
+ms-teams-agent test-connection --config <path>
+```
+
+| Option | Required | Description |
+|---|---|---|
+| `--config <path>` | Yes | Path to `config.yaml` |
+
+---
+
+## `service`
+
+Manage the collector as a Linux systemd service.
+
+```bash
+ms-teams-agent service <action> [options]
+```
+
+| Action | Description |
+|---|---|
+| `enable-service` | Install and enable the systemd service |
+| `disable-service` | Disable and remove the systemd service |
+| `status` | Show service status |
+| `restart` | Restart the service |
+| `install-config` | Install the config file to the system path |
+
+**Common options:**
+
+| Option | Description |
+|---|---|
+| `--config <path>` | Absolute path to `config.yaml` (required for `enable-service`) |
+| `--instance <name>` | Service instance name (default: `default`) |
+
+**Examples:**
+
+```bash
+sudo ms-teams-agent service enable-service --config /etc/ms-teams-observability-agent/config.yaml
+sudo ms-teams-agent service status --instance default
+sudo ms-teams-agent service restart --instance default
+sudo ms-teams-agent service disable-service --instance default
+```
+
+---
+
+## `state`
+
+Inspect or reset the collector's local operational state.
+
+```bash
+ms-teams-agent state <action> [options]
+```
+
+| Action | Description |
+|---|---|
+| `show` | Display the current state |
+| `reset` | Reset state (causes re-processing from the beginning of the window) |
+| `export` | Export state to a JSON file |
+
+| Option | Description |
+|---|---|
+| `--output <path>` | Output file for `export` action |
+
+**Examples:**
+
+```bash
+ms-teams-agent state show
+ms-teams-agent state export --output state-snapshot.json
+ms-teams-agent state reset
+```
+
+> **Caution:** `state reset` in production may result in duplicate data in your backend for the affected collection window.
+
+---
+
+## Recommended Validation Workflow
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+ms-teams-agent run --config ./config.yaml
+```

@@ -1,0 +1,34 @@
+---
+title: Getting Started
+description: Start here — understand the product, check prerequisites, and deploy your first collector.
+sidebar:
+  label: Getting Started
+  order: 0
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualise that data in Dynatrace, Splunk, or any OTLP-compatible platform.
+
+<CardGrid>
+  <LinkCard
+    title="Product Overview"
+    description="Understand what the collector does, what data it collects, and how it connects to backends."
+    href="/getting-started/overview/"
+  />
+  <LinkCard
+    title="Prerequisites"
+    description="Everything you need before deploying: Azure app, permissions, network access, and backend access."
+    href="/getting-started/prerequisites/"
+  />
+  <LinkCard
+    title="Install the Collector"
+    description="Deploy the collector, validate configuration, and start your first collection cycle."
+    href="/collector/installation/"
+  />
+  <LinkCard
+    title="Connect a Backend"
+    description="Choose Dynatrace, Splunk, or OTel/OTLP and configure the integration end-to-end."
+    href="/backends/"
+  />
+</CardGrid>

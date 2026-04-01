@@ -1,0 +1,171 @@
+---
+title: Configuration Reference
+description: User configuration guide for ms-teams-agent authentication, outputs, feature flags, and optional settings.
+sidebar:
+  label: Configuration
+  order: 3
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+This page explains the settings you can configure in `config.yaml`.
+
+## Required Sections
+
+Your configuration must include:
+
+- `microsoft_authentication`
+- `license`
+- `output`
+- `collection_config`
+
+## Microsoft Authentication
+
+Use your tenant and app credentials from [Azure Permissions](/collector/azure-permissions/).
+
+<Tabs>
+  <TabItem label="Client secret">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "your-tenant-id"
+    client_id: "your-client-id"
+    client_secret: "your-secret"
+```
+  </TabItem>
+  <TabItem label="Certificate">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "your-tenant-id"
+    client_id: "your-client-id"
+    client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
+    client_certificate_passphrase: "optional"
+```
+  </TabItem>
+</Tabs>
+
+## License
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+```
+
+The collector will not start without a valid license file.
+
+## Output Platforms
+
+Enable at least one output backend.
+
+<Tabs>
+  <TabItem label="Dynatrace">
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "your-tenant-id"
+    dynatrace_api_token: "your-token"
+```
+  </TabItem>
+  <TabItem label="Splunk">
+```yaml
+output:
+  splunk:
+    enabled: true
+    splunk_hec_url: "https://your-splunk:8088/services/collector"
+    splunk_hec_token: "your-hec-token"
+    splunk_ssl_check: true
+```
+  </TabItem>
+  <TabItem label="OTel">
+```yaml
+output:
+  otel:
+    - name: "custom"
+      enabled: true
+      endpoint: "https://your-otel-endpoint/v1/logs"
+      headers:
+        Authorization: "Bearer your-token"
+```
+  </TabItem>
+  <TabItem label="Console">
+```yaml
+output:
+  console:
+    enabled: true
+```
+  </TabItem>
+</Tabs>
+
+## Collection Settings
+
+```yaml
+collection_config:
+  interval_collection_minutes: 10
+  log_level: "INFO"
+  features:
+    calls_collection:
+      enabled: true
+    issues_collection:
+      enabled: true
+```
+
+### Feature flags
+
+Available feature flags:
+
+- `calls_collection`
+- `issues_collection`
+- `pstn_calls_collection`
+- `direct_routing_calls_collection`
+- `autoattendant_collection`
+- `callqueue_collection`
+
+<Aside type="note">
+`autoattendant_collection` and `callqueue_collection` require VAAC credentials in `microsoft_authentication.vaac`.
+</Aside>
+
+## Optional `sites.csv` Mapping
+
+To enable site/location mapping:
+
+```yaml
+collection_config:
+  sites_file: /etc/ms-teams-observability-agent/sites.csv
+```
+
+Without this file, calls are shown as unmapped in site views.
+
+## Optional Time Format
+
+`time_fields_format` can be set per output:
+
+- `epoch_ms` (default)
+- `epoch_s`
+- `epoch_ns`
+- `iso8601`
+- `rfc3339`
+
+## Optional Advanced Thresholds
+
+You can override quality thresholds:
+
+```yaml
+advanced:
+  quality_thresholds:
+    audio:
+      max_rtt_ms: 500
+      max_jitter_ms: 30
+```
+
+Keep defaults unless you have a clear operations requirement.
+
+## Validation Commands
+
+Always validate before production rollout:
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+```
