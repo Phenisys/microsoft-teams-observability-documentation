@@ -1,12 +1,12 @@
 ---
-title: CLI Reference
-description: User command reference for ms-teams-agent.
+title: Using the CLI
+description: Practical guide to the most common ms-teams-agent commands for deployment, validation, and operations.
 sidebar:
-  label: CLI Reference
+  label: CLI
   order: 4
 ---
 
-Quick command reference for running and operating the collector.
+Practical guide to the most-used `ms-teams-agent` commands. For the full option reference, see [CLI Reference](/reference/cli-reference/).
 
 ## Command Shape
 
@@ -20,89 +20,104 @@ ms-teams-agent <command> [options]
 | `validate` | Validate config and exit |
 | `test-connection` | Test Microsoft auth and backend connectivity |
 | `service` | Manage Linux systemd service |
-| `state` | Inspect or reset local collector state |
+| `state` | Inspect or reset the collection state database |
 
-## `run`
+---
+
+## Validation commands
+
+Always run these before starting collection in production:
 
 ```bash
-ms-teams-agent run --config <path> [options]
+# Validate YAML syntax and schema
+ms-teams-agent validate --config ./config.yaml
+
+# Validate config + test Microsoft Graph auth + test all exporters
+ms-teams-agent test-connection --config ./config.yaml
 ```
 
-| Option | Purpose |
-| --- | --- |
-| `--config <path>` | Required config file |
-| `--log-level <LEVEL>` | Override log level |
-| `--call-id <id>` | Process one call for troubleshooting |
-| `--ignore-state` | Run one cycle without previous state |
-| `--state-file <path>` | Custom local state file |
-| `--dry-run` | Test collection without sending data |
+---
 
-Examples:
+## Running the collector
 
 ```bash
+# Continuous collection (main operation)
 ms-teams-agent run --config ./config.yaml
+
+# Test the pipeline without exporting to backends
 ms-teams-agent run --config ./config.yaml --dry-run
+
+# Debug a specific call
 ms-teams-agent run --config ./config.yaml --call-id <CALL_ID> --log-level DEBUG
 ```
 
-## `validate`
+---
+
+## Service management (Linux)
+
+Most service actions require `sudo`.
 
 ```bash
-ms-teams-agent validate --config ./config.yaml
-```
-
-Validates YAML configuration and exits.
-
-## `test-connection`
-
-```bash
-ms-teams-agent test-connection --config ./config.yaml
-```
-
-Checks Microsoft authentication and output connectivity.
-
-## `service` (Linux)
-
-```bash
-ms-teams-agent service <action> [options]
-```
-
-Most-used actions:
-
-- `enable-service`
-- `disable-service`
-- `status`
-- `restart`
-- `install-config`
-
-Example:
-
-```bash
+# Install and start as a systemd service
 sudo ms-teams-agent service enable-service --config /absolute/path/config.yaml
-sudo ms-teams-agent service status --instance default
+
+# Check service status (default instance)
+sudo ms-teams-agent service status
+
+# Check a named instance
+sudo ms-teams-agent service status --instance prod
+
+# Restart a service instance
+sudo ms-teams-agent service restart --instance default
+
+# Update config for a running instance (restart only if already active)
+sudo ms-teams-agent service install-config \
+  --config /etc/config.prod.yaml \
+  --instance prod \
+  --service-restart-if-active
+
+# Remove the service entirely
+sudo ms-teams-agent service disable-service
 ```
 
-## `state`
+See [Service Management](/collector/service/) for initial setup and the full list of service actions.
+
+---
+
+## State inspection
+
+The collector maintains a local SQLite database to track processed objects and avoid duplicates.
 
 ```bash
+# Show current state (safe to run while the service is active)
 ms-teams-agent state show
-ms-teams-agent state reset
+
+# Export state to a JSON file
 ms-teams-agent state export --output state-snapshot.json
+
+# Reset state (forces full re-collection on next run — use with care in production)
+ms-teams-agent state reset
 ```
 
-Use with care in production, especially `reset`.
+---
 
-## Global Options
+## Recommended operational workflow
 
 ```bash
-ms-teams-agent --version
-ms-teams-agent --help
+# 1. Validate config
+ms-teams-agent validate --config ./config.yaml
+
+# 2. Test connectivity
+ms-teams-agent test-connection --config ./config.yaml
+
+# 3. Start collection
+ms-teams-agent run --config ./config.yaml
 ```
 
-## Recommended Workflow
+For Linux service deployments:
 
 ```bash
 ms-teams-agent validate --config ./config.yaml
-ms-teams-agent test-connection --config ./config.yaml
-ms-teams-agent run --config ./config.yaml
+sudo ms-teams-agent service enable-service --config /absolute/path/config.yaml
+sudo ms-teams-agent service status
 ```
