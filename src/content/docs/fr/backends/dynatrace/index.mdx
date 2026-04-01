@@ -34,30 +34,30 @@ ms-teams-agent (Collector)
   <LinkCard
     title="1) Prérequis"
     description="Permissions Dynatrace, accès Grail et Hub requis avant la configuration."
-    href="/fr/backends/dynatrace/prerequisites/"
+    href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/prerequisites/`}
   />
   <LinkCard
     title="2) Installer l'application"
     description="Installer l'app MS Teams Observability depuis Dynatrace Hub ou via upload ZIP."
-    href="/fr/backends/dynatrace/installation/"
+    href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/installation/`}
   />
   <LinkCard
     title="3) Configurer Dynatrace"
     description="Créer le bucket Grail, OpenPipeline, les règles de routage et l'entrée Credential Vault."
-    href="/fr/backends/dynatrace/configuration/"
+    href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/configuration/`}
   />
   <LinkCard
     title="4) Connecter le Collector"
     description="Configurer la section output du collector pour pointer vers votre tenant Dynatrace."
-    href="/fr/backends/dynatrace/collector-connection/"
+    href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/collector-connection/`}
   />
   <LinkCard
     title="5) Utiliser les tableaux de bord"
     description="Naviguer dans les dashboards opérationnels qualité, utilisateurs, sites et incidents."
-    href="/fr/backends/dynatrace/dashboards/"
+    href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/dashboards/`}
   />
 </CardGrid>
 
 <Aside type="tip">
-Si quelque chose ne fonctionne pas après la configuration, consultez le [Dépannage](/fr/backends/dynatrace/troubleshooting/) ou la [FAQ](/fr/backends/dynatrace/faq/).
+Si quelque chose ne fonctionne pas après la configuration, consultez le <a href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/troubleshooting/`}>Dépannage</a> ou la <a href={`${import.meta.env.BASE_URL}fr/backends/dynatrace/faq/`}>FAQ</a>.
 </Aside>

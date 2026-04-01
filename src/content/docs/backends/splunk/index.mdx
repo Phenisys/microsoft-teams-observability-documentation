@@ -29,16 +29,16 @@ ms-teams-agent (Collector)
   <LinkCard
     title="1) Install the Splunk App"
     description="Install the app on your Splunk Search Head and configure the HEC index."
-    href="/backends/splunk/installation/"
+    href={`${import.meta.env.BASE_URL}backends/splunk/installation/`}
   />
   <LinkCard
     title="2) Connect the Collector"
     description="Configure the collector HEC output to point to your Splunk instance."
-    href="/backends/splunk/configuration/"
+    href={`${import.meta.env.BASE_URL}backends/splunk/configuration/`}
   />
   <LinkCard
     title="Troubleshooting"
     description="Diagnose and fix common Splunk integration issues."
-    href="/backends/splunk/troubleshooting/"
+    href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}
   />
 </CardGrid>

@@ -22,20 +22,20 @@ The collector exports Teams telemetry to one or more **backends**. Each backend 
   <LinkCard
     title="Dynatrace"
     description="Full integration with Grail, OpenPipeline, and operational dashboards. Most complete integration."
-    href="/backends/dynatrace/"
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/`}
   />
   <LinkCard
     title="Splunk"
     description="HEC-based ingestion with a dedicated Splunk app and dashboards."
-    href="/backends/splunk/"
+    href={`${import.meta.env.BASE_URL}backends/splunk/`}
   />
   <LinkCard
     title="OTel / OTLP"
     description="Generic OpenTelemetry export to any OTLP-compatible endpoint."
-    href="/backends/otlp/"
+    href={`${import.meta.env.BASE_URL}backends/otlp/`}
   />
 </CardGrid>
 
 ## Adding a New Backend
 
-The collector supports multiple simultaneous outputs. You can enable more than one backend in your configuration by adding multiple entries under the `output` section. See [Collector Configuration](/collector/configuration/) for details.
+The collector supports multiple simultaneous outputs. You can enable more than one backend in your configuration by adding multiple entries under the `output` section. See <a href={`${import.meta.env.BASE_URL}collector/configuration/`}>Collector Configuration</a> for details.

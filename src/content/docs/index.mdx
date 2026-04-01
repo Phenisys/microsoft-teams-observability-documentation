@@ -6,11 +6,11 @@ hero:
   tagline: End-to-end Microsoft Teams observability from Graph API collection to operational dashboards.
   actions:
     - text: Get Started
-      link: /getting-started/
+      link: getting-started/
       icon: right-arrow
       variant: primary
     - text: Install the Collector
-      link: /collector/installation/
+      link: collector/installation/
       icon: right-arrow
       variant: secondary
 ---
@@ -30,21 +30,21 @@ MS Teams Observability is a two-part solution:
   <LinkCard
     title="1) Check Prerequisites"
     description="Azure app registration, Graph permissions, network access, and backend access."
-    href="/getting-started/prerequisites/"
+    href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}
   />
   <LinkCard
     title="2) Deploy the Collector"
     description="Validate config, test connectivity, run in service mode, and start ingestion."
-    href="/collector/installation/"
+    href={`${import.meta.env.BASE_URL}collector/installation/`}
   />
   <LinkCard
     title="3) Connect a Backend"
     description="Configure Dynatrace, Splunk, or OTel/OTLP to receive collector data."
-    href="/backends/"
+    href={`${import.meta.env.BASE_URL}backends/`}
   />
   <LinkCard
     title="4) Use the Dashboards"
     description="Navigate operational dashboards for call quality, sites, users, and incident correlation."
-    href="/backends/dynatrace/dashboards/"
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}
   />
 </CardGrid>
