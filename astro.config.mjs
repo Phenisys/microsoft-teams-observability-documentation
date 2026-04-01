@@ -2,10 +2,15 @@
 
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+import { loadEnv } from "vite";
+
+const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
+const base = env.PUBLIC_BASE_PATH ?? "/";
 
 // https://astro.build/config
 export default defineConfig({
     site: "https://phenisys.github.io",
+    base,
 	integrations: [
 		starlight({
 			title: "MS Teams Observability",
