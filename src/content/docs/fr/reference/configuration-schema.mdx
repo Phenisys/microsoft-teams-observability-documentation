@@ -8,23 +8,39 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-Cette page est une référence complète du fichier `config.yaml`. Pour un guide de configuration pas à pas, voir [Configurer le Collector](/fr/collector/configuration/).
+Référence complète du fichier `config.yaml`. Pour un guide de configuration pas à pas, voir [Configurer le Collector](/fr/collector/configuration/).
+
+## Pipeline de validation
+
+Au démarrage, le collector exécute les étapes de validation suivantes dans l'ordre :
+
+1. Parsing YAML
+2. Migration des clés obsolètes (les anciennes clés sont automatiquement remappées)
+3. Validation du modèle typé (`AppConfig`)
+4. Injection des feature flags par défaut (les flags connus absents de la config sont ajoutés avec `enabled: false`)
+5. Validation hybride : schéma JSON + règles métier + règles spécifiques aux exporters
+
+Les clés de premier niveau inconnues sont tolérées et ignorées pour la compatibilité ascendante.
 
 ## Structure de premier niveau
+
+**Sections requises :** `microsoft_authentication`, `license`, `output`, `collection_config`
+
+**Sections optionnelles :** `telemetry`, `advanced`, `database`
 
 ```yaml
 microsoft_authentication:
   graph: { ... }
-  vaac: { ... }       # optionnel
+  vaac: { ... }         # optionnel — requis pour les fonctionnalités VAAC
 
 license:
   filepath: <chemin>
 
 output:
-  dynatrace: { ... }  # optionnel
-  splunk: { ... }     # optionnel
-  otel: [ ... ]       # optionnel
-  console: { ... }    # optionnel
+  dynatrace: { ... }    # optionnel
+  splunk: { ... }       # optionnel
+  otel: [ ... ]         # optionnel — liste
+  console: { ... }      # optionnel
 
 collection_config:
   interval_collection_minutes: 10
@@ -32,14 +48,17 @@ collection_config:
   features: { ... }
   sites_file: <chemin>  # optionnel
 
-advanced:             # optionnel
-  quality_thresholds: { ... }
+telemetry: { ... }      # optionnel
+advanced: { ... }       # optionnel
+database: { ... }       # optionnel
 ```
+
+---
 
 ## `microsoft_authentication.graph`
 
 | Paramètre | Type | Requis | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `tenant_id` | chaîne | Oui | Identifiant du tenant Microsoft Entra (GUID) |
 | `client_id` | chaîne | Oui | Identifiant client de l'app registration (GUID) |
 | `client_secret` | chaîne | L'un ou l'autre | Valeur du secret client |
@@ -47,31 +66,35 @@ advanced:             # optionnel
 | `client_certificate_passphrase` | chaîne | Non | Phrase secrète pour le PEM chiffré |
 
 <Aside type="note">
-Fournissez soit `client_secret`, soit `client_certificate_path` — pas les deux.
+Fournissez soit `client_secret`, soit `client_certificate_path` — pas les deux. Certificats RSA uniquement ; EC/DSA ne sont pas supportés.
 </Aside>
 
 ## `microsoft_authentication.vaac`
 
-Requis uniquement si la collecte Auto Attendant ou Call Queue est activée.
+Requis uniquement si les feature flags `autoattendant_collection` ou `callqueue_collection` sont activés.
 
-| Paramètre | Type | Requis pour | Description |
-|---|---|---|---|
+| Paramètre | Type | Requis | Description |
+| --- | --- | --- | --- |
 | `tenant_id` | chaîne | Oui | Identifiant du tenant |
 | `client_id` | chaîne | Oui | Identifiant client avec permissions VAAC |
 | `client_secret` | chaîne | L'un ou l'autre | Secret client |
 | `client_certificate_path` | chaîne | L'un ou l'autre | Chemin vers le fichier PEM |
 | `client_certificate_passphrase` | chaîne | Non | Phrase secrète PEM |
 
+---
+
 ## `license`
 
 | Paramètre | Type | Requis | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `filepath` | chaîne | Oui | Chemin absolu vers le fichier de licence JSON |
+
+---
 
 ## `output.dynatrace`
 
 | Paramètre | Type | Requis | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `enabled` | booléen | Oui | Activer cet output |
 | `dynatrace_tenant_id` | chaîne | Oui | Identifiant du tenant Dynatrace SaaS |
 | `dynatrace_api_token` | chaîne | Oui | Token API avec le scope `logs.ingest` |
@@ -80,7 +103,7 @@ Requis uniquement si la collecte Auto Attendant ou Call Queue est activée.
 ## `output.splunk`
 
 | Paramètre | Type | Requis | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `enabled` | booléen | Oui | Activer cet output |
 | `splunk_hec_url` | chaîne | Oui | URL complète de l'endpoint HEC |
 | `splunk_hec_token` | chaîne | Oui | Token d'authentification HEC |
@@ -89,52 +112,90 @@ Requis uniquement si la collecte Auto Attendant ou Call Queue est activée.
 
 ## `output.otel` (liste)
 
+Chaque entrée de la liste est une destination OTLP indépendante.
+
 | Paramètre | Type | Requis | Description |
-|---|---|---|---|
-| `name` | chaîne | Oui | Identifiant de cet output |
+| --- | --- | --- | --- |
+| `name` | chaîne | Oui | Identifiant de cet output (utilisé dans les logs) |
 | `enabled` | booléen | Oui | Activer cet output |
-| `endpoint` | chaîne | Oui | URL de l'endpoint OTLP logs (`/v1/logs`) |
-| `headers` | map | Non | En-têtes HTTP (ex. `Authorization`) |
+| `endpoint` | chaîne | Oui | URL de l'endpoint OTLP logs (doit se terminer par `/v1/logs`) |
+| `headers` | map | Oui (si activé) | En-têtes HTTP — doit être fourni et non vide pour les entrées activées |
 | `time_fields_format` | chaîne | Non | Format de timestamp (par défaut : `epoch_ms`) |
 
 ## `output.console`
 
 | Paramètre | Type | Requis | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `enabled` | booléen | Oui | Activer la sortie console (stdout) |
+
+---
+
+## Valeurs de `time_fields_format`
+
+S'applique à tous les outputs qui le supportent. Convertit tous les champs de temps connus, y compris `timestamp`.
+
+| Valeur | Description | Exemple |
+| --- | --- | --- |
+| `epoch_ms` | Timestamp Unix en millisecondes **(par défaut)** | `1767262830500` |
+| `epoch_s` | Timestamp Unix en secondes | `1767262830` |
+| `epoch_ns` | Timestamp Unix en nanosecondes | `1767262830500000000` |
+| `iso8601` | Chaîne UTC ISO 8601 | `2026-01-01T10:20:30.50Z` |
+| `rfc3339` | Chaîne UTC RFC 3339 | `2026-01-01T10:20:30.50Z` |
+
+<Aside type="note">
+`iso8601` et `rfc3339` sont actuellement équivalents — les deux produisent des chaînes UTC au format RFC 3339.
+</Aside>
+
+---
 
 ## `collection_config`
 
 | Paramètre | Type | Requis | Défaut | Description |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | `interval_collection_minutes` | entier | Non | `10` | Intervalle de collecte en minutes |
 | `log_level` | chaîne | Non | `INFO` | Verbosité des logs (`DEBUG`, `INFO`, `WARNING`, `ERROR`) |
 | `sites_file` | chaîne | Non | — | Chemin vers `sites.csv` pour le mapping sous-réseau/site |
 
 ## `collection_config.features`
 
+Tous les feature flags ont pour valeur par défaut `false`. Les flags connus absents de la config sont auto-injectés au démarrage.
+
 | Feature flag | Défaut | Description |
-|---|---|---|
-| `calls_collection.enabled` | `true` | Collecter les enregistrements d'appels |
-| `issues_collection.enabled` | `true` | Collecter les annonces de service |
-| `pstn_calls_collection.enabled` | `false` | Collecter les enregistrements PSTN |
+| --- | --- | --- |
+| `calls_collection.enabled` | `false` | Collecter les enregistrements d'appels et les détails des flux |
+| `issues_collection.enabled` | `false` | Collecter les annonces de santé du service Microsoft |
+| `pstn_calls_collection.enabled` | `false` | Collecter les enregistrements d'appels PSTN |
 | `direct_routing_calls_collection.enabled` | `false` | Collecter les enregistrements Direct Routing |
 | `autoattendant_collection.enabled` | `false` | Collecter les données Auto Attendant (nécessite VAAC) |
 | `callqueue_collection.enabled` | `false` | Collecter les données Call Queue (nécessite VAAC) |
 
-## Valeurs de `time_fields_format`
+Les clés de feature inconnues sont préservées sans erreur.
 
-| Valeur | Description |
-|---|---|
-| `epoch_ms` | Timestamp Unix en millisecondes (par défaut) |
-| `epoch_s` | Timestamp Unix en secondes |
-| `epoch_ns` | Timestamp Unix en nanosecondes |
-| `iso8601` | Chaîne ISO 8601 |
-| `rfc3339` | Chaîne RFC 3339 |
+---
+
+## `database`
+
+Contrôle la base de données SQLite d'état local (`state.db`) utilisée pour la déduplication et la gestion de l'outbox. Omettre cette section utilise toutes les valeurs par défaut.
+
+| Paramètre | Type | Minimum | Défaut | Description |
+| --- | --- | --- | --- | --- |
+| `outbox_sent_retention_days` | entier | `1` | `7` | Jours de rétention des messages outbox envoyés avec succès |
+| `max_processed_objects_per_type` | entier | `1000` | `100000` | Nombre max d'entrées de cache de déduplication par type ; les plus anciennes sont évincées si dépassé |
+| `processed_objects_max_age_hours` | float \| null | — | `null` | Âge maximum (heures) des entrées de cache. `null` = dérivé automatiquement de `max_call_duration_hours × 3` |
+
+**Exemple — réduire la rétention pour économiser de l'espace disque :**
+
+```yaml
+database:
+  outbox_sent_retention_days: 2
+  max_processed_objects_per_type: 10000
+```
+
+---
 
 ## `advanced.quality_thresholds`
 
-Remplacez les seuils de classification de la qualité des appels par défaut. Conservez les valeurs par défaut sauf si vous avez des exigences opérationnelles spécifiques.
+Remplacez les seuils de classification de la qualité des appels par défaut. Conservez les valeurs par défaut sauf si vous avez une exigence opérationnelle spécifique.
 
 ```yaml
 advanced:

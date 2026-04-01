@@ -1,0 +1,206 @@
+---
+title: Configurer le Collector
+description: Guide de configuration de ms-teams-agent — authentification, outputs, paramètres de collecte et sections optionnelles.
+sidebar:
+  label: Configuration
+  order: 3
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+Cette page explique les paramètres configurables dans `config.yaml`. Pour la référence exhaustive (toutes les clés, types et valeurs par défaut), voir [Schéma de configuration](/fr/reference/configuration-schema/).
+
+## Sections requises
+
+Votre configuration doit inclure ces quatre sections :
+
+- `microsoft_authentication`
+- `license`
+- `output`
+- `collection_config`
+
+## Authentification Microsoft
+
+Utilisez les identifiants du tenant et de l'application depuis [Permissions Azure](/fr/collector/azure-permissions/).
+
+<Tabs>
+  <TabItem label="Secret client">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "votre-tenant-id"
+    client_id: "votre-client-id"
+    client_secret: "votre-secret"
+```
+  </TabItem>
+  <TabItem label="Certificat">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "votre-tenant-id"
+    client_id: "votre-client-id"
+    client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
+    client_certificate_passphrase: "optionnel"
+```
+  </TabItem>
+</Tabs>
+
+## Licence
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+```
+
+Le collector ne démarrera pas sans un fichier de licence valide.
+
+## Plateformes d'output
+
+Activez au moins un backend d'output. Plusieurs outputs peuvent être actifs simultanément.
+
+<Tabs>
+  <TabItem label="Dynatrace">
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "votre-tenant-id"
+    dynatrace_api_token: "votre-token"
+```
+  </TabItem>
+  <TabItem label="Splunk">
+```yaml
+output:
+  splunk:
+    enabled: true
+    splunk_hec_url: "https://votre-splunk:8088/services/collector"
+    splunk_hec_token: "votre-hec-token"
+    splunk_ssl_check: true
+```
+  </TabItem>
+  <TabItem label="OTel / OTLP">
+```yaml
+output:
+  otel:
+    - name: "custom"
+      enabled: true
+      endpoint: "https://votre-endpoint-otel/v1/logs"
+      headers:
+        Authorization: "Bearer votre-token"
+```
+  </TabItem>
+  <TabItem label="Console">
+```yaml
+output:
+  console:
+    enabled: true
+```
+  </TabItem>
+</Tabs>
+
+<Aside type="note">
+Pour les outputs OTel, `headers` doit être fourni et non vide pour chaque entrée activée.
+</Aside>
+
+## Paramètres de collecte
+
+```yaml
+collection_config:
+  interval_collection_minutes: 10
+  log_level: "INFO"
+  features:
+    calls_collection:
+      enabled: true
+    issues_collection:
+      enabled: true
+```
+
+### Feature flags
+
+Tous les feature flags ont pour valeur par défaut `false`. N'activez que ce dont vous avez besoin :
+
+| Feature flag | Défaut | Notes |
+| --- | --- | --- |
+| `calls_collection` | `false` | Enregistrements d'appels et détails des flux |
+| `issues_collection` | `false` | Annonces de santé du service Microsoft |
+| `pstn_calls_collection` | `false` | Enregistrements PSTN |
+| `direct_routing_calls_collection` | `false` | Enregistrements Direct Routing |
+| `autoattendant_collection` | `false` | Nécessite des identifiants VAAC |
+| `callqueue_collection` | `false` | Nécessite des identifiants VAAC |
+
+<Aside type="note">
+`autoattendant_collection` et `callqueue_collection` nécessitent une section `microsoft_authentication.vaac` avec des identifiants dédiés.
+</Aside>
+
+## Optionnel : mapping `sites.csv`
+
+Pour activer le mapping site/localisation dans les tableaux de bord :
+
+```yaml
+collection_config:
+  sites_file: /etc/ms-teams-observability-agent/sites.csv
+```
+
+Sans ce fichier, les appels apparaissent comme non mappés dans les vues sites.
+
+## Optionnel : format des timestamps
+
+Configurez le format des timestamps dans les enregistrements exportés. S'applique par output :
+
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "..."
+    dynatrace_api_token: "..."
+    time_fields_format: "iso8601"
+```
+
+| Valeur | Exemple |
+| --- | --- |
+| `epoch_ms` (par défaut) | `1767262830500` |
+| `epoch_s` | `1767262830` |
+| `epoch_ns` | `1767262830500000000` |
+| `iso8601` | `2026-01-01T10:20:30.50Z` |
+| `rfc3339` | `2026-01-01T10:20:30.50Z` |
+
+## Optionnel : rétention de la base de données
+
+Le collector stocke l'état dans une base de données SQLite locale (`state.db`). Utilisez la section `database` pour contrôler sa croissance :
+
+```yaml
+database:
+  outbox_sent_retention_days: 7
+  max_processed_objects_per_type: 100000
+```
+
+| Clé | Défaut | Description |
+| --- | --- | --- |
+| `outbox_sent_retention_days` | `7` | Jours de rétention des messages outbox envoyés |
+| `max_processed_objects_per_type` | `100000` | Nombre maximum d'entrées de cache de déduplication par type |
+| `processed_objects_max_age_hours` | auto | Âge maximum des entrées de cache (dérivé automatiquement si non défini) |
+
+Omettre la section `database` conserve toutes les valeurs par défaut.
+
+## Optionnel : seuils de qualité
+
+Remplacez les seuils de classification de la qualité des appels par défaut :
+
+```yaml
+advanced:
+  quality_thresholds:
+    audio:
+      max_rtt_ms: 500
+      max_jitter_ms: 30
+```
+
+Conservez les valeurs par défaut sauf si vous avez une exigence opérationnelle spécifique.
+
+## Validation
+
+Toujours valider avant le déploiement en production :
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+```
