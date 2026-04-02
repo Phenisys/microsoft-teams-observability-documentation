@@ -14,6 +14,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "MS Teams Observability",
+            favicon: "/favicon.ico",
 			lastUpdated: true,
 			defaultLocale: "root",
 			locales: {
