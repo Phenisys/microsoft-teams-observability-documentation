@@ -2,6 +2,7 @@
 
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+import mermaid from "astro-mermaid";
 import { loadEnv } from "vite";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
@@ -12,6 +13,7 @@ export default defineConfig({
     site: "https://phenisys.github.io",
     base,
 	integrations: [
+		mermaid(),
 		starlight({
 			title: "MS Teams Observability",
             favicon: "/favicon.ico",
