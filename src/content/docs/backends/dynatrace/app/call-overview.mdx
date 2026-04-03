@@ -22,7 +22,7 @@ import dynatraceAppCallOverviewPageDownloadAction from '../../../../../assets/im
 
 The Call Overview page provides a complete analysis of one Microsoft Teams call, including participants, location/network context, stream metrics, and optional AI analysis.
 
-You access this page by clicking a call ID from [Calls](/backends/dynatrace/app/calls/). Only calls with recording data (duration > 0) are clickable.
+You access this page by clicking a call ID from <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}>Calls</a>. Only calls with recording data (duration > 0) are clickable.
 
 Breadcrumb navigation: `Home > Calls > Call Overview`
 
@@ -54,7 +54,7 @@ If any parameter is missing, the page shows an error state.
 These actions are page-level utilities: copy for quick sharing, download for exporting evidence, and menu access for the same download action.
 
 <Aside type="note">
-Download is disabled if Microsoft credentials are not configured in [Configuration](/backends/dynatrace/app/configuration/).
+Download is disabled if Microsoft credentials are not configured in <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Configuration</a>.
 </Aside>
 
 ## Error State
@@ -238,7 +238,7 @@ Output is rendered as Markdown.
 If prerequisites are missing, buttons remain disabled and no analysis can be generated.
 
 <Aside type="note">
-Both Microsoft and AI panels must be configured in [Configuration](/backends/dynatrace/app/configuration/).
+Both Microsoft and AI panels must be configured in <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Configuration</a>.
 </Aside>
 
 ## Download Call Details

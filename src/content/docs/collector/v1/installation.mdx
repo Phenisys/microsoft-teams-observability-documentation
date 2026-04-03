@@ -10,7 +10,7 @@ import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Before You Start
 
-1. Configure Microsoft Graph permissions (see [Azure Permissions](/collector/azure-permissions/)).
+1. Configure Microsoft Graph permissions (see <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>).
 2. Download the collector binary (`ms-teams-agent.bin` or `ms-teams-agent.exe`) and template config (`conf/template_config.yaml`) from the <a href="https://github.com/Phenisys/microsoft-teams-observability/releases/latest" target="_blank" rel="noopener noreferrer">latest GitHub release</a>.
 3. Obtain your license file and note its absolute path for `collection_config.license_file`.
 
@@ -62,7 +62,7 @@ collection_config:
       enabled: true
 ```
 
-Full settings reference: [Configuration](/collector/v1/configuration/)
+Full settings reference: <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>
 
 <Aside type="tip">
 Enable one output first (Dynatrace or Splunk), confirm ingestion, then add additional outputs.
@@ -151,7 +151,7 @@ For persistent production execution:
 sudo ./ms-teams-agent.bin --config /absolute/path/config.yaml --enable_boot_start
 ```
 
-See [Service Management](/collector/v1/service/) for service lifecycle operations.
+See <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a> for service lifecycle operations.
 
 ## Verify Ingestion
 
@@ -180,5 +180,5 @@ Then confirm events in your backend:
 - Splunk: check events in the target index
 
 <Aside type="tip">
-If no data appears after one interval, use [Collector Troubleshooting](/collector/troubleshooting/).
+If no data appears after one interval, use <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>.
 </Aside>

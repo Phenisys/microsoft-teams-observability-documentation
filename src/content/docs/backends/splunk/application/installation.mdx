@@ -41,7 +41,7 @@ Create an HTTP Event Collector input dedicated to MS Teams telemetry.
 4. Save and copy both token and endpoint URL.
 </Steps>
 
-You will use this token/URL in collector output configuration: [Collector Connection](/backends/splunk/configuration/).
+You will use this token/URL in collector output configuration: <a href={`${import.meta.env.BASE_URL}backends/splunk/configuration/`}>Collector Connection</a>.
 
 ## 3. Validate Ingestion
 
@@ -57,7 +57,7 @@ After first collector cycle, validate that data is visible in Splunk.
 
 For site-level dashboards, import and maintain the subnet-to-site lookup table (for example `SubnetToSite`).
 
-This corresponds to optional `sites.csv` in collector configuration: [sites.csv option](/collector/v1/configuration/#optional-site-definition-csv).
+This corresponds to optional `sites.csv` in collector configuration: <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#optional-site-definition-csv`}>sites.csv option</a>.
 
 <Aside type="caution">
 Without lookup mapping, site/location dashboards can show partial or unmapped results.

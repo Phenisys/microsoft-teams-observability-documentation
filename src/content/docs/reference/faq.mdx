@@ -46,19 +46,19 @@ Scope legend:
 
 ### How do I get a trial license?
 
-Use the trial request form in [License](/getting-started/license/) and provide your Microsoft 365 tenant ID so the license can be generated for your tenant.
+Use the trial request form in <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and provide your Microsoft 365 tenant ID so the license can be generated for your tenant.
 
 ### How can I validate license sizing?
 
-Use [License Estimation](/reference/license-estimation/), based on Microsoft Teams activity reports and `MSTeams_CollectionHealth` validation.
+Use <a href={`${import.meta.env.BASE_URL}reference/license-estimation/`}>License Estimation</a>, based on Microsoft Teams activity reports and `MSTeams_CollectionHealth` validation.
 
 ### How can I verify license file integrity?
 
-Do not edit the license JSON content. The `signature` field validates `license_data`, and modifications invalidate the license (see [License](/getting-started/license/)).
+Do not edit the license JSON content. The `signature` field validates `license_data`, and modifications invalidate the license (see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>).
 
 ### Where can the collector run?
 
-For host-based deployment, the collector can run on Linux (recommended) or Windows with required network access and resources (see [Prerequisites](/getting-started/prerequisites/)).
+For host-based deployment, the collector can run on Linux (recommended) or Windows with required network access and resources (see <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>).
 
 ### Which outbound network targets are required?
 
@@ -68,7 +68,7 @@ At minimum:
 - `login.microsoftonline.com`
 - your backend endpoint (Dynatrace or Splunk)
 
-For some Dynatrace setups, `ip-api.com` can also be required for geolocation enrichment (see [Collector Troubleshooting](/collector/troubleshooting/) and [Configure Dynatrace](/backends/dynatrace/configuration/)).
+For some Dynatrace setups, `ip-api.com` can also be required for geolocation enrichment (see <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a>).
 
 ### Which ports should be opened?
 
@@ -76,7 +76,7 @@ The docs define required outbound hosts and HTTPS connectivity, but do not publi
 
 ### What are the minimum CPU and memory requirements?
 
-No fixed global baseline is documented. Guidance is to size CPU and memory for your call volume (see [Prerequisites](/getting-started/prerequisites/)).
+No fixed global baseline is documented. Guidance is to size CPU and memory for your call volume (see <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>).
 
 ### Can I enable Auto Attendant and Call Queue collection?
 
@@ -85,11 +85,11 @@ Yes. The collector supports:
 - `ms_teams_autoattendant_collection`
 - `ms_teams_callqueue_collection`
 
-See [Configuration](/collector/v1/configuration/).
+See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
 
 ### Are extra Microsoft permissions required for those features?
 
-Yes. The permissions reference states VAAC-specific permissions are required when these features are enabled (see [Azure Permissions Reference](/reference/azure-permissions/)).
+Yes. The permissions reference states VAAC-specific permissions are required when these features are enabled (see <a href={`${import.meta.env.BASE_URL}reference/azure-permissions/`}>Azure Permissions Reference</a>).
 
 ### What should I verify first when data is missing?
 
@@ -101,131 +101,131 @@ Start with:
 4. collector logs
 5. backend checks (Grail/OpenPipeline or Splunk HEC/index)
 
-See [Collector Troubleshooting](/collector/troubleshooting/), [Dynatrace Troubleshooting](/backends/dynatrace/troubleshooting/), and [Splunk Troubleshooting](/backends/splunk/troubleshooting/).
+See <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>, <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>, and <a href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}>Splunk Troubleshooting</a>.
 
 ### What is a safe first-run sequence?
 
-Run one cycle with `--ignore_state`, verify ingestion, then enable service mode and monitor status/logs (see [Installation](/collector/v1/installation/) and [Service Management](/collector/v1/service/)).
+Run one cycle with `--ignore_state`, verify ingestion, then enable service mode and monitor status/logs (see <a href={`${import.meta.env.BASE_URL}collector/v1/installation/`}>Installation</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>).
 
 ## Dynatrace Application FAQ
 
 ### Where is application configuration managed?
 
-In the app's **Installation & Configuration** screen. Panels and behaviors are documented in [Application Configuration](/backends/dynatrace/app/configuration/).
+In the app's **Installation & Configuration** screen. Panels and behaviors are documented in <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
 
 ### Do I need to redeploy after a license change?
 
-No full redeploy is documented. The expected flow is save configuration and reload the app when prompted (see [Dynatrace Installation](/backends/dynatrace/installation/)).
+No full redeploy is documented. The expected flow is save configuration and reload the app when prompted (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a>).
 
 ### Can a missing/invalid license break configuration saves?
 
-Yes. Missing or invalid license state can prevent tenant initialization and cause save failures (see [Dynatrace Installation](/backends/dynatrace/installation/) and [Dynatrace Troubleshooting](/backends/dynatrace/troubleshooting/)).
+Yes. Missing or invalid license state can prevent tenant initialization and cause save failures (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>).
 
 ### Can configuration be validated before/after save?
 
-Yes. Several panels include **Test**/**Validate** actions and automatic validation states (see [Application Configuration](/backends/dynatrace/app/configuration/)).
+Yes. Several panels include **Test**/**Validate** actions and automatic validation states (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>).
 
 ### Is `sites.csv` mandatory?
 
-No. It is optional in collector configuration, but required for complete site mapping and to avoid unmapped-call behavior (see [Configuration](/collector/v1/configuration/#4-optional-sitescsv-mapping) and [Dynatrace Dashboards](/backends/dynatrace/dashboards/)).
+No. It is optional in collector configuration, but required for complete site mapping and to avoid unmapped-call behavior (see <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#4-optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>).
 
 ### Why do I see "No Mapped Calls"?
 
-Subnets are not mapped to site definitions. Configure and load `sites.csv` (see [Configuration](/collector/v1/configuration/#4-optional-sitescsv-mapping) and [Dynatrace Dashboards](/backends/dynatrace/dashboards/)).
+Subnets are not mapped to site definitions. Configure and load `sites.csv` (see <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#4-optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>).
 
 ### What does the "Undetermined" site status mean?
 
-In Sites NPA status, `Undetermined` means there is not enough data to classify the site (see [Application Sites](/backends/dynatrace/app/sites/)).
+In Sites NPA status, `Undetermined` means there is not enough data to classify the site (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}>Application Sites</a>).
 
 ### What happens if domains are not configured for Sites filtering?
 
-The Sites page warns that calls will not be domain-filtered until domains are set (see [Application Sites](/backends/dynatrace/app/sites/) and [Application Configuration](/backends/dynatrace/app/configuration/)).
+The Sites page warns that calls will not be domain-filtered until domains are set (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}>Application Sites</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>).
 
 ### Can I search calls by caller/callee identity or call ID?
 
-Yes. Calls supports advanced filtering including participant and call ID fields (see [Application Calls](/backends/dynatrace/app/calls/)).
+Yes. Calls supports advanced filtering including participant and call ID fields (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}>Application Calls</a>).
 
 ### What is an "empty call"?
 
-In Calls, empty calls are entries with duration `0` and no recording data. They are included with the **Show Empty Calls** toggle (see [Application Calls](/backends/dynatrace/app/calls/)).
+In Calls, empty calls are entries with duration `0` and no recording data. They are included with the **Show Empty Calls** toggle (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}>Application Calls</a>).
 
 ### Can the app show peak simultaneous calls?
 
-Yes. The dashboards guide lists peak simultaneous calls as a typical Home/Overview widget (with possible variation by app version) (see [Dynatrace Dashboards](/backends/dynatrace/dashboards/)).
+Yes. The dashboards guide lists peak simultaneous calls as a typical Home/Overview widget (with possible variation by app version) (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>).
 
 ### What session/device details are available in call analysis?
 
-Call Overview documents participant, stream, network, and endpoint fields (device, platform, CPU, latency, jitter, packet loss, subnet, relay/reflexive IP, protocol) (see [Application Call Overview](/backends/dynatrace/app/call-overview/)).
+Call Overview documents participant, stream, network, and endpoint fields (device, platform, CPU, latency, jitter, packet loss, subnet, relay/reflexive IP, protocol) (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Application Call Overview</a>).
 
 ### Can I download raw call details?
 
-Yes. Call Overview supports Graph call-details JSON download when Microsoft configuration is set (see [Application Call Overview](/backends/dynatrace/app/call-overview/) and [Application Configuration](/backends/dynatrace/app/configuration/)).
+Yes. Call Overview supports Graph call-details JSON download when Microsoft configuration is set (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Application Call Overview</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>).
 
 ### Where is data stored?
 
-The documented architecture stores logs in a dedicated Grail bucket (`ms_teams`) processed by OpenPipeline (see [Configure Dynatrace](/backends/dynatrace/configuration/) and [Dynatrace Overview](/backends/dynatrace/)).
+The documented architecture stores logs in a dedicated Grail bucket (`ms_teams`) processed by OpenPipeline (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/`}>Dynatrace Overview</a>).
 
 ### How is app access controlled?
 
-The app includes a dedicated **Permissions** panel for role/group access, and some features require explicit Dynatrace permissions (for example site file storage permissions) (see [Application Configuration](/backends/dynatrace/app/configuration/)).
+The app includes a dedicated **Permissions** panel for role/group access, and some features require explicit Dynatrace permissions (for example site file storage permissions) (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>).
 
 ## Dynatrace Extension FAQ
 
 ### Does the extension run on ActiveGate?
 
-Yes. Extension mode requires Dynatrace with ActiveGate and runs on ActiveGate, not on the former standalone host (see [Collector Extension Overview](/collector/extension/) and [Extension Installation](/collector/extension/installation/)).
+Yes. Extension mode requires Dynatrace with ActiveGate and runs on ActiveGate, not on the former standalone host (see <a href={`${import.meta.env.BASE_URL}collector/extension/`}>Collector Extension Overview</a> and <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>).
 
 ### Which outputs are supported in extension mode?
 
-Dynatrace only. Splunk and Console outputs are not available in extension mode (see [Collector Extension Overview](/collector/extension/)).
+Dynatrace only. Splunk and Console outputs are not available in extension mode (see <a href={`${import.meta.env.BASE_URL}collector/extension/`}>Collector Extension Overview</a>).
 
 ### How is the license configured in extension mode?
 
-Paste the full license JSON as a string in the extension License field (not a file path) (see [License](/getting-started/license/) and [Extension Installation](/collector/extension/installation/)).
+Paste the full license JSON as a string in the extension License field (not a file path) (see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>).
 
 ### Can the extension use Dynatrace Credential Vault?
 
-Yes. Extension configuration supports vault-based credentials (see [Extension Installation](/collector/extension/installation/)).
+Yes. Extension configuration supports vault-based credentials (see <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>).
 
 ### Where are extension logs located?
 
-Troubleshooting paths are documented in the extension installation guide under ActiveGate log paths (see [Extension Installation](/collector/extension/installation/)).
+Troubleshooting paths are documented in the extension installation guide under ActiveGate log paths (see <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>).
 
 ## Standalone Collector FAQ
 
 ### Does standalone require ActiveGate?
 
-No. Standalone can run on any suitable host with required access and resources (see [Prerequisites](/getting-started/prerequisites/)).
+No. Standalone can run on any suitable host with required access and resources (see <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>).
 
 ### Where is the license configured in standalone mode?
 
-Set `collection_config.license_file` in `config.yaml`, pointing to the local license file path (see [License](/getting-started/license/) and [Configuration](/collector/v1/configuration/)).
+Set `collection_config.license_file` in `config.yaml`, pointing to the local license file path (see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>).
 
 ### Which outputs are supported in standalone mode?
 
-Dynatrace, Splunk, and Console outputs are available (see [Configuration](/collector/v1/configuration/)).
+Dynatrace, Splunk, and Console outputs are available (see <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>).
 
 ### What should I do after changing standalone configuration?
 
-In service mode, restart the service and verify status/logs (see [Service Management](/collector/v1/service/)).
+In service mode, restart the service and verify status/logs (see <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>).
 
 ### How should tokens and sensitive files be protected?
 
-Use restricted file permissions, keep tokens out of version control, and store secrets in controlled paths (see [Collector Connection](/backends/dynatrace/collector-connection/) and [Service Management](/collector/v1/service/)).
+Use restricted file permissions, keep tokens out of version control, and store secrets in controlled paths (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>).
 
 ## Quick View: License Setup by Mode
 
 <Tabs>
   <TabItem label="Standalone">
 Set `collection_config.license_file` in `config.yaml` to a local license path.  
-Reference: [License](/getting-started/license/), [Configuration](/collector/v1/configuration/).
+Reference: <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>, <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
   </TabItem>
   <TabItem label="Dynatrace Extension">
 Paste the full license JSON into the extension License field (string, not path).  
-Reference: [License](/getting-started/license/), [Extension Installation](/collector/extension/installation/).
+Reference: <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>, <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
   </TabItem>
   <TabItem label="Dynatrace App">
 License status/health is displayed in the app Configuration panel; missing/invalid license can block tenant initialization and saves.  
-Reference: [Dynatrace Installation](/backends/dynatrace/installation/), [Application Configuration](/backends/dynatrace/app/configuration/).
+Reference: <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a>, <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
   </TabItem>
 </Tabs>

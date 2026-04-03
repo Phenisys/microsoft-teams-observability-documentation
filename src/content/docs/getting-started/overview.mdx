@@ -38,14 +38,14 @@ The collector retrieves and exports the following event families:
 | `MSTeams_ServiceAnnouncement` | Microsoft published incidents and advisories |
 | `MSTeams_CollectionHealth` | Collector operational health |
 
-See [Metrics Dictionary](/reference/metrics-dictionary/) for a full field reference.
+See <a href={`${import.meta.env.BASE_URL}reference/metrics-dictionary/`}>Metrics Dictionary</a> for a full field reference.
 
 ## Deployment Modes
 
 The **Dynatrace application** supports two modes:
 
 - **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
-- **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See [License](/getting-started/license/).
+- **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
 
 Demo and Live mode are specific to the Dynatrace application. The Splunk backend does not have a demo mode and displays data as soon as the collector starts sending it.
 
@@ -57,5 +57,5 @@ Demo and Live mode are specific to the Dynatrace application. The Splunk backend
 | **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
 
 <Aside type="note">
-Each backend requires its own setup. See [Backends](/backends/) for integration guides.
+Each backend requires its own setup. See <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> for integration guides.
 </Aside>

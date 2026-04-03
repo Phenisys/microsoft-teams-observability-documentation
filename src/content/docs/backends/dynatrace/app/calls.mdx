@@ -124,7 +124,7 @@ This table is the operational entry point to select one call and open detailed d
 
 ### ID column behavior
 
-- Duration > 0: clickable link to [Call Overview](/backends/dynatrace/app/call-overview/), with time padding around call interval.
+- Duration > 0: clickable link to <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Call Overview</a>, with time padding around call interval.
 - Duration = 0: non-clickable text with tooltip: `No call recording available`.
 
 The automatic time padding around start/end is used to load surrounding stream context in Call Overview.
@@ -157,7 +157,7 @@ The automatic time padding around start/end is used to load surrounding stream c
 
 | Action | Destination |
 |--------|-------------|
-| Click call ID (with recording) | [Call Overview](/backends/dynatrace/app/call-overview/) |
+| Click call ID (with recording) | <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Call Overview</a> |
 | Opened from Users page | User filter pre-populated |
 | Opened from Sites table | Location filter pre-populated |
 
