@@ -1,83 +1,80 @@
 ---
-title: Dynatrace Dashboards
-description: How to use each MS Teams Observability dashboard page in Dynatrace for operations and troubleshooting.
+title: Dashboards
+description: Build and use Dynatrace dashboards from ingested MS Teams data, including prebuilt dashboard examples.
 sidebar:
-  label: Dashboards
+  label: Use the dashboards
   order: 5
 ---
 
 import { Aside } from '@astrojs/starlight/components';
+import dynatraceDashboardBestPractices from '../../../../assets/images/dynatrace-dashboard-best_practices.png';
+import dynatraceDashboardCallAnalysis from '../../../../assets/images/dynatrace-dashboard-call_analysis.png';
+import dynatraceDashboardCollectionHealth from '../../../../assets/images/dynatrace-dashboard-collection_health.png';
+import dynatraceDashboardDevicesVersionsOverview from '../../../../assets/images/dynatrace-dashboard-devices_versions_overview.png';
+import dynatraceDashboardSites from '../../../../assets/images/dynatrace-dashboard-sites.png';
 
-The MS Teams Observability app provides a set of operational dashboards covering call quality, user activity, site performance, and Microsoft incident correlation.
+Data ingested by Dynatrace from the MS Teams collector can be used to build operational dashboards for call quality, user activity, site performance, and Microsoft incident correlation.
+
+In addition to custom dashboards you can create in Dynatrace, ready-made dashboards are also available in the MS Teams Observability Dynatrace App repository:
+
+<a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-app" target="_blank" rel="noopener noreferrer">microsoft-teams-observability-dynatrace-app</a>
 
 Dashboard names can vary slightly between app versions, but the analytical intent remains consistent.
 
-## Overview (Home)
+## Dashboard Examples
 
-Use this page for tenant-wide service monitoring.
+The following screenshots illustrate prebuilt dashboard examples.
 
-Typical widgets:
-- Total calls and trend over time
-- Call health split (Good / Poor / Unclassified)
-- Peak simultaneous calls
-- Modality and call type distribution
+### Collection Health
 
-Best used for: daily operations, capacity planning, and spotting degradation trends.
+<figure>
+  <img src={dynatraceDashboardCollectionHealth.src} alt="Dynatrace dashboard example showing collection health metrics" />
+  <figcaption>Collector ingestion and pipeline health monitoring.</figcaption>
+</figure>
 
-## Calls List
+### Call Analysis
 
-Use this page to triage user-reported issues quickly.
+<figure>
+  <img src={dynatraceDashboardCallAnalysis.src} alt="Dynatrace dashboard example showing call analysis metrics" />
+  <figcaption>Call quality deep-dive dashboard for troubleshooting and trend analysis.</figcaption>
+</figure>
 
-Common filters:
-- Caller or callee identity
-- Call ID
-- Health status
-- Call type
-- Time range
+### Sites
 
-Drill down to Call Details from any row.
+<figure>
+  <img src={dynatraceDashboardSites.src} alt="Dynatrace dashboard example showing site and location performance" />
+  <figcaption>Quality and compliance insights by site and subnet mapping.</figcaption>
+</figure>
 
-## Users List
+### Devices & Versions Overview
 
-Use this page to understand activity by user population.
+<figure>
+  <img src={dynatraceDashboardDevicesVersionsOverview.src} alt="Dynatrace dashboard example showing devices and Teams versions" />
+  <figcaption>Endpoint, OS, and client-version distribution overview.</figcaption>
+</figure>
 
-Typical use cases:
-- Identify most active users or segments
-- Compare usage spikes by time period
-- Isolate user groups affected by an incident
+### Best Practices
 
-## Call Details
+<figure>
+  <img src={dynatraceDashboardBestPractices.src} alt="Dynatrace dashboard example showing best-practices indicators" />
+  <figcaption>Operational checks and best-practice indicators for ongoing governance.</figcaption>
+</figure>
 
-The deep troubleshooting page for a single call.
+## Recommended Dashboard Scope
 
-Key fields to investigate:
-- `streamHealth` — stream-level health indicator
-- `averageRoundTripTimeMs`, `averageJitterMs`, `averagePacketLossRatePercent` — network quality
-- Endpoint metadata (device, OS, Teams version)
-- Audio event counters (glitch ratios, input/output issues)
+When building or selecting dashboards, organize them by operational objective:
 
-## Microsoft Issues
-
-Correlates published Microsoft incidents and service advisories with observed quality degradation in your tenant.
-
-Source log: `MSTeams_ServiceAnnouncement`.
-
-If dashboard quality drops and this page shows an active Microsoft incident, investigate the Microsoft-side impact before making local configuration changes.
-
-## Sites / Locations Performance
-
-Shows call quality and compliance at the subnet/site level.
+- **Collection health:** ingestion continuity, pipeline errors, and data freshness.
+- **Call analysis:** call volume, health split, and quality degradation trends.
+- **Sites and networks:** subnet/site quality and mapping coverage.
+- **Devices and versions:** endpoint/OS/client-version distribution and drift.
+- **Operational best practices:** governance checks and adoption indicators.
 
 <Aside type="note">
-If you see many "No Mapped Calls", the originating subnets are not mapped to sites. Update and load `sites.csv` in the collector configuration. See [Configuration](/collector/v1/configuration/#optional-site-definition-csv) for details.
+If many calls are not mapped to locations, update and load `sites.csv` in collector configuration. See [Configuration](/collector/v1/configuration/#optional-site-definition-csv).
 </Aside>
 
-## Navigation Tips
+## Related Documentation
 
-<Aside type="tip">
-Use **Overview** for detection → **Calls List** for triage → **Call Details** for root-cause investigation.
-</Aside>
-
-- Switch between Demo and Live mode in **Installation & Configuration**.
-- Use the time range picker to narrow investigations to a specific window.
-- Cross-reference with **Microsoft Issues** when tenant-wide degradation is observed.
+This page focuses on Dynatrace dashboards built from ingested data.  
+If you are looking for the Dynatrace application pages (Home, Calls, Users, Issues, Configuration), see [Application — Overview](/backends/dynatrace/app/).

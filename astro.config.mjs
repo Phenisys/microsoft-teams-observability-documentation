@@ -75,10 +75,8 @@ export default defineConfig({
 							items: [
 								{ slug: "backends/dynatrace" },
 								{ slug: "backends/dynatrace/prerequisites" },
-								{ slug: "backends/dynatrace/installation" },
 								{ slug: "backends/dynatrace/configuration" },
 								{ slug: "backends/dynatrace/collector-connection" },
-								{ slug: "backends/dynatrace/dashboards" },
 								{
 									label: "Application",
 									collapsed: true,
@@ -98,6 +96,11 @@ export default defineConfig({
 											],
 										},
 									],
+								},
+								{
+									label: "Dashboards",
+									collapsed: true,
+									items: [{ slug: "backends/dynatrace/dashboards" }],
 								},
 								{ slug: "backends/dynatrace/troubleshooting" },
 							],
