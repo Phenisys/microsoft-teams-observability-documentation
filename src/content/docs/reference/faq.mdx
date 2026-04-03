@@ -1,0 +1,231 @@
+---
+title: FAQ
+description: Central FAQ for MS Teams Observability, segmented by deployment scope (Common, Dynatrace App, Dynatrace Extension, Standalone).
+sidebar:
+  label: FAQ
+  order: 5
+---
+
+import { Aside, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page centralizes frequently asked questions and separates them by scope so you can quickly find the right answer for your deployment.
+
+<Aside type="tip">
+Scope legend:
+
+- **Common**: applies to all deployments
+- **Dynatrace App**: UI behavior in the Dynatrace application
+- **Dynatrace Extension**: EF2 extension running on ActiveGate
+- **Standalone**: `ms-teams-agent` binary deployment
+</Aside>
+
+<CardGrid>
+  <LinkCard
+    title="Common FAQ"
+    description="Licensing, network, sizing, and operational checks for all modes."
+    href="#common-faq"
+  />
+  <LinkCard
+    title="Dynatrace App FAQ"
+    description="Questions tied to dashboards and Installation & Configuration."
+    href="#dynatrace-application-faq"
+  />
+  <LinkCard
+    title="Dynatrace Extension FAQ"
+    description="ActiveGate deployment, extension behavior, and extension-specific limits."
+    href="#dynatrace-extension-faq"
+  />
+  <LinkCard
+    title="Standalone FAQ"
+    description="Local config.yaml, service mode, and host-level operations."
+    href="#standalone-collector-faq"
+  />
+</CardGrid>
+
+## Common FAQ
+
+### How do I get a trial license?
+
+Use the trial request form in [License](/getting-started/license/) and provide your Microsoft 365 tenant ID so the license can be generated for your tenant.
+
+### How can I validate license sizing?
+
+Use [License Estimation](/reference/license-estimation/), based on Microsoft Teams activity reports and `MSTeams_CollectionHealth` validation.
+
+### How can I verify license file integrity?
+
+Do not edit the license JSON content. The `signature` field validates `license_data`, and modifications invalidate the license (see [License](/getting-started/license/)).
+
+### Where can the collector run?
+
+For host-based deployment, the collector can run on Linux (recommended) or Windows with required network access and resources (see [Prerequisites](/getting-started/prerequisites/)).
+
+### Which outbound network targets are required?
+
+At minimum:
+
+- `graph.microsoft.com`
+- `login.microsoftonline.com`
+- your backend endpoint (Dynatrace or Splunk)
+
+For some Dynatrace setups, `ip-api.com` can also be required for geolocation enrichment (see [Collector Troubleshooting](/collector/troubleshooting/) and [Configure Dynatrace](/backends/dynatrace/configuration/)).
+
+### Which ports should be opened?
+
+The docs define required outbound hosts and HTTPS connectivity, but do not publish a single fixed port matrix for every environment. Validate against your network policy and backend endpoint requirements.
+
+### What are the minimum CPU and memory requirements?
+
+No fixed global baseline is documented. Guidance is to size CPU and memory for your call volume (see [Prerequisites](/getting-started/prerequisites/)).
+
+### Can I enable Auto Attendant and Call Queue collection?
+
+Yes. The collector supports:
+
+- `ms_teams_autoattendant_collection`
+- `ms_teams_callqueue_collection`
+
+See [Configuration](/collector/v1/configuration/).
+
+### Are extra Microsoft permissions required for those features?
+
+Yes. The permissions reference states VAAC-specific permissions are required when these features are enabled (see [Azure Permissions Reference](/reference/azure-permissions/)).
+
+### What should I verify first when data is missing?
+
+Start with:
+
+1. auth and consent (Microsoft + backend credentials)
+2. outbound connectivity
+3. at least one enabled output
+4. collector logs
+5. backend checks (Grail/OpenPipeline or Splunk HEC/index)
+
+See [Collector Troubleshooting](/collector/troubleshooting/), [Dynatrace Troubleshooting](/backends/dynatrace/troubleshooting/), and [Splunk Troubleshooting](/backends/splunk/troubleshooting/).
+
+### What is a safe first-run sequence?
+
+Run one cycle with `--ignore_state`, verify ingestion, then enable service mode and monitor status/logs (see [Installation](/collector/v1/installation/) and [Service Management](/collector/v1/service/)).
+
+## Dynatrace Application FAQ
+
+### Where is application configuration managed?
+
+In the app's **Installation & Configuration** screen. Panels and behaviors are documented in [Application Configuration](/backends/dynatrace/app/configuration/).
+
+### Do I need to redeploy after a license change?
+
+No full redeploy is documented. The expected flow is save configuration and reload the app when prompted (see [Dynatrace Installation](/backends/dynatrace/installation/)).
+
+### Can a missing/invalid license break configuration saves?
+
+Yes. Missing or invalid license state can prevent tenant initialization and cause save failures (see [Dynatrace Installation](/backends/dynatrace/installation/) and [Dynatrace Troubleshooting](/backends/dynatrace/troubleshooting/)).
+
+### Can configuration be validated before/after save?
+
+Yes. Several panels include **Test**/**Validate** actions and automatic validation states (see [Application Configuration](/backends/dynatrace/app/configuration/)).
+
+### Is `sites.csv` mandatory?
+
+No. It is optional in collector configuration, but required for complete site mapping and to avoid unmapped-call behavior (see [Configuration](/collector/v1/configuration/#4-optional-sitescsv-mapping) and [Dynatrace Dashboards](/backends/dynatrace/dashboards/)).
+
+### Why do I see "No Mapped Calls"?
+
+Subnets are not mapped to site definitions. Configure and load `sites.csv` (see [Configuration](/collector/v1/configuration/#4-optional-sitescsv-mapping) and [Dynatrace Dashboards](/backends/dynatrace/dashboards/)).
+
+### What does the "Undetermined" site status mean?
+
+In Sites NPA status, `Undetermined` means there is not enough data to classify the site (see [Application Sites](/backends/dynatrace/app/sites/)).
+
+### What happens if domains are not configured for Sites filtering?
+
+The Sites page warns that calls will not be domain-filtered until domains are set (see [Application Sites](/backends/dynatrace/app/sites/) and [Application Configuration](/backends/dynatrace/app/configuration/)).
+
+### Can I search calls by caller/callee identity or call ID?
+
+Yes. Calls supports advanced filtering including participant and call ID fields (see [Application Calls](/backends/dynatrace/app/calls/)).
+
+### What is an "empty call"?
+
+In Calls, empty calls are entries with duration `0` and no recording data. They are included with the **Show Empty Calls** toggle (see [Application Calls](/backends/dynatrace/app/calls/)).
+
+### Can the app show peak simultaneous calls?
+
+Yes. The dashboards guide lists peak simultaneous calls as a typical Home/Overview widget (with possible variation by app version) (see [Dynatrace Dashboards](/backends/dynatrace/dashboards/)).
+
+### What session/device details are available in call analysis?
+
+Call Overview documents participant, stream, network, and endpoint fields (device, platform, CPU, latency, jitter, packet loss, subnet, relay/reflexive IP, protocol) (see [Application Call Overview](/backends/dynatrace/app/call-overview/)).
+
+### Can I download raw call details?
+
+Yes. Call Overview supports Graph call-details JSON download when Microsoft configuration is set (see [Application Call Overview](/backends/dynatrace/app/call-overview/) and [Application Configuration](/backends/dynatrace/app/configuration/)).
+
+### Where is data stored?
+
+The documented architecture stores logs in a dedicated Grail bucket (`ms_teams`) processed by OpenPipeline (see [Configure Dynatrace](/backends/dynatrace/configuration/) and [Dynatrace Overview](/backends/dynatrace/)).
+
+### How is app access controlled?
+
+The app includes a dedicated **Permissions** panel for role/group access, and some features require explicit Dynatrace permissions (for example site file storage permissions) (see [Application Configuration](/backends/dynatrace/app/configuration/)).
+
+## Dynatrace Extension FAQ
+
+### Does the extension run on ActiveGate?
+
+Yes. Extension mode requires Dynatrace with ActiveGate and runs on ActiveGate, not on the former standalone host (see [Collector Extension Overview](/collector/extension/) and [Extension Installation](/collector/extension/installation/)).
+
+### Which outputs are supported in extension mode?
+
+Dynatrace only. Splunk and Console outputs are not available in extension mode (see [Collector Extension Overview](/collector/extension/)).
+
+### How is the license configured in extension mode?
+
+Paste the full license JSON as a string in the extension License field (not a file path) (see [License](/getting-started/license/) and [Extension Installation](/collector/extension/installation/)).
+
+### Can the extension use Dynatrace Credential Vault?
+
+Yes. Extension configuration supports vault-based credentials (see [Extension Installation](/collector/extension/installation/)).
+
+### Where are extension logs located?
+
+Troubleshooting paths are documented in the extension installation guide under ActiveGate log paths (see [Extension Installation](/collector/extension/installation/)).
+
+## Standalone Collector FAQ
+
+### Does standalone require ActiveGate?
+
+No. Standalone can run on any suitable host with required access and resources (see [Prerequisites](/getting-started/prerequisites/)).
+
+### Where is the license configured in standalone mode?
+
+Set `collection_config.license_file` in `config.yaml`, pointing to the local license file path (see [License](/getting-started/license/) and [Configuration](/collector/v1/configuration/)).
+
+### Which outputs are supported in standalone mode?
+
+Dynatrace, Splunk, and Console outputs are available (see [Configuration](/collector/v1/configuration/)).
+
+### What should I do after changing standalone configuration?
+
+In service mode, restart the service and verify status/logs (see [Service Management](/collector/v1/service/)).
+
+### How should tokens and sensitive files be protected?
+
+Use restricted file permissions, keep tokens out of version control, and store secrets in controlled paths (see [Collector Connection](/backends/dynatrace/collector-connection/) and [Service Management](/collector/v1/service/)).
+
+## Quick View: License Setup by Mode
+
+<Tabs>
+  <TabItem label="Standalone">
+Set `collection_config.license_file` in `config.yaml` to a local license path.  
+Reference: [License](/getting-started/license/), [Configuration](/collector/v1/configuration/).
+  </TabItem>
+  <TabItem label="Dynatrace Extension">
+Paste the full license JSON into the extension License field (string, not path).  
+Reference: [License](/getting-started/license/), [Extension Installation](/collector/extension/installation/).
+  </TabItem>
+  <TabItem label="Dynatrace App">
+License status/health is displayed in the app Configuration panel; missing/invalid license can block tenant initialization and saves.  
+Reference: [Dynatrace Installation](/backends/dynatrace/installation/), [Application Configuration](/backends/dynatrace/app/configuration/).
+  </TabItem>
+</Tabs>

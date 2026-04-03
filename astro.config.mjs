@@ -46,7 +46,7 @@ export default defineConfig({
 						{ slug: "collector" },
 						{ slug: "collector/azure-permissions" },
 						{
-							label: "Collector",
+							label: "Standalone",
 							collapsed: true,
 							items: [
 								{ slug: "collector/v1/installation" },
@@ -95,7 +95,6 @@ export default defineConfig({
 									],
 								},
 								{ slug: "backends/dynatrace/troubleshooting" },
-								{ slug: "backends/dynatrace/faq" },
 							],
 						},
 						{
@@ -115,6 +114,7 @@ export default defineConfig({
 					collapsed: true,
 					items: [
 						{ slug: "reference" },
+						{ slug: "reference/faq" },
 						{ slug: "reference/cli-reference" },
 						{ slug: "reference/metrics-dictionary" },
 						{ slug: "reference/azure-permissions" },
