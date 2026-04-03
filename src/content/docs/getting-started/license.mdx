@@ -1,0 +1,106 @@
+---
+title: License
+description: How to obtain, format, and place your Phenisys license for the MS Teams Observability collector.
+sidebar:
+  label: License
+  order: 3
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The Phenisys license comes in two modes:
+
+- **Trial** — time-limited, no user cap. Use it freely during the validity period.
+- **Full** — production license with a user cap: the maximum number of distinct Microsoft Teams users the collector is authorised to process per month.
+
+---
+
+## Obtain a Trial License
+
+Start with a free trial by filling in the request form:
+
+**[Request a Trial License →](https://phenisys.notion.site/17b56c8e31f7806b8cd4e0debfe539fb)**
+
+The form asks for the following information:
+
+| Field | Notes |
+|---|---|
+| Email | Your professional email address |
+| Company Name | Your organisation name |
+| Country | Your country |
+| Dynatrace Platform | Your Dynatrace environment URL |
+| Estimated number of Microsoft Teams users per month | Used to size the license — see [License Estimation](/reference/license-estimation/) |
+| Microsoft 365 Tenant ID | **Have this ready** — Phenisys uses it to generate the license |
+| Trial License Duration | Requested duration |
+| AWS Marketplace Private Offer | If applicable |
+| Additional information | Any context about your use case |
+
+<Aside type="tip">
+Have your **Microsoft 365 Tenant ID** ready when submitting the form. Phenisys includes it in the license file to bind it to your tenant — providing it upfront avoids back-and-forth and speeds up delivery.
+</Aside>
+
+## Production License
+
+For production usage or to extend beyond the trial, contact Phenisys directly:
+
+**[Contact Phenisys →](https://www.phenisys.com/contact/#contact)**
+
+---
+
+## License Format
+
+The license is a JSON file delivered by Phenisys. It looks like this:
+
+```json
+{
+  "license_data": {
+    "name": "Your Company Name",
+    "ms_tenant_id": "your-tenant-id",
+    "start_date": "2026-01-01",
+    "expiration_date": "2030-12-31",
+    "trial": false,
+    "max_users": 10000
+  },
+  "signature": "..."
+}
+```
+
+Do not modify the file contents — the `signature` field validates the integrity of `license_data` and any modification will invalidate it.
+
+---
+
+## Place the License
+
+How you provide the license depends on your deployment type.
+
+<Tabs>
+  <TabItem label="Standalone collector">
+
+Save the license file somewhere on the host (e.g. `/etc/ms-teams-observability-agent/license.json`) and reference it in your `config.yaml`:
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+```
+
+The collector reads this file on startup and validates the signature against your tenant.
+
+  </TabItem>
+  <TabItem label="Extension">
+
+The extension does not use a file path. Instead, open the full JSON content of your license file and **paste it as a string** into the **License** field of the extension configuration screen.
+
+The value must be the complete JSON object, for example:
+
+```json
+{"license_data": {"name": "...", ...}, "signature": "..."}
+```
+
+  </TabItem>
+</Tabs>
+
+---
+
+## Sizing
+
+To determine how many licensed users you need, see [License Estimation](/reference/license-estimation/).
