@@ -1,0 +1,182 @@
+---
+title: Dynatrace Extension — Installation
+description: Upload the MS Teams Observability extension to Dynatrace, configure it in the UI, and verify data collection.
+sidebar:
+  label: Installation
+  order: 1
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+The Dynatrace Extension is currently in **beta**. It wraps the same agent code as the standalone binary and covers the same data collection capabilities. Behaviour may change before general availability.
+</Aside>
+
+<Aside type="note">
+If you are replacing an existing standalone agent, stop it first. See [Migrate from Standalone](/collector/extension/migration/).
+</Aside>
+
+## Prerequisites
+
+Before starting:
+
+- A Dynatrace environment (SaaS) with at least one **ActiveGate** deployed
+- The extension package matching your ActiveGate OS:
+  - **Linux** ActiveGate → `custom_teams-observability-agent-linux_X.Y.Z.zip`
+  - **Windows** ActiveGate → `custom_teams-observability-agent-windows_X.Y.Z.zip`
+  - Download from the [GitHub Releases](https://github.com/Phenisys/dynatrace-extension-teams-observability-agent/releases) page
+- Your current configuration values (credentials, features, intervals)
+- Your Phenisys **license string** — the full JSON content of the license file (not the file path). See [License](/getting-started/license/).
+- A Dynatrace API token with the **`logs.ingest`** permission
+
+<Aside type="note">
+The extension runs on the ActiveGate, not on the host where the standalone agent was installed. The ActiveGate must have outbound network access to `graph.microsoft.com`.
+</Aside>
+
+---
+
+## Step 1 — Upload the extension to Dynatrace
+
+<Steps>
+1. Download the correct extension ZIP from [GitHub Releases](https://github.com/Phenisys/dynatrace-extension-teams-observability-agent/releases):
+   - `custom_teams-observability-agent-linux_X.Y.Z.zip` for Linux ActiveGate
+   - `custom_teams-observability-agent-windows_X.Y.Z.zip` for Windows ActiveGate
+
+2. In Dynatrace, navigate to **Extensions → Manage → Upload custom extension**.
+
+3. Upload the `.zip` file.
+
+4. Once uploaded, the extension appears in the list as `custom:teams-observability-agent-linux` or `custom:teams-observability-agent-windows`.
+</Steps>
+
+---
+
+## Step 2 — Configure the extension
+
+<Steps>
+1. Open the uploaded extension and click **Add configuration**.
+
+2. Select the **ActiveGate group** where the extension will run.
+
+3. Fill in the configuration fields using the mapping table below.
+
+4. Click **Save**.
+</Steps>
+
+### Configuration mapping
+
+Use this table to map values from your existing `config.yaml` to the extension UI fields.
+
+#### Credentials
+
+| YAML field | Extension UI field | Notes |
+|---|---|---|
+| `microsoft_authentication.microsoft_tenant_id` | **Microsoft Tenant ID** | |
+| `microsoft_authentication.microsoft_client_id` | **Microsoft Client ID** | Or use Credential Vault |
+| `microsoft_authentication.microsoft_client_secret` | **Microsoft Client Secret** | Or use Credential Vault |
+| `microsoft_authentication.microsoft_username` | **Microsoft VAAC Username** | Only visible when PSTN collection is enabled |
+| `microsoft_authentication.microsoft_password` | **Microsoft VAAC Password** | Only visible when PSTN collection is enabled |
+
+**Credential Vault (optional):** Enable **Use credential vault** and select the vault entry that stores your Client ID (as username) and Client Secret (as password). When enabled, the individual Client ID/Secret fields are hidden.
+
+#### Dynatrace output
+
+| YAML field | Extension UI field | Notes |
+|---|---|---|
+| `output.dynatrace.dynatrace_tenant_id` | **Dynatrace Tenant ID** | The part before `.dynatrace.com` in your environment URL |
+| `output.dynatrace.dynatrace_api_token` | **Dynatrace API Token** | Must have `logs.ingest` permission |
+
+#### License
+
+| Standalone | Extension UI field | Notes |
+|---|---|---|
+| Content of `.lic` / `license.json` | **License** | Paste the full JSON string — not the file path |
+
+Open your license file and copy its entire content into the **License** field. See [License](/getting-started/license/) for format details.
+
+#### Features
+
+| YAML field | Extension UI field | Default |
+|---|---|---|
+| `features.ms_teams_calls_collection.enabled` | **Enable calls data collection** | `true` |
+| `features.ms_teams_pstn_calls_collection.enabled` | **Enable PSTN calls data collection** | `false` |
+| `features.ms_teams_direct_routing_calls_collection.enabled` | **Enable Direct Routing calls data collection** | `false` |
+| `features.ms_teams_autoattendant_collection.enabled` | **Enable Auto Attendant data collection** | `false` |
+| `features.ms_teams_callqueue_collection.enabled` | **Enable Call Queue data collection** | `false` |
+| `features.ms_teams_issues_collection.enabled` | **Enable Issues data collection** | `false` |
+
+<Aside type="note">
+The `ms_teams_site_definition` feature (custom subnet/site mapping via CSV file) is not supported in the extension. Site data is managed as a **Dynatrace Lookup file** directly in Dynatrace, independently of the agent. If you were using a site definition CSV, migrate its content to a Lookup file. Contact Phenisys for guidance.
+</Aside>
+
+#### Timing
+
+| YAML field | Extension UI field | Valid range |
+|---|---|---|
+| `collection_config.interval_collection_minutes` | **Interval (minutes)** | 1–60 |
+| `collection_config.microsoft_max_call_duration_hours` | **Max Call Duration (hours)** | 1–60 |
+
+---
+
+## Step 3 — Verify data collection
+
+<Steps>
+1. Open the extension configuration in Dynatrace and check the **Status** — it should show **Running** within a few minutes.
+
+2. In Dynatrace, go to **Logs** and filter by:
+   ```
+   dt.extension.name = "custom:teams-observability-agent-linux"
+   ```
+   (or `windows`). Ingested log entries from Microsoft Teams should appear.
+
+3. Confirm the data matches what you were seeing before (calls, PSTN records, etc.).
+
+4. If the extension shows an error, check the logs on the ActiveGate host.
+</Steps>
+
+### ActiveGate log paths
+
+<Tabs>
+  <TabItem label="Linux">
+
+Extension framework logs (startup errors, activation issues):
+
+```
+/var/lib/dynatrace/remotepluginmodule/log/extensions/datasources/{extension-name}/
+```
+
+Agent logs (collection errors, Microsoft Graph API issues):
+
+```
+/var/lib/dynatrace/remotepluginmodule/agent/runtime/extensions/python_venvs/{extension-name}/lib/{python-version}/site-packages/teams_observability_agent/agent/logs/
+```
+
+Replace `{python-version}` with the Python version in use (e.g. `python3.10`).
+
+  </TabItem>
+  <TabItem label="Windows">
+
+Extension framework logs:
+
+```
+%PROGRAMDATA%\dynatrace\remotepluginmodule\log\extensions\datasources\{extension-name}\
+```
+
+Agent logs:
+
+```
+%PROGRAMDATA%\dynatrace\remotepluginmodule\agent\runtime\extensions\python_venvs\{extension-name}\Lib\site-packages\teams_observability_agent\agent\logs\
+```
+
+  </TabItem>
+</Tabs>
+
+In both cases, replace `{extension-name}` with the full extension name (e.g. `custom:teams-observability-agent-linux`).
+
+---
+
+## Key differences to be aware of
+
+- **State is reset on first run.** The extension does not import the standalone agent's previous state file. On the first run it may re-process recent calls (within `maxCallDuration` hours). Duplicate events are idempotent in Dynatrace Logs, so this is safe.
+- **Force full re-collection.** If you need to force a complete re-collection, temporarily increase `maxCallDuration` and restart the extension configuration.
+- **Console and Splunk output are not supported.** The extension only forwards data to Dynatrace. If you were using Splunk or console output in the standalone agent, those options are not available via the extension.

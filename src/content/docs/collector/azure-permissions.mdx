@@ -21,6 +21,19 @@ At the end you must have:
   - `client_certificate_path` (PEM with private + public key)
 - Admin-consented Graph application permissions
 
+```mermaid
+flowchart TD
+    A[Azure Portal] --> B[Microsoft Entra ID]
+    B --> C["New App Registration → tenant_id + client_id"]
+    C --> D{Auth method?}
+    D -->|Client Secret| E[Create client secret]
+    D -->|Certificate PEM| F["Upload public cert\nStore PEM on host"]
+    E --> G[Add Graph API Permissions]
+    F --> G
+    G --> H[Grant admin consent]
+    H --> I[Copy credentials to config.yaml]
+```
+
 ## Create the App Registration
 
 <Steps>

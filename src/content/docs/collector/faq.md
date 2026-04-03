@@ -1,6 +1,7 @@
 ---
 title: Collector FAQ
 description: Frequently asked questions about the MS Teams Observability Collector — licensing, configuration, deployment, sizing, and security.
+draft: true
 sidebar:
   label: FAQ
   order: 6

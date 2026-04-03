@@ -10,45 +10,39 @@ import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 The **MS Teams Observability Collector** (`ms-teams-agent`) retrieves Microsoft Teams telemetry and sends it to Dynatrace, Splunk, or OpenTelemetry backends.
 
+The collector is available in three deployment variants: **v1 (legacy)**, **v2 (current)**, and a **Dynatrace Extension** that runs inside an ActiveGate.
+
+## v1
+
 <CardGrid>
   <LinkCard
-    title="Azure Permissions"
-    description="Create the Microsoft app registration and required Graph permissions."
-    href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}
-  />
-  <LinkCard
     title="Installation"
-    description="Prepare host, configure credentials, validate, and start collection."
-    href={`${import.meta.env.BASE_URL}collector/installation/`}
+    description="Prerequisites, minimal v1 config, and first run with the legacy binary."
+    href={`${import.meta.env.BASE_URL}collector/v1/installation/`}
   />
   <LinkCard
     title="Configuration"
-    description="Set authentication, outputs, feature flags, and optional mappings."
-    href={`${import.meta.env.BASE_URL}collector/configuration/`}
+    description="Full v1 YAML schema with legacy keys, outputs, and feature flags."
+    href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}
   />
   <LinkCard
-    title="CLI Reference"
-    description="Available commands for run, validation, service management, and health checks."
-    href={`${import.meta.env.BASE_URL}collector/cli/`}
+    title="CLI"
+    description="Global flags: --config, --ignore_state, --call_id, --enable_boot_start."
+    href={`${import.meta.env.BASE_URL}collector/v1/cli/`}
   />
   <LinkCard
     title="Service Management"
-    description="Run the collector as a Linux systemd service."
-    href={`${import.meta.env.BASE_URL}collector/service/`}
+    description="Run v1 as a Linux systemd service using built-in CLI flags."
+    href={`${import.meta.env.BASE_URL}collector/v1/service/`}
   />
+</CardGrid>
+
+## Extension
+
+<CardGrid>
   <LinkCard
-    title="Runbook"
-    description="Operate and troubleshoot the collector in production."
-    href={`${import.meta.env.BASE_URL}collector/runbook/`}
-  />
-  <LinkCard
-    title="Troubleshooting"
-    description="Diagnose authentication, connectivity, configuration, and service issues."
-    href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}
-  />
-  <LinkCard
-    title="FAQ"
-    description="Common user questions about deployment, sizing, and security."
-    href={`${import.meta.env.BASE_URL}collector/faq/`}
+    title="Dynatrace Extension"
+    description="Run the collector inside a Dynatrace ActiveGate — managed lifecycle, no YAML file required."
+    href={`${import.meta.env.BASE_URL}collector/extension/`}
   />
 </CardGrid>

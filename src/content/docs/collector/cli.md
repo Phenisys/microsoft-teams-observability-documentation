@@ -1,6 +1,7 @@
 ---
 title: Using the CLI
 description: Practical guide to the most common ms-teams-agent commands for deployment, validation, and operations.
+draft: true
 sidebar:
   label: CLI
   order: 4

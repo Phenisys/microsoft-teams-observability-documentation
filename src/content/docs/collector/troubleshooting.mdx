@@ -1,6 +1,7 @@
 ---
 title: Troubleshooting the Collector
 description: Diagnose and resolve common issues with the MS Teams Observability Collector — authentication, connectivity, configuration, and service.
+draft: true
 sidebar:
   label: Troubleshooting
   order: 7
@@ -91,6 +92,21 @@ State reset causes the collector to re-process data from the beginning of the co
 </Aside>
 
 ## Diagnostic Workflow
+
+```mermaid
+flowchart TD
+    A[Unknown issue] --> B[validate]
+    B -->|Errors| C[Fix configuration]
+    C --> B
+    B -->|OK| D[test-connection]
+    D -->|Auth errors| E["Check credentials / Entra ID"]
+    D -->|Network errors| F["Check firewall / DNS"]
+    E --> D
+    F --> D
+    D -->|OK| G[Check collector logs]
+    G -->|Export errors| H[Check backend configuration]
+    G -->|OK| I[Check backend UI for data arrival]
+```
 
 When troubleshooting an unknown issue, follow this order:
 
