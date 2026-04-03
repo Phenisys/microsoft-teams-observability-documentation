@@ -1,79 +1,115 @@
 ---
 title: Configuration
-description: Build a complete v1 config.yaml step by step, with explanations and a full final example.
+description: Build a complete v1 config.yaml step by step, with guidance, tips, and a final full example.
 sidebar:
   label: Configuration
   order: 2
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Aside, Steps } from '@astrojs/starlight/components';
 
-This page helps you build a valid **v1** `config.yaml` progressively, section by section.
+This page follows the same approach as the v2 guide: build your file by sections, understand what each part does, then use a complete example at the end.
 
-## 1. Configure Microsoft Authentication
+## Required Sections
 
-Start with `microsoft_authentication`.
+Your v1 `config.yaml` should contain these top-level sections:
 
-```yaml
-microsoft_authentication:
-    # Microsoft Graph API authentication configuration. Need Reports.Read.All, ServiceHealth.Read.All, CallRecords.Read.All permissions
-    microsoft_tenant_id: 'your_tenant_id'
-    microsoft_client_id: 'your_client_id'
-    microsoft_client_secret: 'your_client_secret'
-    # microsoft_client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
-    # microsoft_client_certificate_path: '/path/to/pem'
-    # microsoft_client_certificate_passphrase: 'my_passphrase. Delete field if not used'
-    microsoft_scope: 'https://graph.microsoft.com/.default'
-    microsoft_grant_type: 'client_credentials'
-    
-    #VAAC Account. Documentation : https://learn.microsoft.com/en-us/microsoftteams/aa-cq-cqd-historical-reports#access-permissions
-    microsoft_username: 'your_account'
-    microsoft_password: 'your_password'
-```
+- `microsoft_authentication`
+- `output`
+- `collection_config`
 
 <Aside type="caution">
 `CallRecords.Read.All`, `Reports.Read.All`, and `ServiceHealth.Read.All` application permissions are required before startup.
 </Aside>
 
+## 1. Build `microsoft_authentication`
+
+Use one of these authentication approaches.
+
+<Tabs>
+  <TabItem label="Client Secret">
+```yaml
+microsoft_authentication:
+    microsoft_tenant_id: 'your_tenant_id'
+    microsoft_client_id: 'your_client_id'
+    microsoft_client_secret: 'your_client_secret'
+    microsoft_scope: 'https://graph.microsoft.com/.default'
+    microsoft_grant_type: 'client_credentials'
+```
+  </TabItem>
+  <TabItem label="Certificate">
+```yaml
+microsoft_authentication:
+    microsoft_tenant_id: 'your_tenant_id'
+    microsoft_client_id: 'your_client_id'
+    microsoft_client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+    microsoft_client_certificate_path: '/path/to/pem'
+    microsoft_client_certificate_passphrase: 'my_passphrase'
+    microsoft_scope: 'https://graph.microsoft.com/.default'
+    microsoft_grant_type: 'client_credentials'
+```
+  </TabItem>
+  <TabItem label="VAAC Add-on">
+```yaml
+microsoft_authentication:
+    # add these only for Auto Attendant / Call Queue features
+    microsoft_username: 'your_account'
+    microsoft_password: 'your_password'
+```
+  </TabItem>
+</Tabs>
+
 <Aside type="tip">
-Use `microsoft_username` and `microsoft_password` only if you enable VAAC features (`ms_teams_autoattendant_collection`, `ms_teams_callqueue_collection`).
+VAAC credentials are needed only for:
+`ms_teams_autoattendant_collection` and `ms_teams_callqueue_collection`.
 </Aside>
 
-## 2. Configure Output Destinations
+## 2. Build `output`
 
-Add the `output` section and choose where events are sent.
+Enable only the destinations you need.
 
+<Tabs>
+  <TabItem label="Dynatrace">
 ```yaml
 output:
     dynatrace:
-        enabled: false # Set to true if you want to send data to Dynatrace
-        dynatrace_tenant_id: 'your_tenant_id' # Enter your tenant ID only (not the full URL), e.g., https://<tenant_id>.apps.dynatrace.com
-        dynatrace_api_token: 'your_token' # Need log.ingest permission
+        enabled: true
+        dynatrace_tenant_id: 'your_tenant_id'
+        dynatrace_api_token: 'your_token'
+```
+  </TabItem>
+  <TabItem label="Splunk">
+```yaml
+output:
     splunk:
-        enabled: false # Set to true if you want to send data to Splunk
-        splunk_hec_url: 'hec_url' # Ex: 'https://mysplunk:8088/services/collector/event'
+        enabled: true
+        splunk_hec_url: 'https://mysplunk:8088/services/collector/event'
         splunk_hec_token: 'hec_token'
         splunk_ssl_check: false
-    console:
-        enabled: false # Debug option : Set to true if you want to only test this script without sending any data elsewhere
 ```
+  </TabItem>
+  <TabItem label="Console">
+```yaml
+output:
+    console:
+        enabled: true
+```
+  </TabItem>
+</Tabs>
 
 <Aside type="note">
-At least one output must be enabled (`dynatrace`, `splunk`, or `console`) or startup will fail.
+At least one output must be enabled, otherwise the collector exits at startup.
 </Aside>
 
-## 3. Configure Collector Runtime Settings
+## 3. Build `collection_config`
 
-Now add `collection_config` (logging, license, interval, features).
+This section defines scheduling, logs, license path, and enabled features.
 
 ```yaml
 collection_config:
-    logging_services: ['dynatrace','splunk','console'] # Available services: dynatrace, splunk, console
+    logging_services: ['dynatrace','splunk','console']
     microsoft_max_call_duration_hours: 5
-    logfile_log_level: 'INFO' # Be careful with debug mode, there's a lot of written logs and sensitive data!
-    # License path format example:
-    # - Windows : 'C:\Program Files\Phenisys\license.lic' or '%ProgramFiles%\Phenisys\license.lic'
-    # - Linux : '/opt/phenisys/license.lic'
+    logfile_log_level: 'INFO'
     license_file: '/path/to/license.lic'
     interval_collection_minutes: 1
     features:
@@ -86,29 +122,34 @@ collection_config:
         ms_teams_direct_routing_calls_collection:
             enabled: true
         ms_teams_site_definition:
-            enabled: true
-            # Site lookup definition from CSV file. Format must be comma separated value with these headers : subnet,site,country,lon,lat
-            # Ex : 
-            # subnet,site,country,lon,lat
-            # 10.1.0.0,Paris_HQ,FR,43.1003,5.8384
-            site_definition_file: '/path/to/sites.csv' 
+            enabled: false
         ms_teams_autoattendant_collection:
-            enabled: true
+            enabled: false
         ms_teams_callqueue_collection:
-            enabled: true
+            enabled: false
 ```
 
 <Aside type="tip">
-Keep `collection_config.logging_services` aligned with the outputs you actually enable.
+`logging_services` should match enabled outputs. Example: if only Splunk is enabled, use `['splunk']`.
 </Aside>
 
 <Aside type="caution">
-`DEBUG` can expose sensitive metadata and generate large logs. Use it only for short troubleshooting windows.
+`DEBUG` can produce large logs and expose sensitive metadata. Use it only for short troubleshooting sessions.
 </Aside>
 
-## 4. Optional Site Mapping File (`sites.csv`)
+## 4. Optional `sites.csv` Mapping
 
-When `ms_teams_site_definition.enabled: true`, `site_definition_file` must point to a CSV with this header order:
+If `ms_teams_site_definition.enabled: true`, add:
+
+```yaml
+collection_config:
+    features:
+        ms_teams_site_definition:
+            enabled: true
+            site_definition_file: '/path/to/sites.csv'
+```
+
+The CSV must use this header order:
 
 ```text
 subnet,site,country,lon,lat
@@ -118,7 +159,7 @@ If no valid CSV is loaded, calls appear as unmapped in site views.
 
 ## 5. Full Example (`config.yaml`)
 
-Use this as a complete base file and replace placeholders:
+Use this full template as a base and replace placeholders:
 
 ```yaml
 microsoft_authentication:
@@ -180,8 +221,20 @@ collection_config:
             enabled: true
 ```
 
-## 6. Validate Before Running
+## 6. Validate Before Production Start
 
-```bash
-ms-teams-agent validate --config ./config.yaml
-```
+<Steps>
+1. Check the binary and config path:
+
+   ```bash
+   ./ms-teams-agent.bin --version
+   ```
+
+2. Run one first cycle without historical state:
+
+   ```bash
+   ./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
+   ```
+
+3. Check logs and backend ingestion before enabling service mode.
+</Steps>
