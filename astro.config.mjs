@@ -21,7 +21,6 @@ export default defineConfig({
 			defaultLocale: "root",
 			locales: {
 				root: { label: "English", lang: "en" },
-				fr: { label: "Français", lang: "fr-FR" },
 			},
 			social: [
 				{
@@ -64,6 +63,7 @@ export default defineConfig({
 								{ slug: "collector/extension/migration" },
 							],
 						},
+						{ slug: "collector/troubleshooting" },
 					],
 				},
 				{
@@ -110,8 +110,17 @@ export default defineConfig({
 							collapsed: true,
 							items: [
 								{ slug: "backends/splunk" },
-								{ slug: "backends/splunk/installation" },
 								{ slug: "backends/splunk/configuration" },
+								{
+									label: "Application",
+									items: [
+										{ slug: "backends/splunk/application/installation" },
+										{
+											label: "Pages",
+											items: [{ slug: "backends/splunk/application/pages" }],
+										},
+									],
+								},
 								{ slug: "backends/splunk/troubleshooting" },
 							],
 						},
