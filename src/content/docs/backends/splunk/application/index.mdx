@@ -1,0 +1,34 @@
+---
+title: Explore the Splunk Application
+description: Functional guide for the MS Teams Observability Splunk application.
+sidebar:
+  label: Application
+  order: 1
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import splunkDashboardOverviewPage from '../../../../../assets/images/splunk-dashboard-overview-page.png';
+
+The Splunk application provides dashboards to analyze MS Teams call quality, site/network behavior, and operational configuration.
+
+## Screenshot
+
+<figure>
+  <img src={splunkDashboardOverviewPage.src} alt="Splunk overview dashboard" />
+  <figcaption>Application entry dashboard in Splunk.</figcaption>
+</figure>
+
+## Application Documentation
+
+<CardGrid>
+  <LinkCard
+    title="Installation"
+    description="Install the Splunk application and prepare HEC/index prerequisites."
+    href={`${import.meta.env.BASE_URL}backends/splunk/application/installation/`}
+  />
+  <LinkCard
+    title="Pages"
+    description="Understand what each dashboard page displays and how to use it."
+    href={`${import.meta.env.BASE_URL}backends/splunk/application/pages/`}
+  />
+</CardGrid>

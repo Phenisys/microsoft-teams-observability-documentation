@@ -1,0 +1,107 @@
+---
+title: Explore Splunk Application Pages
+description: "Functional reference of Splunk dashboards: content, usage, and navigation."
+sidebar:
+  label: Pages
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import splunkDashboardOverviewPage from '../../../../../assets/images/splunk-dashboard-overview-page.png';
+import splunkDashboardCallDetailsPage from '../../../../../assets/images/splunk-dashboard-call_details-page.png';
+import splunkDashboardSiteQualityPage from '../../../../../assets/images/splunk-dashboard-site_quality-page.png';
+import splunkDashboardNpaPage from '../../../../../assets/images/splunk-dashboard-npa-page.png';
+import splunkDashboardConfigurationPage from '../../../../../assets/images/splunk-dashboard-configuration-page.png';
+
+> **Path:** `/application/pages`
+
+This page explains what each Splunk dashboard page displays and when to use it during monitoring or troubleshooting.
+
+## Overview Dashboard
+
+<figure>
+  <img src={splunkDashboardOverviewPage.src} alt="Splunk overview dashboard" />
+  <figcaption>Global summary dashboard.</figcaption>
+</figure>
+
+What it displays:
+- Global call activity over time.
+- High-level quality distribution.
+- Main trends used for first-level monitoring.
+
+When to use it:
+- Daily health checks.
+- Quick detection of tenant-wide degradation.
+- Entry point before deeper dashboard analysis.
+
+## Call Details Dashboard
+
+<figure>
+  <img src={splunkDashboardCallDetailsPage.src} alt="Splunk call details dashboard" />
+  <figcaption>Call-level troubleshooting dashboard.</figcaption>
+</figure>
+
+What it displays:
+- Call-level records and participant details.
+- Quality metrics for specific calls.
+- Context needed for focused troubleshooting.
+
+When to use it:
+- Investigate one reported call issue.
+- Compare poor vs healthy calls.
+- Extract evidence for escalation.
+
+## Site Quality Dashboard
+
+<figure>
+  <img src={splunkDashboardSiteQualityPage.src} alt="Splunk site quality dashboard" />
+  <figcaption>Location/subnet quality dashboard.</figcaption>
+</figure>
+
+What it displays:
+- Call quality by site/location.
+- Distribution of issues by subnet/site.
+- Geographic/network concentration of degradations.
+
+When to use it:
+- Identify affected offices/regions.
+- Prioritize site-level remediation.
+- Correlate local network behavior with quality drops.
+
+## NPA Dashboard
+
+<figure>
+  <img src={splunkDashboardNpaPage.src} alt="Splunk NPA dashboard" />
+  <figcaption>Network Performance Assessment dashboard.</figcaption>
+</figure>
+
+What it displays:
+- NPA-oriented network quality indicators.
+- Compliance/non-compliance patterns.
+- Signals linked to Microsoft network recommendations.
+
+When to use it:
+- Validate network quality posture.
+- Detect locations failing NPA expectations.
+- Support network-team handoff with objective indicators.
+
+## Configuration Dashboard
+
+<figure>
+  <img src={splunkDashboardConfigurationPage.src} alt="Splunk configuration dashboard" />
+  <figcaption>Setup and operational configuration dashboard.</figcaption>
+</figure>
+
+What it displays:
+- Setup guidance and key prerequisites.
+- Checks related to data arrival and dashboard usability.
+- Operational configuration references.
+
+When to use it:
+- Initial setup and post-install validation.
+- Troubleshooting ingestion/setup issues.
+- Re-validation after environment changes.
+
+<Aside type="note">
+For collector-side HEC setup details, use [Collector Connection](/backends/splunk/configuration/). For integration issues, use [Troubleshooting](/backends/splunk/troubleshooting/).
+</Aside>

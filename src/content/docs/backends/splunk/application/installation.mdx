@@ -1,0 +1,64 @@
+---
+title: Install the Splunk Application
+description: Install and validate the MS Teams Observability Splunk application.
+sidebar:
+  label: Installation
+  order: 1
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+import splunkDashboardConfigurationPage from '../../../../../assets/images/splunk-dashboard-configuration-page.png';
+
+> **Path:** `/application/installation`
+
+This page explains how to install the Splunk application, create the HEC input used by the collector, and validate that dashboards receive data.
+
+## Screenshot
+
+<figure>
+  <img src={splunkDashboardConfigurationPage.src} alt="Splunk application configuration dashboard" />
+  <figcaption>Configuration dashboard used during initial setup validation.</figcaption>
+</figure>
+
+## 1. Install the Splunk App
+
+Install the **MS Teams Observability** app on your Splunk Search Head (or Search Head Cluster).
+
+- **Splunkbase:** [splunkbase.splunk.com/app/7850](https://splunkbase.splunk.com/app/7850/)
+
+<Aside type="note">
+Confirm package compatibility with your Splunk version before installation.
+</Aside>
+
+## 2. Create the HEC Input
+
+Create an HTTP Event Collector input dedicated to MS Teams telemetry.
+
+<Steps>
+1. Open **Settings -> Data Inputs -> HTTP Event Collector**.
+2. Create a new token.
+3. Set default index to `ms_teams` (create the index first if needed).
+4. Save and copy both token and endpoint URL.
+</Steps>
+
+You will use this token/URL in collector output configuration: [Collector Connection](/backends/splunk/configuration/).
+
+## 3. Validate Ingestion
+
+After first collector cycle, validate that data is visible in Splunk.
+
+<Steps>
+1. Run a search: `index=ms_teams | head 10`.
+2. Confirm events exist with expected sources (`MSTeams_CallRecords_CallMetadata`, etc.).
+3. Open Splunk dashboards and verify charts/tables are populated.
+</Steps>
+
+## 4. Optional Site Mapping
+
+For site-level dashboards, import and maintain the subnet-to-site lookup table (for example `SubnetToSite`).
+
+This corresponds to optional `sites.csv` in collector configuration: [sites.csv option](/collector/v1/configuration/#optional-site-definition-csv).
+
+<Aside type="caution">
+Without lookup mapping, site/location dashboards can show partial or unmapped results.
+</Aside>
