@@ -13,10 +13,10 @@ import { Aside } from '@astrojs/starlight/components';
 **Symptom:** Logs are not appearing in the `ms_teams` bucket.
 
 **Checks:**
-1. Run `ms-teams-agent test-connection --config ./config.yaml` and confirm the Dynatrace output reports success.
+1. Run `./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state` and confirm export succeeds.
 2. Verify the `dynatrace_api_token` has the `logs.ingest` scope.
 3. Confirm the `dynatrace_tenant_id` matches your Dynatrace tenant URL.
-4. Check collector logs for export errors (`tail -f logs/agent.log`).
+4. Check collector logs for export errors (`tail -f logs/pheniAgent_<tenant_id>.log`).
 5. Confirm the Grail bucket `ms_teams` exists and is active.
 
 ## Collector Reports Authentication Error to Dynatrace

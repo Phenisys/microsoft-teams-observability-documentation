@@ -46,7 +46,7 @@ export default defineConfig({
 						{ slug: "collector" },
 						{ slug: "collector/azure-permissions" },
 						{
-							label: "v1",
+							label: "Collector",
 							collapsed: true,
 							items: [
 								{ slug: "collector/v1/installation" },

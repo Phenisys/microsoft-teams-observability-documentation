@@ -42,13 +42,13 @@ At the end you must have:
 1. Open **Certificates & secrets**.
 2. In **Client secrets**, click **New client secret**.
 3. Copy the secret **Value** immediately after creation.
-4. Put this value in `microsoft_authentication.graph.client_secret`.
+4. Put this value in `microsoft_authentication.microsoft_client_secret`.
   </TabItem>
   <TabItem label="Certificate (PEM)">
 1. Open **Certificates & secrets**.
 2. In **Certificates**, upload the public certificate (`.cer`, `.pem`, or `.crt`).
 3. Keep a PEM file that contains both private and public keys for the collector host.
-4. Put the PEM path in `microsoft_authentication.graph.client_certificate_path`.
+4. Put the PEM path in `microsoft_authentication.microsoft_client_certificate_path`.
 
 Expected PEM layout:
 
@@ -88,20 +88,23 @@ Use one of the two authentication patterns below.
   <TabItem label="Client secret">
 ```yaml
 microsoft_authentication:
-  graph:
-    tenant_id: "<tenant-id>"
-    client_id: "<client-id>"
-    client_secret: "<secret>"
+  microsoft_tenant_id: "<tenant-id>"
+  microsoft_client_id: "<client-id>"
+  microsoft_client_secret: "<secret>"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
 ```
   </TabItem>
   <TabItem label="Certificate">
 ```yaml
 microsoft_authentication:
-  graph:
-    tenant_id: "<tenant-id>"
-    client_id: "<client-id>"
-    client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
-    client_certificate_passphrase: "optional"
+  microsoft_tenant_id: "<tenant-id>"
+  microsoft_client_id: "<client-id>"
+  microsoft_client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+  microsoft_client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
+  microsoft_client_certificate_passphrase: "optional"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
 ```
   </TabItem>
 </Tabs>
@@ -109,8 +112,7 @@ microsoft_authentication:
 Then run:
 
 ```bash
-ms-teams-agent validate --config ./config.yaml
-ms-teams-agent test-connection --config ./config.yaml
+./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
 ```
 
-For all available configuration fields, see [v1 Configuration](/collector/v1/configuration/).
+For all available configuration fields, see [Configuration](/collector/v1/configuration/).

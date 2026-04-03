@@ -49,14 +49,13 @@ Supported values: `epoch_ms` (default), `epoch_s`, `epoch_ns`, `iso8601`, `rfc33
 
 ## Test the Connection
 
-After editing the configuration, validate and test:
+After editing the configuration, run one first cycle:
 
 ```bash
-ms-teams-agent validate --config ./config.yaml
-ms-teams-agent test-connection --config ./config.yaml
+./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
 ```
 
-`test-connection` verifies both Microsoft Graph authentication and the Dynatrace API endpoint connectivity.
+Then check collector logs to confirm Graph authentication and Dynatrace export are successful.
 
 ## Verify Data Arrival
 

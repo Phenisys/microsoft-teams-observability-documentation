@@ -31,16 +31,15 @@ output:
 | `splunk_ssl_check` | No | Set to `false` to disable TLS verification (not recommended for production) |
 
 <Aside type="caution">
-`splunk_ssl_check: false` matches the baseline v1 template. For production, prefer trusted TLS certificates and set this to `true`.
+`splunk_ssl_check: false` matches the baseline collector template. For production, prefer trusted TLS certificates and set this to `true`.
 </Aside>
 
 ## Validate the Connection
 
-After editing the configuration, run:
+After editing the configuration, run one first cycle:
 
 ```bash
-ms-teams-agent validate --config ./config.yaml
-ms-teams-agent test-connection --config ./config.yaml
+./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
 ```
 
 ## Verify Data Arrival

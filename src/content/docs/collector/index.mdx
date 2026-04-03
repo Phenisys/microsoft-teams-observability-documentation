@@ -1,6 +1,6 @@
 ---
 title: Collector
-description: User documentation for ms-teams-agent v1 and Dynatrace Extension deployment.
+description: User documentation for ms-teams-agent standalone and Dynatrace Extension deployment.
 sidebar:
   label: Overview
   order: 0
@@ -8,7 +8,7 @@ sidebar:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-The **MS Teams Observability Collector** (`ms-teams-agent`) is available in two deployment variants on this branch: **v1 (legacy)** and **Dynatrace Extension**.
+The **MS Teams Observability Collector** (`ms-teams-agent`) is available as a standalone agent and as a Dynatrace Extension.
 
 <CardGrid>
   <LinkCard
@@ -17,23 +17,23 @@ The **MS Teams Observability Collector** (`ms-teams-agent`) is available in two 
     href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}
   />
   <LinkCard
-    title="v1 Installation"
-    description="Install and start the legacy v1 collector."
+    title="Installation"
+    description="Install and start the collector."
     href={`${import.meta.env.BASE_URL}collector/v1/installation/`}
   />
   <LinkCard
-    title="v1 Configuration"
-    description="Configure the full v1 YAML schema and outputs."
+    title="Configuration"
+    description="Configure the full YAML schema and outputs."
     href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}
   />
   <LinkCard
-    title="v1 CLI"
-    description="Legacy v1 command-line flags and usage."
+    title="CLI"
+    description="Command-line flags and usage."
     href={`${import.meta.env.BASE_URL}collector/v1/cli/`}
   />
   <LinkCard
-    title="v1 Service"
-    description="Run v1 as a Linux systemd service."
+    title="Service Management"
+    description="Run the collector as a Linux systemd service."
     href={`${import.meta.env.BASE_URL}collector/v1/service/`}
   />
   <LinkCard
