@@ -10,13 +10,13 @@ const base = env.PUBLIC_BASE_PATH ?? "/";
 
 // https://astro.build/config
 export default defineConfig({
-    site: "https://phenisys.github.io",
-    base,
+	site: "https://phenisys.github.io",
+	base,
 	integrations: [
 		mermaid(),
 		starlight({
 			title: "MS Teams Observability",
-            favicon: "/favicon.ico",
+			favicon: "/favicon.ico",
 			lastUpdated: true,
 			defaultLocale: "root",
 			locales: {
@@ -85,13 +85,18 @@ export default defineConfig({
 									items: [
 										{ slug: "backends/dynatrace/app" },
 										{ slug: "backends/dynatrace/app/installation" },
-										{ slug: "backends/dynatrace/app/home" },
-										{ slug: "backends/dynatrace/app/sites" },
-										{ slug: "backends/dynatrace/app/calls" },
-										{ slug: "backends/dynatrace/app/call-overview" },
-										{ slug: "backends/dynatrace/app/users" },
-										{ slug: "backends/dynatrace/app/issues" },
-										{ slug: "backends/dynatrace/app/configuration" },
+										{
+											label: "Pages",
+											items: [
+												{ slug: "backends/dynatrace/app/home" },
+												{ slug: "backends/dynatrace/app/sites" },
+												{ slug: "backends/dynatrace/app/calls" },
+												{ slug: "backends/dynatrace/app/call-overview" },
+												{ slug: "backends/dynatrace/app/users" },
+												{ slug: "backends/dynatrace/app/issues" },
+												{ slug: "backends/dynatrace/app/configuration" },
+											],
+										},
 									],
 								},
 								{ slug: "backends/dynatrace/troubleshooting" },
