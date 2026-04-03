@@ -1,0 +1,131 @@
+---
+title: Application — Users
+description: The Users page provides per-user analytics across your Microsoft Teams environment — call stats, network details, device info, and last activity.
+sidebar:
+  label: Users
+  order: 5
+---
+
+> **Path:** `/users`
+
+The Users page provides **per-user analytics** across your Microsoft Teams environment. For each user observed in the selected time window, it shows their identity, call statistics, network configuration, device information, and when they were last active.
+
+Breadcrumb navigation: `Home > Users`
+
+---
+
+## Filter Bar
+
+### Filter Field
+
+An advanced filter input with type-ahead suggestions. Filters are applied to user-level data and stored in the URL (`?filter=...`).
+
+**Available filter keys:**
+
+| Key | Type | Description |
+|-----|------|-------------|
+| Participant / user name | String | Filter by user display name |
+
+### Timeframe Selector
+
+Standard preset time range picker. Scopes which calls are included in the statistics. Stored in URL as `?from=...&to=...`.
+
+### Update Button
+
+Applies the current filter and timeframe.
+
+---
+
+## Users Table
+
+A sortable, paginated table where **each row represents one user** observed in the selected time period. Columns are organized into grouped headers.
+
+### Identity Columns
+
+| Column | Description |
+|--------|-------------|
+| **ID** | User's unique identifier |
+| **Name** | User's display name. Clicking navigates to [Calls](../../../backends/dynatrace/app/calls/) filtered for that user. Hover shows: *"See calls for this user"*. |
+| **Email** | User's email address |
+
+### Network Group
+
+| Column | Description |
+|--------|-------------|
+| **IP(s)** | IP addresses observed for this user. Full list shown on hover. |
+| **Subnet(s)** | Network subnets, comma-separated. "Unknown" chip if none. |
+| **Protocol(s)** | Transport protocols used. UDP = green, TCP = red. Overflow collapsed with a count indicator. |
+
+### Calls Group
+
+| Column | Sortable | Color coding | Description |
+|--------|----------|-------------|-------------|
+| **Total** | Yes (desc) | Neutral | Total calls in the time window |
+| **Good** | Yes (desc) | Green when > 0 | Calls with Good quality |
+| **Poor** | Yes (desc) | Red when > 0 | Calls with Poor quality |
+| **Unclassified** | Yes (desc) | Neutral | Calls without quality classification |
+| **Average Duration** | Yes (desc) | Neutral | Mean call duration (HH:MM:SS) |
+| **Max Duration** | Yes (desc) | Neutral | Longest call (HH:MM:SS) |
+| **Min Duration** | Yes (desc) | Neutral | Shortest call (HH:MM:SS) |
+
+Duration values show "-" when no data is available.
+
+### Devices Group
+
+| Column | Description |
+|--------|-------------|
+| **Platform(s)** | Windows, macOS, iOS, Android, Web, Unknown. Shown as colored chips. Full list visible on hover. |
+| **Host(s)** | Computer/host device names, comma-separated |
+| **Input(s)** | Audio input devices (microphones) used |
+| **Output(s)** | Audio output devices (speakers/headphones) used |
+
+### Teams Version
+
+| Column | Description |
+|--------|-------------|
+| **Teams Version** | MS Teams client version(s) used. Each version as a chip. Hover shows full version string. "-" if unavailable. |
+
+### Last Seen
+
+| Column | Description |
+|--------|-------------|
+| **Last Seen** | Timestamp of the user's most recent activity. Sorted descending (most recent first). |
+
+---
+
+## Table Controls
+
+| Control | Description |
+|---------|-------------|
+| Column visibility | Show/hide individual columns |
+| Column ordering | Drag to reorder |
+| Line wrap | Toggle text wrapping |
+| Pagination | 10 / 20 / 50 / 100 rows per page |
+
+---
+
+## Empty / Error States
+
+| Situation | What you see |
+|-----------|-------------|
+| Loading | Spinner / skeleton rows |
+| No users match filter | Empty table |
+| Filter syntax invalid | Update button disabled |
+
+---
+
+## URL Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `filter` | Advanced filter expression | `participant = "John Doe"` |
+| `from` | Timeframe start | `now()-7d` |
+| `to` | Timeframe end | `now()` |
+
+---
+
+## Navigation from this page
+
+| Action | Destination |
+|--------|-------------|
+| Click a user name | [Calls](../../../backends/dynatrace/app/calls/) page, pre-filtered for that user, with the same timeframe applied |

@@ -1,0 +1,102 @@
+---
+title: Application — Overview
+description: User guide for the MS Teams Observability Dynatrace application — seven pages covering call quality, site analysis, user activity, and configuration.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
+
+The MS Teams Observability application is installed in your Dynatrace environment and provides operational visibility into your Microsoft Teams estate. It is built on top of the data collected by the agent and stored in the Grail bucket.
+
+**Version:** 2.5.2 | **Developed by:** Phenisys | **Platform:** Dynatrace AppEngine
+
+The application has seven pages accessible from the top navigation bar:
+
+<CardGrid>
+  <LinkCard
+    title="Installation"
+    description="Install the app from Dynatrace Hub or via ZIP upload, and activate Live mode."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}
+  />
+  <LinkCard
+    title="Home"
+    description="7-day dashboard with call volume, quality percentage, caller count, and platform distribution."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/home/`}
+  />
+  <LinkCard
+    title="Sites"
+    description="Call quality and network performance aggregated by geographic location and subnet."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}
+  />
+  <LinkCard
+    title="Calls"
+    description="Searchable and filterable list of all recorded MS Teams calls."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}
+  />
+  <LinkCard
+    title="Call Overview"
+    description="Full analysis of a single call — participants, network topology, stream metrics, and AI root cause analysis."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}
+  />
+  <LinkCard
+    title="Users"
+    description="Per-user analytics: call counts, quality breakdown, devices, and network details."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/users/`}
+  />
+  <LinkCard
+    title="Issues"
+    description="Active and resolved Microsoft service health incidents for your tenant."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/issues/`}
+  />
+  <LinkCard
+    title="Configuration"
+    description="All application settings — license, integrations, site mapping, AI analysis, and permissions."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}
+  />
+</CardGrid>
+
+---
+
+## Demo Mode
+
+The application supports a **Demo Mode** that replaces all live data with mock data. Useful for testing the interface without a real Microsoft Teams connection. Demo Mode can be enabled from the [Configuration](../../../backends/dynatrace/app/configuration/) page.
+
+When Demo Mode is active, the following features are restricted:
+- Custom timeframe selection
+- Exporting call details
+- AI-driven insights
+
+<Aside type="note">
+Live Mode requires a valid Phenisys license. See [License](/getting-started/license/) for how to obtain and place it.
+</Aside>
+
+---
+
+## Common UI Patterns
+
+### Timeframe Selector
+
+Available on Sites, Calls, Users, and Issues pages. Presets range from **Last 15 minutes** to **Last 30 days**. The selected range is stored in the URL (`?from=...&to=...`).
+
+### Update Button
+
+Present on pages with a filter bar. Applies filter and timeframe changes. Highlighted when values have been modified but not yet applied. Disabled while a query is in progress or if the filter syntax is invalid.
+
+### Health Indicators
+
+| Status | Visual | Meaning |
+|--------|--------|---------|
+| Good | Green icon | Call met quality thresholds |
+| Poor | Red icon | Call had quality degradation |
+| Unclassified | Grey icon | No quality data available |
+
+### Toast Notifications
+
+| Type | Color | When |
+|------|-------|------|
+| Success | Green | Action completed |
+| Warning | Yellow | Action completed with caveats |
+| Critical | Red | Action failed |
+| Info | Blue | Operation in progress |

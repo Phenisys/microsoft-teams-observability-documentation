@@ -1,0 +1,105 @@
+---
+title: Application — Issues
+description: The Issues page displays Microsoft service health incidents affecting your tenant — active and recently resolved.
+sidebar:
+  label: Issues
+  order: 6
+---
+
+> **Path:** `/issues`
+
+The Issues page displays **Microsoft service health incidents** affecting your tenant — both currently active issues and recently resolved ones. Use it to correlate call quality degradation with known Microsoft outages.
+
+Breadcrumb navigation: `Home > Issues`
+
+---
+
+## Filter Bar
+
+### Timeframe Selector
+
+Controls which **closed issues** are shown (issues that ended within the selected window). Currently active issues are always shown regardless of the timeframe.
+
+Stored in URL as `?from=...&to=...`.
+
+### Update Button
+
+Fetches issues for the selected timeframe. Highlighted when the timeframe has changed but not yet been applied.
+
+---
+
+## Section 1: Current Issues
+
+Displays all **currently open / active** Microsoft service incidents.
+
+**Header:**
+- Title: "Current Issues"
+- Issue count badge
+- **"Open in Notebooks"** intent button — opens the underlying query in Dynatrace Notebooks
+
+**Empty state:** "No current issues"
+
+---
+
+## Section 2: Closed Issues
+
+Displays **recently resolved** Microsoft service incidents within the selected timeframe.
+
+**Header:**
+- Title: "Closed Issues"
+- **"Open in Notebooks"** intent button
+
+**Empty state:** "No closed issues"
+
+---
+
+## Issue Card
+
+Each issue is displayed as a message container card. The card color matches the issue's severity:
+
+| Severity | Card color | Chip color |
+|----------|-----------|-----------|
+| Incident | Red/Critical | Red |
+| Advisory | Yellow/Warning | Yellow |
+| Other | Neutral | Grey |
+
+### Card Header
+
+| Element | Description |
+|---------|-------------|
+| Feature name | Microsoft service affected (e.g., "Microsoft Teams") |
+| Issue ID | Unique identifier |
+| Start time | When the issue began |
+| End time | (Closed issues only) Approximated end time with tooltip: *"approximated end time"* |
+| Classification chip | Severity label (e.g., "Incident", "Advisory") |
+
+### Card Body (expandable)
+
+The card body is an **accordion** — click the issue title to expand it and see the full details. The full incident report includes affected services, impact description, and any remediation steps provided by Microsoft, rendered as formatted Markdown.
+
+---
+
+## Empty / Error States
+
+| Situation | What you see |
+|-----------|-------------|
+| Loading | Loading skeletons |
+| No current issues | "No current issues" |
+| No closed issues in range | "No closed issues" |
+| Data fetch error | Error state in the relevant section |
+
+---
+
+## URL Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `from` | Timeframe start | `now()-7d` |
+| `to` | Timeframe end | `now()` |
+
+---
+
+## Notes
+
+- **End times for closed issues are approximated** (start time + 30 minutes). The tooltip on the end time makes this explicit.
+- The **navigation bar badge** shows the count of current open issues as a number, so you can see at a glance if there are active incidents without visiting the page.

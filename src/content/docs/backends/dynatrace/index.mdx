@@ -16,16 +16,10 @@ The Dynatrace integration is the most complete backend for MS Teams Observabilit
 
 ## Architecture
 
-```
-ms-teams-agent (Collector)
-        │
-        │  HTTPS / Dynatrace Log Ingest API
-        ▼
-  Dynatrace Grail (ms_teams bucket)
-        │
-        │  OpenPipeline (routing + metric extraction)
-        ▼
-  MS Teams Observability App (dashboards)
+```mermaid
+graph TD
+    A["ms-teams-agent (Collector)"] -->|"HTTPS / Log Ingest API"| B["Dynatrace Grail (ms_teams bucket)"]
+    B -->|"OpenPipeline (routing + metrics)"| C["MS Teams Observability App (dashboards)"]
 ```
 
 ## Deployment Path
@@ -39,7 +33,7 @@ ms-teams-agent (Collector)
   <LinkCard
     title="2) Install the App"
     description="Install the MS Teams Observability app from Dynatrace Hub or via ZIP upload."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}
   />
   <LinkCard
     title="3) Configure Dynatrace"
@@ -55,6 +49,16 @@ ms-teams-agent (Collector)
     title="5) Use the Dashboards"
     description="Navigate the operational dashboards for call quality, users, sites, and incident correlation."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}
+  />
+  <LinkCard
+    title="6) Dynatrace Extension (Beta)"
+    description="Run the collector as a Dynatrace Extension on your ActiveGate instead of a standalone binary."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/extension/`}
+  />
+  <LinkCard
+    title="7) Use the Application"
+    description="User guide for the MS Teams Observability app — Home, Calls, Sites, Users, Issues, and Configuration."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/`}
   />
 </CardGrid>
 
