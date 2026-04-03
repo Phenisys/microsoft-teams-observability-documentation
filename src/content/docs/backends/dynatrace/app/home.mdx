@@ -1,0 +1,85 @@
+---
+title: Application — Home
+description: The MS Teams Observability Home page provides a 7-day summary of call activity, quality, and platform distribution.
+sidebar:
+  label: Home
+  order: 1
+---
+
+> **Path:** `/home` (default landing page)
+
+The Home page is the **observability cockpit** for your Microsoft Teams environment. It provides a high-level summary of call activity and quality over the **last 7 days**. Use it to get a quick pulse check before diving into details on other pages.
+
+There are no filters or controls on this page — all data reflects a fixed 7-day window and is automatically fetched on load.
+
+---
+
+## Layout
+
+The page is organized into two rows:
+
+1. **KPI Cards** — three metric cards side by side
+2. **Call Health chart** (left) and **Platforms chart** (right)
+
+---
+
+## KPI Cards
+
+### Call Count
+
+Total number of MS Teams calls recorded in the last 7 days. Shows a **sparkline trend chart** below the number.
+
+### Healthy Calls
+
+Percentage of calls classified as Good out of all calls in the last 7 days.
+
+- **Green** when the percentage is high (healthy)
+- **Red** when the percentage is low (degraded)
+
+### Caller Count
+
+Total number of unique callers (participants) who joined at least one call in the last 7 days. Shows a **sparkline trend chart** below the number.
+
+---
+
+## Call Health Chart
+
+A vertical categorical bar chart showing the distribution of calls by health status for the last 7 days.
+
+| Bar | Color | Meaning |
+|-----|-------|---------|
+| Good | Green | Calls that met quality thresholds |
+| Poor | Red | Calls with quality degradation |
+
+---
+
+## Platforms Chart
+
+A pie chart showing the distribution of calls by platform used by participants.
+
+| Slice | Color | Platform |
+|-------|-------|----------|
+| Windows | Dark green | Windows desktop client |
+| macOS | Light blue | macOS desktop client |
+| iOS | Purple | iPhone/iPad app |
+| Android | Blue | Android app |
+| Web | Medium green | Browser-based client |
+| Unknown | Light green | Platform could not be determined |
+
+Slices beyond 8 are grouped into an "Other" category automatically. The legend is shown to the right of the pie.
+
+---
+
+## States
+
+| State | What you see |
+|-------|-------------|
+| Loading | Spinning progress circles in each card/chart |
+| No data | "No data available" message inside the chart |
+| Data loaded | All metrics and charts rendered |
+
+---
+
+## Navigation
+
+Use the **top navigation bar** to go to Sites, Calls, Users, Issues, or Configuration. This page has no clickable data points that navigate elsewhere.

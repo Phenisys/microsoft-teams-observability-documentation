@@ -13,7 +13,7 @@ hero:
       icon: right-arrow
       variant: primary
     - text: Install the collector
-      link: collector/installation/
+      link: collector/v1/installation/
       icon: right-arrow
       variant: secondary
 ---
@@ -24,7 +24,7 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 MS Teams Observability is a two-part solution:
 
-- **Collector (`ms-teams-agent`)**: pulls Teams telemetry from Microsoft Graph API and exports to Dynatrace, Splunk, or OpenTelemetry endpoints.
+- **Collector (`ms-teams-agent`)**: pulls Teams telemetry from Microsoft Graph API and exports to Dynatrace or Splunk.
 - **Backend integrations**: store and visualise call quality, incidents, site compliance, and user activity in your chosen observability platform.
 
 ## Recommended setup path
@@ -38,11 +38,11 @@ MS Teams Observability is a two-part solution:
   <LinkCard
     title="2) Deploy the Collector"
     description="Validate config, test connectivity, run in service mode, and start ingestion."
-    href={`${import.meta.env.BASE_URL}collector/installation/`}
+    href={`${import.meta.env.BASE_URL}collector/v1/installation/`}
   />
   <LinkCard
     title="3) Connect a Backend"
-    description="Configure Dynatrace, Splunk, or OTel/OTLP to receive collector data."
+    description="Configure Dynatrace or Splunk to receive collector data."
     href={`${import.meta.env.BASE_URL}backends/`}
   />
   <LinkCard

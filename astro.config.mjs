@@ -37,6 +37,7 @@ export default defineConfig({
 						{ slug: "getting-started" },
 						{ slug: "getting-started/overview" },
 						{ slug: "getting-started/prerequisites" },
+						{ slug: "getting-started/license" },
 					],
 				},
 				{
@@ -44,13 +45,25 @@ export default defineConfig({
 					items: [
 						{ slug: "collector" },
 						{ slug: "collector/azure-permissions" },
-						{ slug: "collector/installation" },
-						{ slug: "collector/configuration" },
-						{ slug: "collector/cli" },
-						{ slug: "collector/service" },
-						{ slug: "collector/runbook" },
-						{ slug: "collector/troubleshooting" },
-						{ slug: "collector/faq" },
+						{
+							label: "v1",
+							collapsed: true,
+							items: [
+								{ slug: "collector/v1/installation" },
+								{ slug: "collector/v1/configuration" },
+								{ slug: "collector/v1/cli" },
+								{ slug: "collector/v1/service" },
+							],
+						},
+						{
+							label: "Extension",
+							collapsed: true,
+							items: [
+								{ slug: "collector/extension" },
+								{ slug: "collector/extension/installation" },
+								{ slug: "collector/extension/migration" },
+							],
+						},
 					],
 				},
 				{
@@ -66,6 +79,21 @@ export default defineConfig({
 								{ slug: "backends/dynatrace/configuration" },
 								{ slug: "backends/dynatrace/collector-connection" },
 								{ slug: "backends/dynatrace/dashboards" },
+								{
+									label: "Application",
+									collapsed: true,
+									items: [
+										{ slug: "backends/dynatrace/app" },
+										{ slug: "backends/dynatrace/app/installation" },
+										{ slug: "backends/dynatrace/app/home" },
+										{ slug: "backends/dynatrace/app/sites" },
+										{ slug: "backends/dynatrace/app/calls" },
+										{ slug: "backends/dynatrace/app/call-overview" },
+										{ slug: "backends/dynatrace/app/users" },
+										{ slug: "backends/dynatrace/app/issues" },
+										{ slug: "backends/dynatrace/app/configuration" },
+									],
+								},
 								{ slug: "backends/dynatrace/troubleshooting" },
 								{ slug: "backends/dynatrace/faq" },
 							],
@@ -80,14 +108,6 @@ export default defineConfig({
 								{ slug: "backends/splunk/troubleshooting" },
 							],
 						},
-						{
-							label: "OTel / OTLP",
-							collapsed: true,
-							items: [
-								{ slug: "backends/otlp" },
-								{ slug: "backends/otlp/configuration" },
-							],
-						},
 					],
 				},
 				{
@@ -95,7 +115,6 @@ export default defineConfig({
 					collapsed: true,
 					items: [
 						{ slug: "reference" },
-						{ slug: "reference/configuration-schema" },
 						{ slug: "reference/cli-reference" },
 						{ slug: "reference/metrics-dictionary" },
 						{ slug: "reference/azure-permissions" },

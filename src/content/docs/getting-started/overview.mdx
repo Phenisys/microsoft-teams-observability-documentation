@@ -17,7 +17,6 @@ graph LR
     A["Microsoft Teams (Graph API)"] -->|polling| B["ms-teams-agent (Collector)"]
     B --> C["Dynatrace (Grail + App)"]
     B --> D["Splunk (HEC + App)"]
-    B --> E["Any OTLP endpoint"]
 ```
 
 1. The **Collector** authenticates to Microsoft Graph using an Azure app registration and polls Teams telemetry on a configurable interval.
@@ -48,7 +47,7 @@ The **Dynatrace application** supports two modes:
 - **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
 - **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See [License](/getting-started/license/).
 
-Demo and Live mode are specific to the Dynatrace application. The Splunk and OTLP backends do not have a demo mode — they display data as soon as the collector starts sending it.
+Demo and Live mode are specific to the Dynatrace application. The Splunk backend does not have a demo mode and displays data as soon as the collector starts sending it.
 
 ## Supported Backends
 
@@ -56,7 +55,6 @@ Demo and Live mode are specific to the Dynatrace application. The Splunk and OTL
 |---|---|---|
 | **Dynatrace** | Yes — Grail + dedicated app | Full-featured integration with dashboards |
 | **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
-| **OTel / OTLP** | No | Generic export to any OTLP-compatible endpoint |
 
 <Aside type="note">
 Each backend requires its own setup. See [Backends](/backends/) for integration guides.

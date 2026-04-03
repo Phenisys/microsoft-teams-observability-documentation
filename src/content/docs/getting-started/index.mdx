@@ -8,7 +8,7 @@ sidebar:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualise that data in Dynatrace, Splunk, or any OTLP-compatible platform.
+MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualise that data in Dynatrace or Splunk.
 
 <CardGrid>
   <LinkCard
@@ -24,11 +24,11 @@ MS Teams Observability is a two-part solution: a **Collector** that pulls Teams 
   <LinkCard
     title="Install the Collector"
     description="Deploy the collector, validate configuration, and start your first collection cycle."
-    href={`${import.meta.env.BASE_URL}collector/installation/`}
+    href={`${import.meta.env.BASE_URL}collector/v1/installation/`}
   />
   <LinkCard
     title="Connect a Backend"
-    description="Choose Dynatrace, Splunk, or OTel/OTLP and configure the integration end-to-end."
+    description="Choose Dynatrace or Splunk and configure the integration end-to-end."
     href={`${import.meta.env.BASE_URL}backends/`}
   />
 </CardGrid>

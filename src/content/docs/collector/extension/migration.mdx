@@ -1,0 +1,65 @@
+---
+title: Migrate from Standalone to Extension
+description: Stop the existing standalone agent and switch to the Dynatrace Extension without data loss.
+sidebar:
+  label: Migrate from Standalone
+  order: 2
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+This page covers the steps to stop an existing standalone agent (v1 or v2) and switch to the Dynatrace Extension.
+
+<Aside type="tip">
+You can configure and validate the extension while the standalone agent is still running — both will collect data in parallel without causing errors. However, running both simultaneously **duplicates log ingestion and increases Dynatrace costs**. Stop the standalone agent once you have confirmed the extension is working.
+</Aside>
+
+## Step 1 — Stop the standalone agent
+
+<Tabs>
+  <TabItem label="Linux (systemd)">
+
+```bash
+sudo systemctl stop pheniAgent_Teams
+sudo systemctl disable pheniAgent_Teams
+# Confirm the service is stopped
+sudo systemctl status pheniAgent_Teams
+```
+
+If the agent runs via cron instead of systemd:
+
+```bash
+crontab -e
+# Remove the line that invokes pheniScript_Teams or the agent binary
+```
+
+  </TabItem>
+  <TabItem label="Windows (Task Scheduler)">
+
+```bat
+schtasks /End /TN "PheniAgent_Teams"
+schtasks /Delete /TN "PheniAgent_Teams" /F
+```
+
+Or open **Task Scheduler** (`taskschd.msc`), locate the task, and delete it.
+
+  </TabItem>
+</Tabs>
+
+## Step 2 — Install and configure the extension
+
+Follow the [Extension Installation](/collector/extension/installation/) guide.
+
+## Step 3 — Post-migration cleanup
+
+Once the extension is confirmed working:
+
+<Steps>
+1. Remove the standalone agent binary and configuration files from the host.
+2. Remove the license file from disk (credentials are now managed by Dynatrace).
+3. Remove any cron jobs or scripts that launched the standalone agent.
+</Steps>
+
+<Aside type="note">
+The extension does not import the standalone agent's previous state file. On the first run it may re-process recent calls (within `maxCallDuration` hours). Duplicate events are idempotent in Dynatrace Logs, so this is safe.
+</Aside>

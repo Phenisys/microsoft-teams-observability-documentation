@@ -1,0 +1,235 @@
+---
+title: Application — Call Overview
+description: The Call Overview page provides a complete analysis of a single MS Teams call — participants, locations, stream metrics, and AI root cause analysis.
+sidebar:
+  label: Call Overview
+  order: 4
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+> **Path:** `/callOverview?callId=...&start=...&end=...`
+
+The Call Overview page provides a **complete, detailed analysis of a single Microsoft Teams call**. It shows who participated, where they were located, what the call quality was, stream-level metrics, and optionally an AI-generated root cause analysis.
+
+Reach this page by clicking a **call ID** in the [Calls](../../../backends/dynatrace/app/calls/) page. Only calls with a duration > 0 have a clickable link.
+
+Breadcrumb navigation: `Home > Calls > Call Overview`
+
+---
+
+## URL Parameters (required)
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `callId` | The unique identifier of the call | `abc123-...` |
+| `start` | ISO8601 timestamp — call start minus 10 minutes | `2024-01-15T09:50:00.000Z` |
+| `end` | ISO8601 timestamp — call end plus 10 minutes | `2024-01-15T10:40:00.000Z` |
+
+If any parameter is missing, an **error state** is displayed instead of call data.
+
+---
+
+## Page Header
+
+The header shows the call ID with two actions:
+
+| Action | Description |
+|--------|-------------|
+| Copy button | Copies the call ID to the clipboard |
+| Download button | Downloads the full call details as a JSON file |
+| Three-dot menu | Contains "Download call details" as a menu item |
+
+<Aside type="note">
+The download button is **disabled** if Microsoft credentials are not configured in [Configuration](../../../backends/dynatrace/app/configuration/).
+</Aside>
+
+---
+
+## Error State
+
+If `callId`, `start`, or `end` is missing from the URL:
+
+- **Title:** "Error"
+- **Details:** "Call ID, start time, or end time is missing."
+- **Action button:** "Go to Calls" — navigates back to the Calls page
+
+---
+
+## Section 1: Map + Details Panel
+
+### Call Map (40% width)
+
+A geographic map showing **participant locations** and the network topology of the call. Each participant is plotted based on their site location or public IP geolocation. Connections between participants are drawn to visualize the call topology.
+
+### Call Details Panel (60% width)
+
+**Call metadata row:**
+
+| Element | Description |
+|---------|-------------|
+| Call type chip | "Group Call" or "Peer To Peer Call" |
+| Health indicator | Color-coded icon: Good (green) / Poor (red) / Unknown (grey) |
+| Audio icon | Shown if the call had an audio stream |
+| Video icon | Shown if the call had a video stream |
+
+**Date and time:**
+
+| Field | Format |
+|-------|--------|
+| Date | DD/MM/YYYY |
+| Time | `HH:MM → HH:MM (HH:MM:SS duration)` |
+
+**Participants section:**
+
+Shows the total participant count in a chip. If the participant count from call details does not match the stream data, a **warning icon** appears with a tooltip explaining the discrepancy.
+
+#### Participant Table
+
+| Column | Description |
+|--------|-------------|
+| **Participant** | Name. Icon indicates internal (filled) vs external (outline). "starter" chip marks the call initiator. |
+| **Location** | Resolved from site mapping (building icon), public IP geolocation (globe icon), or "Unknown". Guest users always show "Unknown". |
+| **Mail** | Email address (hidden by default) |
+| **Network › IP(s)** | IP addresses used across all streams |
+| **Network › Subnet(s)** | Subnets observed |
+| **Network › Reflexive IP(s)** | External/reflexive IPs |
+| **Network › Relay IP(s)** | Media relay IPs |
+| **Network › Protocol(s)** | Transport protocols used (UDP = green, TCP = red) |
+| **Impacts** | "Impacting" (red — sending bad streams) / "Impacted" (yellow — receiving bad streams) / "None" (grey) |
+
+**Row color coding:** rows where any stream has Poor quality are highlighted in red.
+
+**Cell actions (right-click):** Copy cell value (Participant and Mail columns).
+
+**Table controls:** column visibility, ordering, line wrap, pagination (10/20/50/100 per page).
+
+---
+
+## Section 2: Timeline
+
+A **visual timeline** of the call showing state changes and quality metric transitions over the call's duration. Events such as participant joins/leaves are marked on the timeline.
+
+---
+
+## Section 3: Streams Information
+
+A detailed table where **each row represents one media stream** (audio, video, or screen share) from one participant.
+
+**Row color coding:**
+- Green pill — Good quality stream
+- Red pill — Poor quality stream
+- Grey pill — Unclassified stream
+- Grey highlight — Stream with duration ≤ 0
+
+**Default hidden columns:** Cause, Start, End, Screen Share Codec, Device Name, CPU, Client Version, Client Family.
+
+#### Health group
+
+| Column | Description |
+|--------|-------------|
+| Quality | Good (green) / Poor (red) / Unclassified (grey) |
+| Cause | Root cause of poor quality (hidden by default) |
+| Details | Additional detail on the cause (hidden by default) |
+
+#### Identity columns
+
+| Column | Description |
+|--------|-------------|
+| Participant | Name of the participant |
+| Media Type | Audio (speaker icon) / Video (target icon) / Screen Share (desktop icon) |
+| Direction | Receiving (down arrow) or sending (up arrow) |
+| Start | Stream start timestamp (hidden by default) |
+| End | Stream end timestamp (hidden by default) |
+| Duration | Stream duration (HH:MM:SS) |
+
+#### Network group
+
+| Column | Description |
+|--------|-------------|
+| IP | Local IP address |
+| Subnet | Network subnet |
+| Reflexive IP | External IP (NAT traversal) |
+| Relay IP | Media relay server IP |
+| Interlocutor IP | IP of the remote party (group calls) |
+| Protocol | UDP (green) / TCP (red) / other (grey) |
+
+#### Stats group
+
+| Column | Unit | Notes |
+|--------|------|-------|
+| Latency | ms | Color-coded by quality thresholds |
+| Jitter | ms | Color-coded by quality thresholds |
+| Packet Loss | % | Shown as `X.XX %` |
+| Framerate | fps | Shown as `X fps` |
+
+#### Device group
+
+| Column | Description |
+|--------|-------------|
+| Name | Device/host name (hidden by default) |
+| CPU | Processor information (hidden by default) |
+| Platform | Windows, macOS, iOS, Android, Web |
+| Connection Type | wired, wifi, etc. |
+
+#### Client group
+
+| Column | Description |
+|--------|-------------|
+| Version | MS Teams client version (hidden by default) |
+| Family | Client family/type (hidden by default) |
+
+#### Cell actions (right-click)
+
+- **Copy value**
+- IP columns (IP, Subnet, Reflexive IP, Relay IP, Interlocutor IP):
+  - **Public IPs:** "Lookup IP" — opens `ip-api.com`
+  - **Private IPs (IPAM configured):** "Lookup IPAM" — opens your IPAM solution
+  - **Private IPs (no IPAM):** "Configure IPAM link" — links to Configuration page
+
+#### Toolbar actions
+
+- Column visibility, ordering, line wrap
+- **Download data** — exports the stream table
+- **Open in notebook** — opens the query in Dynatrace Notebooks
+- **Open with…** — opens the query in another Dynatrace app
+
+---
+
+## Section 4: Call AI Analysis
+
+An AI-powered section that analyzes stream data to identify the **root cause of quality issues**.
+
+**States:**
+
+| State | What you see |
+|-------|-------------|
+| Not yet analyzed | "AI Analysis" button |
+| Analysis in progress | Loading spinner |
+| Result available | Markdown-formatted analysis text |
+| Cached result | Previously generated analysis loaded automatically |
+
+**Buttons:**
+
+| Button | Enabled when | Description |
+|--------|-------------|-------------|
+| AI Analysis | MS credentials + AI tool configured | Triggers a new analysis. Results are cached per call ID. |
+| Reload Analysis | Result exists + both configs valid | Re-generates the analysis, overwriting the cache |
+
+<Aside type="note">
+Both **Microsoft configuration** and **AI Analysis configuration** must be set up in [Configuration](../../../backends/dynatrace/app/configuration/) for these buttons to be enabled.
+</Aside>
+
+---
+
+## Download Call Details
+
+Clicking the **Download** button (or via the three-dot menu) downloads the full raw call data from the Microsoft Graph API as a JSON file.
+
+**Filename:** `call-details-{callId}.json`
+
+During download, a toast notification with a progress bar appears. Concurrent downloads are blocked with a warning toast.
+
+<Aside type="note">
+Requires Microsoft credentials configured in [Configuration](../../../backends/dynatrace/app/configuration/). The button is disabled otherwise.
+</Aside>

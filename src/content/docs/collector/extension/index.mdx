@@ -1,0 +1,48 @@
+---
+title: Collector — Dynatrace Extension
+description: Run the MS Teams Observability collector as a Dynatrace Extension on your ActiveGate instead of a standalone binary.
+sidebar:
+  label: Overview
+  order: 10
+---
+
+import { Aside, LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+**Dynatrace only.** This deployment mode requires a Dynatrace environment with an ActiveGate. Console and Splunk outputs are **not available** in this mode — data is forwarded exclusively to Dynatrace.
+</Aside>
+
+The collector ships in three deployment variants:
+
+| | Standalone v1 | Standalone v2 | Extension |
+|---|---|---|---|
+| **Packaging** | Binary (`.exe` / `.bin`) | Binary (`.exe` / `.bin`) | Dynatrace EF2 extension (ZIP) |
+| **Configuration** | YAML file on disk | YAML file on disk | Dynatrace UI |
+| **Process management** | systemd / Task Scheduler / manual | systemd / Task Scheduler / manual | Managed by Dynatrace |
+| **License** | `.lic` / `.json` file on disk | `.json` file on disk | JSON string pasted in the UI |
+| **Supported outputs** | Dynatrace, Splunk, Console | Dynatrace, Splunk, Console | Dynatrace only |
+| **State** | JSON file (`state_<tenant>.json`) | SQLite (`state.db`) | Managed by ActiveGate |
+| **Monitoring** | Manual log inspection | Manual log inspection | Dynatrace Extension health monitoring |
+
+The Extension wraps the same agent code as the standalone binaries and covers the same data collection capabilities.
+
+## When to Use the Extension
+
+- You already run a Dynatrace ActiveGate and want Dynatrace to manage the collector lifecycle.
+- You prefer configuring the collector via the Dynatrace UI rather than a YAML file.
+- You do not need Splunk or console output.
+
+## Pages
+
+<CardGrid>
+  <LinkCard
+    title="Installation"
+    description="Upload the extension, configure it in the Dynatrace UI, and verify data collection."
+    href={`${import.meta.env.BASE_URL}collector/extension/installation/`}
+  />
+  <LinkCard
+    title="Migrate from Standalone"
+    description="Stop the existing standalone agent and switch to the extension without data loss."
+    href={`${import.meta.env.BASE_URL}collector/extension/migration/`}
+  />
+</CardGrid>

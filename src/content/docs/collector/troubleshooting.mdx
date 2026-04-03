@@ -1,104 +1,32 @@
 ---
-title: Troubleshooting the Collector
-description: Diagnose and resolve common issues with the MS Teams Observability Collector — authentication, connectivity, configuration, and service.
+title: Collector Troubleshooting
+description: Common checks for collector authentication, connectivity, and backend export issues.
 sidebar:
   label: Troubleshooting
-  order: 7
+  order: 80
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+## Authentication Issues
 
-## Configuration Errors
+- Verify tenant ID, client ID, and secret/certificate in your config.
+- Confirm admin consent is granted for required Microsoft Graph permissions.
+- Check system time drift on the collector host.
 
-**Symptom:** `ms-teams-agent validate` exits with errors.
+## Connectivity Issues
 
-**Checks:**
-1. Ensure all required sections are present: `microsoft_authentication`, `license`, `output`, `collection_config`.
-2. Verify YAML formatting — indentation errors are a common cause of validation failures.
-3. Confirm the license file path exists and is readable by the collector process.
-4. Confirm at least one output backend is `enabled: true`.
+- Validate outbound access to:
+  - `graph.microsoft.com`
+  - `login.microsoftonline.com`
+  - your backend endpoint
+- Confirm proxy/firewall rules for HTTPS traffic.
 
-Run:
-```bash
-ms-teams-agent validate --config ./config.yaml
-```
+## Data Not Visible in Backend
 
-## Microsoft Authentication Errors
+- Confirm at least one output is enabled in configuration.
+- Review collector logs for export errors.
+- Validate backend-side credentials (Dynatrace token or Splunk HEC token).
 
-**Symptom:** `test-connection` fails with authentication errors, or collector logs show `401` / `403` from Microsoft Graph.
+## Next Steps
 
-**Checks:**
-1. Verify `tenant_id` and `client_id` are correct (no extra spaces or characters).
-2. For client secret: confirm the secret has not expired in Azure.
-3. For certificate: confirm the PEM file contains both private and public key, and the passphrase (if any) is correct.
-4. Confirm admin consent has been granted for all required Graph permissions (`CallRecords.Read.All`, `Reports.Read.All`, `ServiceHealth.Read.All`).
-5. Confirm the app registration is not disabled in Microsoft Entra ID.
-
-Run with debug logging for more detail:
-```bash
-ms-teams-agent run --config ./config.yaml --log-level DEBUG
-```
-
-## Microsoft Graph Connectivity Issues
-
-**Symptom:** `test-connection` fails with network errors or timeouts.
-
-**Checks:**
-1. Confirm outbound access to `graph.microsoft.com` and `login.microsoftonline.com` from the collector host.
-2. Check firewall and proxy rules.
-3. Validate DNS resolution for `graph.microsoft.com`.
-4. If using a proxy, ensure it is configured correctly in the collector environment.
-
-## No Data Being Exported
-
-**Symptom:** Collector runs without errors but no data appears in the backend.
-
-**Checks:**
-1. Confirm the output backend is `enabled: true` in the config.
-2. Run `test-connection` to verify backend connectivity.
-3. Check collector logs for export errors.
-4. Confirm the collection interval has elapsed (wait at least one full `interval_collection_minutes` cycle).
-5. If using `--dry-run`, note that dry-run mode does not export data.
-
-## Service / systemd Issues
-
-**Symptom:** The collector service fails to start or stops unexpectedly.
-
-**Checks:**
-1. Check service logs: `journalctl -u ms-teams-observability-agent@default.service -f`
-2. Verify the config file path in the service unit is an absolute path.
-3. Confirm the service user has read access to the config and license files.
-4. Re-run with `sudo`: `sudo ms-teams-agent service enable-service --config /absolute/path/config.yaml`
-
-See [Service Management](/collector/service/) for setup and management details.
-
-## Stale or Corrupted State
-
-**Symptom:** Collector behaves unexpectedly after a restart or data seems duplicated/skipped.
-
-**Checks:**
-1. Inspect the current state:
-   ```bash
-   ms-teams-agent state show
-   ```
-2. If state appears corrupted, reset it (use with care in production):
-   ```bash
-   ms-teams-agent state reset
-   ```
-
-<Aside type="caution">
-State reset causes the collector to re-process data from the beginning of the collection window. This may result in duplicate data in your backend for the affected period.
-</Aside>
-
-## Diagnostic Workflow
-
-When troubleshooting an unknown issue, follow this order:
-
-1. `validate` — check configuration
-2. `test-connection` — check authentication and backend connectivity
-3. Collector logs — check for runtime errors
-4. Backend logs / UI — confirm data arrival
-
-<Aside type="tip">
-For backend-specific issues (Dynatrace or Splunk), see the corresponding troubleshooting guides: [Dynatrace Troubleshooting](/backends/dynatrace/troubleshooting/) / [Splunk Troubleshooting](/backends/splunk/troubleshooting/).
-</Aside>
+- Re-run from [v1 Installation](/collector/v1/installation/) with one output enabled first.
+- Cross-check config with [v1 Configuration](/collector/v1/configuration/).

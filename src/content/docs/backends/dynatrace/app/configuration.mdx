@@ -1,0 +1,366 @@
+---
+title: Application — Configuration
+description: The Configuration page is the central settings hub for the MS Teams Observability app — license, integrations, site mapping, AI analysis, and permissions.
+sidebar:
+  label: Configuration
+  order: 7
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+> **Path:** `/configuration`
+
+The Configuration page is the **central settings hub** for the MS Teams Observability app. It contains 12 panels arranged in a two-column grid.
+
+<Aside type="caution">
+Panels that have been modified but not yet saved display an **"Unsaved changes"** chip in their header. If you navigate away with unsaved changes, the browser will warn you.
+</Aside>
+
+Breadcrumb navigation: `Home > Configuration`
+
+---
+
+## Panel Layout
+
+| Row | Left panel | Right panel |
+|-----|-----------|-------------|
+| 1 | [License](#1-license) | [Demo Mode](#2-demo-mode) |
+| 2 | [Feature Status](#3-feature-status) (full width) | — |
+| 3 | [Outgoing Connections](#4-outgoing-connections) (full width) | — |
+| 4 | [Bucket Configuration](#5-bucket-configuration) | [OpenPipeline](#6-openpipeline) |
+| 5 | [Site File Management](#7-site-file-management) (full width) | — |
+| 6 | [IPAM](#8-ipam) | [AI Analysis](#9-ai-analysis) |
+| 7 | [Microsoft Configuration](#10-microsoft-configuration) | [Domains Filter](#11-domains-filter) |
+| 8 | [Permissions](#12-permissions) (full width) | — |
+
+---
+
+## 1. License
+
+**Purpose:** View the status and details of your MS Teams Observability license.
+
+| Field | Description |
+|-------|-------------|
+| Start date | License start date (DD/MM/YYYY) |
+| End Date | License expiry date (DD/MM/YYYY) |
+| Days Left | Days remaining before expiry |
+| Status chip | `Trial` (blue), `Active` (green), or `Inactive` (red) |
+| Active Users meter | Current active users vs. maximum allowed. Trial = "Unlimited". |
+| Microsoft Tenant ID | Your tenant ID, masked by default |
+
+**Actions:** eye icon to show/hide Tenant ID, copy button to copy it.
+
+**Error state:** If the license cannot be loaded, all fields show "Error".
+
+**Banners:** Warning/critical banner if the license has a problem. Green "Demo license" banner when Demo Mode is active.
+
+<Aside type="note">
+This panel is read-only — no inputs to configure here. For license setup, see [License](/getting-started/license/).
+</Aside>
+
+---
+
+## 2. Demo Mode
+
+**Purpose:** Enable or disable Demo Mode, which replaces all live data with sample data.
+
+**Current status:** `Active` (green) or `Inactive` (grey) chip next to the title.
+
+| Button | Appears when | Behavior |
+|--------|-------------|---------|
+| Enable | Demo Mode is off | Opens a confirmation modal to enable |
+| Disable | Demo Mode is on | Opens a confirmation modal to disable |
+
+When Demo Mode is active, the following features are **restricted**: custom timeframe selection, exporting call details, AI-driven insights.
+
+---
+
+## 3. Feature Status
+
+**Purpose:** View the health status of each data collection feature based on the last 7 days.
+
+| Column | Description |
+|--------|-------------|
+| Feature | Name of the collection feature |
+| Status | `Enabled` (green) or `Disabled` (grey) |
+| Health | `No errors` (green) or `X errors` (red) — only shown for enabled features |
+
+**Cell action on Health column (right-click):** "Open details with" — sends the error log query to a Dynatrace app.
+
+**Empty state:** "No features found. Please ensure that the MS Teams Observability Agent is properly configured and running."
+
+**Pagination:** 5 / 10 / 20 rows per page.
+
+---
+
+## 4. Outgoing Connections
+
+**Purpose:** Verify that the app can reach all external services it depends on (Microsoft Graph API, AI endpoints, etc.).
+
+| Column | Description |
+|--------|-------------|
+| Status | Green (reachable), red (unreachable), grey (not yet tested) |
+| Code | HTTP response code chip (e.g., `200`, `401`, `500`) |
+| Service | Name of the service. Hover the information icon for description. |
+| Endpoint | The URL being tested |
+| Message | Human-readable status from the last ping |
+| Latency | Round-trip latency in ms, color-coded by performance thresholds |
+
+**Row actions:** **Ping** individual endpoint.
+
+**Toolbar actions:** **Ping All** — tests all endpoints simultaneously.
+
+---
+
+## 5. Bucket Configuration
+
+**Purpose:** Configure the Dynatrace storage bucket where MS Teams log data is stored.
+
+| State | What you see |
+|-------|-------------|
+| Loading | Spinner |
+| Bucket exists | Bucket details (name, retention, etc.) |
+| Bucket not found | Form to create the bucket |
+| Error | Warning with error message and "Copy details" / "See documentation" buttons |
+
+**When creating a bucket:**
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Display Name | No | Human-readable name |
+| Retention Days | Yes | How many days logs are retained |
+
+---
+
+## 6. OpenPipeline
+
+**Purpose:** Configure the OpenPipeline data ingestion pipeline that routes MS Teams data into Dynatrace.
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Access Token | Yes | Dynatrace API token with `settings.read` and `settings.write` scopes (masked) |
+
+**Validation indicator:**
+
+| Status | Message |
+|--------|---------|
+| Green | "Open Pipeline Configuration is valid" |
+| Yellow | "Open Pipeline Configuration is being validated" |
+| Red | "No valid Open Pipeline Configuration detected" |
+
+| Button | Description |
+|--------|-------------|
+| Save | Persists the access token |
+| Validate | Tests the token |
+| Generate Configuration | Automatically generates the OpenPipeline configuration |
+| Reset | Clears the saved token |
+
+---
+
+## 7. Site File Management
+
+**Purpose:** Upload and manage the CSV file that maps network subnets to site locations (used on the [Sites](../../../backends/dynatrace/app/sites/) page).
+
+### File Status Area
+
+| Chip | Description |
+|------|-------------|
+| "Sites file exists" (green) | A file is currently loaded |
+| "No sites file" (grey) | No file has been uploaded |
+| Size / Modified / By | File metadata |
+| "X sites loaded" (blue) | Number of active site entries |
+
+### Actions
+
+| Button | Description |
+|--------|-------------|
+| Choose CSV file | Opens file picker |
+| Upload / Replace Sites File | Uploads or replaces the file (enabled when validation passes) |
+| Download | Downloads the current file as `sites.csv` |
+| Delete | Deletes the current file (no confirmation) |
+
+### CSV File Format
+
+```
+subnet,location,country,latitude,longitude
+10.64.0.0/24,Paris,FR,48.8588255,2.2646343
+10.64.1.0/24,Berlin,DE,52.5200066,13.404954
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `subnet` | CIDR | Network subnet |
+| `location` | String | Human-readable location name |
+| `country` | String | Country code |
+| `latitude` | Number | -90 to 90 |
+| `longitude` | Number | -180 to 180 |
+
+### Validation
+
+After selecting a file, each row is automatically validated:
+- All rows valid: green chip "Valid CSV: X/Y rows"
+- Errors exist: red chip "Invalid CSV: N error(s), X/Y valid rows"
+- Up to 5 errors shown inline; a "Copy Errors" button copies all errors.
+
+### Permissions Required
+
+The app needs these Dynatrace storage permissions to manage the sites file:
+- `storage:files:read`
+- `storage:files:write`
+- `storage:files:delete`
+
+---
+
+## 8. IPAM
+
+**Purpose:** Configure a URL template for linking IP addresses to your IPAM solution. When configured, right-clicking an IP in the Sites or Call Overview tables shows a "Lookup IPAM" option.
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Link Template | Yes | URL containing the `{{ip}}` placeholder. Must be `http://` or `https://`. |
+
+**Example:** `https://ipam.company.com/ip/{{ip}}/details`
+
+**Preview section:** Enter a test IP to preview the resolved URL. A copy button copies the preview URL.
+
+**Validation indicator:**
+
+| Status | Message |
+|--------|---------|
+| Green | "Template is valid and ready to use" |
+| Yellow | "Contains `{{ip}}` but has validation errors" |
+| Red | "Template must contain the `{{ip}}` variable" |
+
+| Button | Enabled when | Description |
+|--------|-------------|-------------|
+| Save | Template is valid | Saves the IPAM link template |
+| Test Link | Template is valid | Opens the preview URL in a new tab |
+| Reset | Always | Clears the saved IPAM link |
+
+---
+
+## 9. AI Analysis
+
+**Purpose:** Configure the AI tool used to generate root cause analysis on the [Call Overview](../../../backends/dynatrace/app/call-overview/) page.
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Tool | Yes | Select the AI model via radio buttons |
+| Token | Yes | Select the credential from the Dynatrace vault |
+| Prompt | Yes | System prompt sent to the AI (pre-filled with the default). The text area is resizable. |
+
+**Available AI tools:**
+
+| Tool | Available |
+|------|-----------|
+| ChatGPT 4o-mini | Yes |
+| ChatGPT 4o | Yes |
+| ChatGPT o1-preview | Yes |
+| Microsoft Copilot | Coming soon |
+| Dynatrace Copilot | Coming soon |
+
+**Validation indicator:**
+
+| Status | Message |
+|--------|---------|
+| Green | "AI Configuration is valid" |
+| Yellow | "AI Configuration is being tested" |
+| Red | "No valid AI Configuration detected" |
+
+| Button | Description |
+|--------|-------------|
+| Save | Persists the AI configuration |
+| Test | Tests the connection. On failure, a "Copy Details" action is available. |
+| Reset | Clears the configuration and resets the prompt to default |
+
+---
+
+## 10. Microsoft Configuration
+
+**Purpose:** Configure the credentials used to authenticate against the Microsoft Graph API.
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Credential Name | Yes | Select from the Dynatrace vault (Username/Password or Certificate) |
+| Client ID | No | Azure AD application (client) ID |
+| Tenant ID | Yes | Azure AD tenant ID |
+| Grant Type | Yes | `Client Credentials` or `Demo` |
+| Scope | Yes | OAuth2 scope (e.g., `https://graph.microsoft.com/.default`) |
+
+**Validation indicator:**
+
+| Status | Message |
+|--------|---------|
+| Green | "Microsoft Configuration is valid" |
+| Yellow | "Microsoft Configuration is being tested" |
+| Red | "No valid Microsoft Configuration detected" |
+
+Validation runs automatically on page load if credentials are already configured.
+
+| Button | Description |
+|--------|-------------|
+| Save | Persists the Microsoft configuration |
+| Test | Tests the connection. Shows detailed error toast on failure. |
+| Reset | Clears all fields |
+
+<Aside type="note">
+This configuration is required for downloading call details and enabling AI Analysis on the [Call Overview](../../../backends/dynatrace/app/call-overview/) page.
+</Aside>
+
+---
+
+## 11. Domains Filter
+
+**Purpose:** Configure the list of email domains used to filter call data on the [Sites](../../../backends/dynatrace/app/sites/) page. Only users whose email matches one of these domains are included.
+
+**Format:** Each domain must be in the format `@example.com` or `@sub.example.com`.
+
+**Adding a domain:**
+1. Type the domain in the input field (e.g., `@mycompany.com`)
+2. Press **Enter** or click **Add**
+3. The domain appears as a chip
+
+**Removing a domain:** Click the × button on any domain chip.
+
+**Chip colors:**
+- **Green with checkmark** — domain has been saved
+- **Neutral/white** — domain added locally but not yet saved
+
+| Button | Description |
+|--------|-------------|
+| Save | Persists the current domain list |
+| Reset | Clears all domains (locally and saved) |
+
+<Aside type="caution">
+If no domains are configured, a warning toast will appear on the [Sites](../../../backends/dynatrace/app/sites/) page reminding you to configure them.
+</Aside>
+
+---
+
+## 12. Permissions
+
+**Purpose:** Configure user roles and access permissions for the app.
+
+This panel manages which Dynatrace user groups have access to the application and what actions they can perform. Refer to your Dynatrace administrator for details on available groups and roles.
+
+---
+
+## Common Behaviors
+
+### Toast Notifications
+
+All save, reset, and test operations provide feedback via toast notifications:
+
+| Operation | Success | Failure |
+|-----------|---------|---------|
+| Save | Green success toast | Red critical toast |
+| Reset | Green success toast | Red critical toast |
+| Test (valid) | Green success toast | — |
+| Test (invalid) | — | Red critical toast with error details + Copy button |
+
+### Auto-validation on Load
+
+The following panels automatically test their configuration when the page loads (if credentials are already set):
+- Microsoft Configuration
+- AI Analysis
+- OpenPipeline

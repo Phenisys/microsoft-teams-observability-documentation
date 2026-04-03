@@ -1,6 +1,6 @@
 ---
 title: Backends & Integrations
-description: Connect the MS Teams Observability Collector to Dynatrace, Splunk, or any OTLP-compatible backend.
+description: Connect the MS Teams Observability Collector to Dynatrace or Splunk.
 sidebar:
   label: Backends
   order: 0
@@ -16,7 +16,6 @@ The collector exports Teams telemetry to one or more **backends**. Each backend 
 |---|---|---|
 | **Dynatrace** | SaaS observability platform | Yes — Grail storage + dedicated dashboards app |
 | **Splunk** | SIEM / analytics platform | Yes — Splunk app with HEC ingestion |
-| **OTel / OTLP** | Open standard | No — export to any compatible endpoint |
 
 <CardGrid>
   <LinkCard
@@ -29,13 +28,8 @@ The collector exports Teams telemetry to one or more **backends**. Each backend 
     description="HEC-based ingestion with a dedicated Splunk app and dashboards."
     href={`${import.meta.env.BASE_URL}backends/splunk/`}
   />
-  <LinkCard
-    title="OTel / OTLP"
-    description="Generic OpenTelemetry export to any OTLP-compatible endpoint."
-    href={`${import.meta.env.BASE_URL}backends/otlp/`}
-  />
 </CardGrid>
 
 ## Adding a New Backend
 
-The collector supports multiple simultaneous outputs. You can enable more than one backend in your configuration by adding multiple entries under the `output` section. See <a href={`${import.meta.env.BASE_URL}collector/configuration/`}>Collector Configuration</a> for details.
+The collector supports multiple simultaneous outputs. You can enable more than one backend in your configuration by adding multiple entries under the `output` section. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>v1 Configuration</a> for details.

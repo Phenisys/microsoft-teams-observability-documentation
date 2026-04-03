@@ -32,8 +32,8 @@ See [Azure Permissions](/collector/azure-permissions/) for the step-by-step setu
 - Outbound network access to:
   - `graph.microsoft.com`
   - `login.microsoftonline.com`
-  - Your backend endpoint (Dynatrace, Splunk, or OTLP)
-- Sufficient CPU and memory for your call volume (see [Collector FAQ](/collector/faq/) for sizing guidance).
+  - Your backend endpoint (Dynatrace or Splunk)
+- Sufficient CPU and memory for your call volume.
 
 <Aside type="tip">
 The collector does not need to run on an ActiveGate or any Dynatrace component. Any host with the required network access and resources is suitable.
@@ -51,10 +51,6 @@ Depending on your chosen backend:
 **Splunk**
 - Splunk instance (Search Head) with admin access.
 - Ability to create HTTP Event Collector (HEC) inputs and indexes.
-
-**OTel / OTLP**
-- An accessible OTLP-compatible endpoint.
-- Authentication token or credentials if required.
 
 ## License
 
