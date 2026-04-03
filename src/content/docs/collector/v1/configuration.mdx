@@ -1,0 +1,192 @@
+---
+title: Configuration
+description: Full configuration reference for the v1 collector — YAML schema, outputs, features, and backward compatibility.
+sidebar:
+  label: Configuration
+  order: 2
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+Use this page as the reference for `config.yaml` in v1.
+
+## Required Sections
+
+Your configuration must include:
+
+- `microsoft_authentication`
+- `output` (at least one backend enabled)
+- `collection_config`
+- `collection_config.license_file`
+
+## Microsoft Authentication
+
+Use your Microsoft Entra ID app credentials for Microsoft Graph.
+
+<Tabs>
+  <TabItem label="Client secret">
+```yaml
+microsoft_authentication:
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_secret: "<client_secret>"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
+```
+  </TabItem>
+  <TabItem label="Certificate">
+```yaml
+microsoft_authentication:
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_certificate_path: "<path/to/cert.pem>"
+  microsoft_client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
+```
+  </TabItem>
+  <TabItem label="VAAC (Auto Attendant / Call Queue)">
+```yaml
+microsoft_authentication:
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_secret: "<client_secret>"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
+  microsoft_username: "<vaac_username>"
+  microsoft_password: "<vaac_password>"
+```
+  </TabItem>
+</Tabs>
+
+| Field | Description |
+| --- | --- |
+| `microsoft_tenant_id` | Entra ID tenant ID |
+| `microsoft_client_id` | Application (client) ID |
+| `microsoft_client_secret` | Client secret |
+| `microsoft_client_certificate_path` | Path to PEM certificate (alternative to secret) |
+| `microsoft_client_assertion_type` | Assertion type for certificate auth |
+| `microsoft_username` | VAAC username (Auto Attendant / Call Queue only) |
+| `microsoft_password` | VAAC password (Auto Attendant / Call Queue only) |
+
+## Output Platforms
+
+Enable at least one output backend. You can enable multiple backends.
+
+<Tabs>
+  <TabItem label="Dynatrace">
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "<tenant_id>"
+    dynatrace_api_token: "dt0c01..."
+```
+  </TabItem>
+  <TabItem label="Splunk">
+```yaml
+output:
+  splunk:
+    enabled: true
+    splunk_url: "https://splunk.example.com:8088/services/collector"
+    splunk_token: "<hec_token>"
+```
+  </TabItem>
+  <TabItem label="Console">
+```yaml
+output:
+  console:
+    enabled: true
+```
+  </TabItem>
+</Tabs>
+
+<Aside type="note">
+If all outputs are disabled, the collector fails to start.
+</Aside>
+
+## Collection Settings
+
+```yaml
+collection_config:
+  microsoft_max_call_duration_hours: 5
+  interval_collection_minutes: 1
+  logfile_log_level: "INFO"
+  license_file: "<path/to/license.lic>"
+```
+
+| Field | Default | Description |
+| --- | --- | --- |
+| `microsoft_max_call_duration_hours` | `5` | Retention window for the processed call ID cache |
+| `interval_collection_minutes` | `1` | Pause between collection cycles |
+| `logfile_log_level` | `INFO` | Log level: `DEBUG`, `INFO`, `WARNING`, `ERROR` |
+| `license_file` | — | Absolute path to the license file (required) |
+
+## Feature Flags
+
+All features default to `false`. Enable only what you need.
+
+```yaml
+collection_config:
+  features:
+    ms_teams_calls_collection:
+      enabled: true
+    ms_teams_issues_collection:
+      enabled: false
+    ms_teams_pstn_calls_collection:
+      enabled: false
+    ms_teams_direct_routing_calls_collection:
+      enabled: false
+    ms_teams_site_definition:
+      enabled: false
+    ms_teams_autoattendant_collection:
+      enabled: false
+    ms_teams_callqueue_collection:
+      enabled: false
+```
+
+| Feature key | Description |
+| --- | --- |
+| `ms_teams_calls_collection` | Call records (metadata + stream details) |
+| `ms_teams_issues_collection` | Microsoft 365 service health incidents |
+| `ms_teams_pstn_calls_collection` | PSTN call records |
+| `ms_teams_direct_routing_calls_collection` | Direct Routing call records |
+| `ms_teams_site_definition` | Custom subnet-to-site mapping via CSV |
+| `ms_teams_autoattendant_collection` | Auto Attendant Voice Analytics (requires VAAC credentials) |
+| `ms_teams_callqueue_collection` | Call Queue Voice Analytics (requires VAAC credentials) |
+
+## Optional: Site Definition CSV
+
+<Aside type="caution">
+This feature is deprecated and may be removed in a future version.
+</Aside>
+
+When `ms_teams_site_definition.enabled: true`, define `site_definition_file`:
+
+```yaml
+collection_config:
+  features:
+    ms_teams_site_definition:
+      enabled: true
+      site_definition_file: "<path/to/sites.csv>"
+```
+
+Required header:
+
+```
+subnet,site,country,lat,lon
+```
+
+Without this file, calls appear as unmapped in site views.
+
+## Backward Compatibility
+
+At startup, v1 can rewrite older YAML schemas automatically:
+
+- `enabled_features` -> `features`
+- `logging_services` -> `output.*.enabled`
+- missing feature keys -> added with `enabled: false`
+
+<Aside type="tip">
+If you maintain older v1 configs, keep a backup before first startup with a new binary.
+</Aside>

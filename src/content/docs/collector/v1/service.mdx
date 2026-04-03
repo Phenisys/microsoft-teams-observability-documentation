@@ -1,0 +1,106 @@
+---
+title: Service Management
+description: Run the v1 collector as a Linux systemd service using built-in CLI flags.
+sidebar:
+  label: Service
+  order: 4
+  badge:
+    text: Linux only
+    variant: caution
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Use this page to operate the v1 collector as a background Linux service.
+
+## Prerequisites
+
+- Linux host with `systemd`
+- Root privileges (`sudo`)
+- Stable config file path (absolute path recommended)
+
+<Aside type="caution">
+Use absolute paths with `--config` for service actions. Relative paths can break at startup.
+</Aside>
+
+## Recommended License Path
+
+Store the license in a root-owned path that the service can always read:
+
+```bash
+sudo mkdir -p /etc/ms-teams-observability-agent
+sudo cp ./license.lic /etc/ms-teams-observability-agent/license.lic
+sudo chmod 640 /etc/ms-teams-observability-agent/license.lic
+```
+
+Set the same absolute path in your config:
+
+```yaml
+collection_config:
+  license_file: /etc/ms-teams-observability-agent/license.lic
+```
+
+## Enable the Service
+
+```bash
+sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --enable_boot_start
+```
+
+## Enable a Named Instance (Optional)
+
+```bash
+sudo ./ms-teams-agent.bin --config /path/to/config-prod.yaml --enable_boot_start --service_name_suffix=-prod
+sudo ./ms-teams-agent.bin --config /path/to/config-staging.yaml --enable_boot_start --service_name_suffix=-staging
+```
+
+## Common Operations
+
+```bash
+# Check service status
+sudo systemctl status <service_name>
+
+# Follow live logs
+sudo journalctl -u <service_name> -f
+
+# Restart service after config change
+sudo systemctl restart <service_name>
+```
+
+<Aside type="note">
+If you use `--service_name_suffix`, update `<service_name>` accordingly in `systemctl` and `journalctl` commands.
+</Aside>
+
+## Update Configuration Safely
+
+<Steps>
+1. Back up the current config.
+2. Update config values.
+3. Restart the service:
+
+   ```bash
+   sudo systemctl restart <service_name>
+   ```
+
+4. Verify status and recent logs:
+
+   ```bash
+   sudo systemctl status <service_name>
+   sudo journalctl -u <service_name> -n 50
+   ```
+</Steps>
+
+## Replace an Existing Service
+
+If a service with the same name already exists, force recreation:
+
+```bash
+sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --enable_boot_start --force_service_creation
+```
+
+## Disable the Service
+
+```bash
+sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --disable_boot_start
+```
+
+This stops and removes the systemd service.

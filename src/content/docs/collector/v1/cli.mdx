@@ -1,0 +1,121 @@
+---
+title: CLI Reference
+description: Command-line options for the v1 collector binary.
+sidebar:
+  label: CLI
+  order: 3
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+Use this page as a reference for v1 global flags. v1 has no sub-commands.
+
+## Binary Names by OS
+
+- Linux: `ms-teams-agent.bin`
+- Windows: `ms-teams-agent.exe`
+
+## Command Shape
+
+```bash
+ms-teams-agent [--config <path>] [options]
+```
+
+| Flag | Purpose |
+| --- | --- |
+| `--version` | Print version and exit |
+| `--config <path>` | Start continuous collection |
+| `--ignore_state` | Run one cycle and ignore state file |
+| `--call_id <ID>` | Process one call and exit |
+| `--enable_boot_start` | Install as a Linux systemd service |
+| `--disable_boot_start` | Remove the Linux systemd service |
+| `--service_name_suffix=<suffix>` | Add suffix for named service instances |
+| `--force_service_creation` | Replace an existing service with same name |
+
+## Core Execution Commands
+
+**Continuous collection**
+
+<Tabs>
+  <TabItem label="Linux">
+```bash
+./ms-teams-agent.bin --config ./conf/config.yaml
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+.\ms-teams-agent.exe --config .\conf\config.yaml
+```
+  </TabItem>
+</Tabs>
+
+**Print version**
+
+<Tabs>
+  <TabItem label="Linux">
+```bash
+./ms-teams-agent.bin --version
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+.\ms-teams-agent.exe --version
+```
+  </TabItem>
+</Tabs>
+
+## State and Targeted Debug
+
+**Single cycle, ignore previous state**
+
+<Tabs>
+  <TabItem label="Linux">
+```bash
+./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+.\ms-teams-agent.exe --config .\conf\config.yaml --ignore_state
+```
+  </TabItem>
+</Tabs>
+
+**Process one call ID**
+
+<Tabs>
+  <TabItem label="Linux">
+```bash
+./ms-teams-agent.bin --config ./conf/config.yaml --call_id "<CALL_ID>"
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+.\ms-teams-agent.exe --config .\conf\config.yaml --call_id "<CALL_ID>"
+```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip">
+Use `--ignore_state` for first validation and troubleshooting. Remove it for normal operations.
+</Aside>
+
+## Service Flags (Linux)
+
+Use absolute config paths for service actions.
+
+```bash
+# Install and start service
+sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --enable_boot_start
+
+# Remove service
+sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --disable_boot_start
+
+# Named instance
+sudo ./ms-teams-agent.bin --config /path/to/config-prod.yaml --enable_boot_start --service_name_suffix=-prod
+
+# Replace an existing service with same name
+sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --enable_boot_start --force_service_creation
+```
+
+For complete operational procedures, see [Service Management (v1)](/collector/v1/service/).
