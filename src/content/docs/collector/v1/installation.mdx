@@ -1,0 +1,187 @@
+---
+title: Installation
+description: Install and start the v1 collector (legacy binary) — prerequisites, configuration, and first run.
+sidebar:
+  label: Installation
+  order: 1
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Before You Start
+
+1. Ensure your Microsoft Entra ID application has the required Microsoft Graph application permissions.
+2. Download the v1 binary (`ms-teams-agent.bin` on Linux, `ms-teams-agent.exe` on Windows) and the template config (`conf/template_config.yaml`).
+3. Obtain your license file and note its absolute path for `collection_config.license_file`.
+
+## Prerequisites
+
+**Host requirements**
+
+- Outbound access to:
+  - `graph.microsoft.com`
+  - `login.microsoftonline.com`
+  - your backend endpoint (Dynatrace or Splunk)
+- No Python runtime required (the binary is self-contained)
+
+**Microsoft Entra ID / Microsoft Graph permissions**
+
+- `CallRecords.Read.All`
+- `ServiceHealth.Read.All` (required if `ms_teams_issues_collection` is enabled)
+- `Reports.Read.All` (used for license validation)
+
+**VAAC features** (`ms_teams_autoattendant_collection`, `ms_teams_callqueue_collection`)
+
+- Set `microsoft_username` and `microsoft_password`
+- Use an account authorized on the Teams Voice Analytics API
+
+**License file**
+
+A valid license file is required. At startup, the agent validates:
+
+- license signature
+- tenant match
+- validity period
+- user count (standard license)
+
+## Build `config.yaml`
+
+Start from `conf/template_config.yaml` and set at least:
+
+```yaml
+microsoft_authentication:
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_secret: "<client_secret>"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
+
+output:
+  dynatrace:
+    enabled: false
+  splunk:
+    enabled: false
+  console:
+    enabled: true
+
+collection_config:
+  microsoft_max_call_duration_hours: 5
+  interval_collection_minutes: 1
+  logfile_log_level: "INFO"
+  license_file: "<path/to/license.lic>"
+  features:
+    ms_teams_calls_collection:
+      enabled: true
+    ms_teams_issues_collection:
+      enabled: false
+    ms_teams_pstn_calls_collection:
+      enabled: false
+    ms_teams_direct_routing_calls_collection:
+      enabled: false
+    ms_teams_site_definition:
+      enabled: false
+    ms_teams_autoattendant_collection:
+      enabled: false
+    ms_teams_callqueue_collection:
+      enabled: false
+```
+
+<Aside type="note">
+Enable at least one output (`dynatrace`, `splunk`, or `console`), otherwise the collector fails to start.
+</Aside>
+
+Full settings reference: [Configuration Reference](/collector/v1/configuration/)
+
+## Start the Collector
+
+<Tabs>
+  <TabItem label="Linux">
+```bash
+./ms-teams-agent.bin --config ./conf/config.yaml
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+.\ms-teams-agent.exe --config .\conf\config.yaml
+```
+  </TabItem>
+</Tabs>
+
+The collector runs in a continuous loop: collect, wait `interval_collection_minutes`, repeat.
+
+## First-Run Checks
+
+<Steps>
+1. Confirm the binary is available.
+
+   <Tabs>
+     <TabItem label="Linux">
+   ```bash
+   ./ms-teams-agent.bin --version
+   ```
+     </TabItem>
+     <TabItem label="Windows">
+   ```powershell
+   .\ms-teams-agent.exe --version
+   ```
+     </TabItem>
+   </Tabs>
+
+2. Run one cycle without reading previous state.
+
+   <Tabs>
+     <TabItem label="Linux">
+   ```bash
+   ./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
+   ```
+     </TabItem>
+     <TabItem label="Windows">
+   ```powershell
+   .\ms-teams-agent.exe --config .\conf\config.yaml --ignore_state
+   ```
+     </TabItem>
+   </Tabs>
+
+3. (Optional) Debug one call ID.
+
+   <Tabs>
+     <TabItem label="Linux">
+   ```bash
+   ./ms-teams-agent.bin --config ./conf/config.yaml --call_id "<CALL_ID>"
+   ```
+     </TabItem>
+     <TabItem label="Windows">
+   ```powershell
+   .\ms-teams-agent.exe --config .\conf\config.yaml --call_id "<CALL_ID>"
+   ```
+     </TabItem>
+   </Tabs>
+</Steps>
+
+## Verify Ingestion
+
+The collector creates these paths next to the binary:
+
+- `logs/pheniAgent_<tenant_id>.log` (daily rotation, 7 files retained)
+- `state/state_<tenant_id>.json` (processed call IDs)
+
+Follow logs in real time:
+
+<Tabs>
+  <TabItem label="Linux">
+```bash
+tail -f logs/pheniAgent_<tenant_id>.log
+```
+  </TabItem>
+  <TabItem label="Windows">
+```powershell
+Get-Content .\logs\pheniAgent_<tenant_id>.log -Wait
+```
+  </TabItem>
+</Tabs>
+
+Then confirm events appear in your backend (Dynatrace or Splunk).
+
+<Aside type="tip">
+For first validation, keep `console.enabled: true` and set `logfile_log_level: "DEBUG"`, then switch to production values.
+</Aside>

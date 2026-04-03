@@ -43,7 +43,6 @@ export default defineConfig({
 					label: "Collector",
 					items: [
 						{ slug: "collector" },
-						{ slug: "collector/azure-permissions" },
 						{
 							label: "v1",
 							collapsed: true,
@@ -52,6 +51,22 @@ export default defineConfig({
 								{ slug: "collector/v1/configuration" },
 								{ slug: "collector/v1/cli" },
 								{ slug: "collector/v1/service" }
+							],
+						},
+						{
+							label: "v2",
+							collapsed: true,
+							items: [
+								{ slug: "collector/v2" },
+								{ slug: "collector/v2/installation" },
+								{ slug: "collector/v2/configuration" },
+								{ slug: "collector/v2/cli" },
+								{ slug: "collector/v2/service" },
+								{ slug: "collector/v2/runbook" },
+								{ slug: "collector/v2/troubleshooting" },
+								{ slug: "collector/v2/faq" },
+								{ slug: "collector/v2/migration" },
+								{ slug: "collector/v2/azure-permissions" },
 							],
 						},
 						{

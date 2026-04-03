@@ -1,6 +1,6 @@
 ---
 title: Collector
-description: User documentation for ms-teams-agent installation, configuration, operations, and troubleshooting.
+description: User documentation for ms-teams-agent v1, v2, and Dynatrace Extension deployment models.
 sidebar:
   label: Overview
   order: 0
@@ -8,7 +8,7 @@ sidebar:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-The **MS Teams Observability Collector** (`ms-teams-agent`) retrieves Microsoft Teams telemetry and sends it to Dynatrace, Splunk, or OpenTelemetry backends.
+The **MS Teams Observability Collector** (`ms-teams-agent`) retrieves Microsoft Teams telemetry and sends it to configured backends.
 
 The collector is available in three deployment variants: **v1 (legacy)**, **v2 (current)**, and a **Dynatrace Extension** that runs inside an ActiveGate.
 
@@ -44,5 +44,30 @@ The collector is available in three deployment variants: **v1 (legacy)**, **v2 (
     title="Dynatrace Extension"
     description="Run the collector inside a Dynatrace ActiveGate — managed lifecycle, no YAML file required."
     href={`${import.meta.env.BASE_URL}collector/extension/`}
+  />
+</CardGrid>
+
+## v2
+
+<CardGrid>
+  <LinkCard
+    title="Overview"
+    description="Main v2 documentation entry point."
+    href={`${import.meta.env.BASE_URL}collector/v2/`}
+  />
+  <LinkCard
+    title="Installation"
+    description="Install and start the v2 collector."
+    href={`${import.meta.env.BASE_URL}collector/v2/installation/`}
+  />
+  <LinkCard
+    title="Configuration"
+    description="Set authentication, outputs, and feature flags for v2."
+    href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}
+  />
+  <LinkCard
+    title="CLI"
+    description="Run, validate, service, and state commands."
+    href={`${import.meta.env.BASE_URL}collector/v2/cli/`}
   />
 </CardGrid>
