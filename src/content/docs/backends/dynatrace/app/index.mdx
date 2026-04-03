@@ -1,88 +1,110 @@
 ---
 title: Explore the Dynatrace Application
-description: User guide for the MS Teams Observability Dynatrace application — seven pages covering call quality, site analysis, user activity, and configuration.
+description: Functional user guide for the MS Teams Observability Dynatrace app.
 sidebar:
   label: Overview
   order: 0
 ---
 
 import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
+import dynatraceAppHomePage from '../../../../../assets/images/dynatrace-app-home-page.png';
 
-The MS Teams Observability application is installed in your Dynatrace environment and provides operational visibility into your Microsoft Teams estate. It is built on top of the data collected by the agent and stored in the Grail bucket.
+MS Teams Observability is a Dynatrace application that brings Microsoft Teams call quality data into your Dynatrace environment. It allows you to monitor call health, diagnose quality issues, track user activity, inspect network performance by site, and follow Microsoft service incidents from one interface.
 
-**Repository:** <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-app" target="_blank" rel="noopener noreferrer">microsoft-teams-observability-dynatrace-app</a> | **Latest release:** <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-app/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a> | **Developed by:** Phenisys | **Platform:** Dynatrace AppEngine
+**Repository:** <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-app" target="_blank" rel="noopener noreferrer">microsoft-teams-observability-dynatrace-app</a> | **Latest release:** <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-app/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a>
 
-The application has seven pages accessible from the top navigation bar:
+## Navigation
 
 <CardGrid>
   <LinkCard
-    title="Installation"
-    description="Install the app from Dynatrace Hub or via ZIP upload, and activate Live mode."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}
-  />
-  <LinkCard
     title="Home"
-    description="7-day dashboard with call volume, quality percentage, caller count, and platform distribution."
+    description="7-day summary of call activity and quality."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/home/`}
   />
   <LinkCard
     title="Sites"
-    description="Call quality and network performance aggregated by geographic location and subnet."
+    description="Call quality and network performance by geographic site."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}
   />
   <LinkCard
     title="Calls"
-    description="Searchable and filterable list of all recorded MS Teams calls."
+    description="Searchable and filterable list of all calls."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}
   />
   <LinkCard
     title="Call Overview"
-    description="Full analysis of a single call — participants, network topology, stream metrics, and AI root cause analysis."
+    description="Detailed analysis of one call, including AI analysis."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}
   />
   <LinkCard
     title="Users"
-    description="Per-user analytics: call counts, quality breakdown, devices, and network details."
+    description="Per-user activity, quality stats, and device/network details."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/users/`}
   />
   <LinkCard
     title="Issues"
-    description="Active and resolved Microsoft service health incidents for your tenant."
+    description="Active and resolved Microsoft service health incidents."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/issues/`}
   />
   <LinkCard
     title="Configuration"
-    description="All application settings — license, integrations, site mapping, AI analysis, and permissions."
+    description="All app settings: license, integrations, pipeline, domains, permissions."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}
+  />
+  <LinkCard
+    title="Installation"
+    description="Install the app and activate Live mode."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}
   />
 </CardGrid>
 
----
+## Screenshot
 
-## Demo Mode
-
-The application supports a **Demo Mode** that replaces all live data with mock data. Useful for testing the interface without a real Microsoft Teams connection. Demo Mode can be enabled from the [Configuration](../../../backends/dynatrace/app/configuration/) page.
-
-When Demo Mode is active, the following features are restricted:
-- Custom timeframe selection
-- Exporting call details
-- AI-driven insights
-
-<Aside type="note">
-Live Mode requires a valid Phenisys license. See [License](/getting-started/license/) for how to obtain and place it.
-</Aside>
-
----
+<figure>
+  <img src={dynatraceAppHomePage.src} alt="MS Teams Observability app Home page" />
+  <figcaption>Application entry page (Home).</figcaption>
+</figure>
 
 ## Common UI Patterns
 
 ### Timeframe Selector
 
-Available on Sites, Calls, Users, and Issues pages. Presets range from **Last 15 minutes** to **Last 30 days**. The selected range is stored in the URL (`?from=...&to=...`).
+Available on **Sites**, **Calls**, **Users**, and **Issues** pages.
+
+| Label | Range |
+|-------|-------|
+| Last 15 minutes | `now()-15m` to `now()` |
+| Last 30 minutes | `now()-30m` to `now()` |
+| Last 1 hour | `now()-1h` to `now()` |
+| Last 2 hours | `now()-2h` to `now()` |
+| Last 6 hours | `now()-6h` to `now()` |
+| Last 24 hours | `now()-24h` to `now()` |
+| Last 3 days | `now()-3d` to `now()` |
+| Last 7 days | `now()-7d` to `now()` |
+| Last 30 days | `now()-30d` to `now()` |
+
+Custom date/time selection is also available. Selected values are stored in URL (`?from=...&to=...`).
 
 ### Update Button
 
-Present on pages with a filter bar. Applies filter and timeframe changes. Highlighted when values have been modified but not yet applied. Disabled while a query is in progress or if the filter syntax is invalid.
+Present on pages with filters. It applies the current filter/timeframe values.
+
+- Highlighted when values were changed but not applied.
+- Disabled during query execution.
+- Disabled when filter syntax is invalid.
+
+### Advanced Filter Field
+
+Used on **Calls**, **Users**, and **Sites** pages.
+
+- Structured syntax with suggestions while typing.
+- General format: `key operator "value"`.
+- Example: `health = "Good"`.
+- Stored in URL (`?filter=...`).
+
+### Open with Notebooks
+
+Available in sections that expose a Dynatrace query. Opens the underlying query in Dynatrace Notebooks with current context.
 
 ### Health Indicators
 
@@ -92,11 +114,17 @@ Present on pages with a filter bar. Applies filter and timeframe changes. Highli
 | Poor | Red icon | Call had quality degradation |
 | Unclassified | Grey icon | No quality data available |
 
-### Toast Notifications
+## Toast Notifications
 
-| Type | Color | When |
-|------|-------|------|
-| Success | Green | Action completed |
-| Warning | Yellow | Action completed with caveats |
-| Critical | Red | Action failed |
-| Info | Blue | Operation in progress |
+- **Success** (green): action completed.
+- **Warning** (yellow): action completed with caveats.
+- **Critical** (red): action failed or configuration invalid.
+- **Info** (blue): operation in progress.
+
+## Demo Mode
+
+Demo Mode replaces live data with mock data. It can be enabled/disabled from [Configuration](/backends/dynatrace/app/configuration/).
+
+<Aside type="note">
+When Demo Mode is active, indicators appear in the License panel and some advanced features are restricted.
+</Aside>

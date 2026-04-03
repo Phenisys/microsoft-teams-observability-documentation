@@ -1,6 +1,6 @@
 ---
 title: Home
-description: Monitor Microsoft Teams call quality, incidents, and routing from Graph API collection to operational dashboards.
+description: "Start quickly with Microsoft Teams observability: collector setup, backend integration, dashboards, and troubleshooting."
 template: splash
 hero:
   tagline: End-to-end Microsoft Teams observability from Graph API collection to operational dashboards.
@@ -12,42 +12,145 @@ hero:
       link: getting-started/
       icon: right-arrow
       variant: primary
-    - text: Install the collector
+    - text: Install the Collector
       link: collector/v1/installation/
       icon: right-arrow
       variant: secondary
 ---
 
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard, Steps, Aside } from '@astrojs/starlight/components';
+import dynatraceAppHomePage from '../../assets/images/dynatrace-app-home-page.png';
+import dynatraceDashboardSites from '../../assets/images/dynatrace-dashboard-sites.png';
+import splunkDashboardOverviewPage from '../../assets/images/splunk-dashboard-overview-page.png';
 
-## What is MS Teams Observability?
+MS Teams Observability helps you move from raw Microsoft Graph telemetry to operational visibility on call quality, user impact, site/network health, and Microsoft incidents.
 
-MS Teams Observability is a two-part solution:
+## Collector Architecture
 
-- **Collector (`ms-teams-agent`)**: pulls Teams telemetry from Microsoft Graph API and exports to Dynatrace or Splunk.
-- **Backend integrations**: store and visualise call quality, incidents, site compliance, and user activity in your chosen observability platform.
+```mermaid
+flowchart LR
+    A[Microsoft Graph API] --> B[MS Teams Observability Collector]
+    B --> C[Dynatrace Backend]
+    B --> D[Splunk Backend]
+    B --> E[Additional Backend Output]
 
-## Recommended setup path
+    C --> F[Dashboards and App Pages]
+    D --> G[Dashboards and Searches]
+```
+
+This flow shows how a single collector can ingest Microsoft Teams telemetry once and forward it to multiple observability platforms.
+
+## Start in 15 Minutes
+
+<Steps>
+1. Check [Prerequisites](/getting-started/prerequisites/) (Azure app, permissions, network access).
+2. Deploy the [Collector](/collector/v1/installation/) and run one first cycle.
+3. Connect your backend in [Backends](/backends/) (Dynatrace or Splunk).
+4. Open dashboards and validate live data.
+</Steps>
+
+<Aside type="tip">
+If you are setting up for the first time, use this order without skipping steps. Most setup issues come from missing prerequisites or incomplete backend wiring.
+</Aside>
+
+## Visual Overview
+
+<figure>
+  <img src={dynatraceAppHomePage.src} alt="Dynatrace extension collector configuration page" />
+  <figcaption>Dynatrace: extension configuration and setup context.</figcaption>
+</figure>
+
+<figure>
+  <img src={dynatraceDashboardSites.src} alt="Dynatrace sites dashboard" />
+  <figcaption>Dynatrace: sites dashboard example.</figcaption>
+</figure>
+
+<figure>
+  <img src={splunkDashboardOverviewPage.src} alt="Splunk overview dashboard" />
+  <figcaption>Splunk: overview dashboard example.</figcaption>
+</figure>
+
+## Choose Your Backend
 
 <CardGrid>
   <LinkCard
-    title="1) Check Prerequisites"
-    description="Azure app registration, Graph permissions, network access, and backend access."
-    href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}
+    title="Dynatrace"
+    description="Full integration with Grail, OpenPipeline, and a dedicated application for operations and troubleshooting."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/`}
   />
   <LinkCard
-    title="2) Deploy the Collector"
-    description="Validate config, test connectivity, run in service mode, and start ingestion."
-    href={`${import.meta.env.BASE_URL}collector/v1/installation/`}
+    title="Splunk"
+    description="HEC-based ingestion with Splunk dashboards for overview, call details, site quality, and NPA."
+    href={`${import.meta.env.BASE_URL}backends/splunk/`}
+  />
+</CardGrid>
+
+## What You Can Monitor
+
+<CardGrid>
+  <LinkCard
+    title="Call Quality"
+    description="Detect degradation trends, isolate poor calls, and inspect stream-level metrics."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}
   />
   <LinkCard
-    title="3) Connect a Backend"
-    description="Configure Dynatrace or Splunk to receive collector data."
-    href={`${import.meta.env.BASE_URL}backends/`}
+    title="Users Impact"
+    description="Identify who is impacted, how often, and in which device/network context."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/users/`}
   />
   <LinkCard
-    title="4) Use the Dashboards"
-    description="Navigate operational dashboards for call quality, sites, users, and incident correlation."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}
+    title="Sites & Networks"
+    description="Track quality by location/subnet, NPA status, and network indicators."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}
+  />
+  <LinkCard
+    title="Microsoft Issues"
+    description="Correlate tenant degradation with active and resolved Microsoft incidents."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/issues/`}
+  />
+</CardGrid>
+
+## Documentation by Task
+
+<CardGrid>
+  <LinkCard
+    title="First Deployment"
+    description="Product overview, prerequisites, collector install, and backend connection."
+    href={`${import.meta.env.BASE_URL}getting-started/`}
+  />
+  <LinkCard
+    title="Collector Operations"
+    description="YAML configuration, CLI, service mode, and extension deployment."
+    href={`${import.meta.env.BASE_URL}collector/`}
+  />
+  <LinkCard
+    title="Dynatrace Operations"
+    description="Platform setup, app installation, dashboards, and troubleshooting."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/`}
+  />
+  <LinkCard
+    title="Splunk Operations"
+    description="Application installation, dashboard pages, HEC connection, and troubleshooting."
+    href={`${import.meta.env.BASE_URL}backends/splunk/`}
+  />
+</CardGrid>
+
+## Troubleshooting Quick Access
+
+<CardGrid>
+  <LinkCard
+    title="Collector Troubleshooting"
+    description="Investigate collection/authentication/export issues on the agent side."
+    href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}
+  />
+  <LinkCard
+    title="Dynatrace Troubleshooting"
+    description="Resolve ingestion, app, and dashboard issues in Dynatrace."
+    href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}
+  />
+  <LinkCard
+    title="Splunk Troubleshooting"
+    description="Resolve HEC/index/dashboard issues in Splunk."
+    href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}
   />
 </CardGrid>

@@ -1,118 +1,120 @@
 ---
 title: Use the Users Page
-description: The Users page provides per-user analytics across your Microsoft Teams environment — call stats, network details, device info, and last activity.
+description: "Detailed functional guide for the Users page: columns, controls, states, and navigation."
 sidebar:
   label: Users
   order: 5
 ---
 
+import { Aside } from '@astrojs/starlight/components';
+import dynatraceAppUsersPage from '../../../../../assets/images/dynatrace-app-users-page.png';
+
 > **Path:** `/users`
 
-The Users page provides **per-user analytics** across your Microsoft Teams environment. For each user observed in the selected time window, it shows their identity, call statistics, network configuration, device information, and when they were last active.
+## What This Page Shows
+
+The Users page provides per-user analytics across your Microsoft Teams environment. For each user in the selected timeframe, it shows identity, call statistics, network data, device usage, and last activity.
 
 Breadcrumb navigation: `Home > Users`
 
----
+## Screenshot
+
+<figure>
+  <img src={dynatraceAppUsersPage.src} alt="Users page with grouped analytics table" />
+  <figcaption>Users page overview.</figcaption>
+</figure>
 
 ## Filter Bar
 
 ### Filter Field
 
-An advanced filter input with type-ahead suggestions. Filters are applied to user-level data and stored in the URL (`?filter=...`).
+Advanced filter input with the same syntax style as Calls.
 
-**Available filter keys:**
-
-| Key | Type | Description |
-|-----|------|-------------|
-| Participant / user name | String | Filter by user display name |
+Use this field to isolate a specific user or user pattern before comparing quality/network/device context.
 
 ### Timeframe Selector
 
-Standard preset time range picker. Scopes which calls are included in the statistics. Stored in URL as `?from=...&to=...`.
+Scopes which calls are included in user statistics. Stored as `?from=...&to=...`.
 
 ### Update Button
 
-Applies the current filter and timeframe.
+Applies filter and timeframe.
 
----
+When values change, this button applies them and refreshes all table metrics.
 
 ## Users Table
 
-A sortable, paginated table where **each row represents one user** observed in the selected time period. Columns are organized into grouped headers.
+Each row represents one user for the selected period. Columns are grouped.
 
-### Identity Columns
+This page helps answer three questions quickly:
+- who is impacted,
+- how often they are impacted,
+- in which network/device context.
 
-| Column | Description |
-|--------|-------------|
-| **ID** | User's unique identifier |
-| **Name** | User's display name. Clicking navigates to [Calls](../../../backends/dynatrace/app/calls/) filtered for that user. Hover shows: *"See calls for this user"*. |
-| **Email** | User's email address |
+### Identity columns
 
-### Network Group
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| ID | No | User unique identifier |
+| Name | No | Display name; click opens Calls filtered for this user |
+| Email | No | User email |
 
-| Column | Description |
-|--------|-------------|
-| **IP(s)** | IP addresses observed for this user. Full list shown on hover. |
-| **Subnet(s)** | Network subnets, comma-separated. "Unknown" chip if none. |
-| **Protocol(s)** | Transport protocols used. UDP = green, TCP = red. Overflow collapsed with a count indicator. |
+### Network group
 
-### Calls Group
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| IP(s) | No | Observed IP addresses |
+| Subnet(s) | No | Observed subnets |
+| Protocol(s) | No | UDP/TCP/other chips |
 
-| Column | Sortable | Color coding | Description |
-|--------|----------|-------------|-------------|
-| **Total** | Yes (desc) | Neutral | Total calls in the time window |
-| **Good** | Yes (desc) | Green when > 0 | Calls with Good quality |
-| **Poor** | Yes (desc) | Red when > 0 | Calls with Poor quality |
-| **Unclassified** | Yes (desc) | Neutral | Calls without quality classification |
-| **Average Duration** | Yes (desc) | Neutral | Mean call duration (HH:MM:SS) |
-| **Max Duration** | Yes (desc) | Neutral | Longest call (HH:MM:SS) |
-| **Min Duration** | Yes (desc) | Neutral | Shortest call (HH:MM:SS) |
+### Calls group
 
-Duration values show "-" when no data is available.
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| Total | Yes | Total calls |
+| Good | Yes | Good calls |
+| Poor | Yes | Poor calls |
+| Unclassified | Yes | Unclassified calls |
+| Average Duration | Yes | Mean duration |
+| Max Duration | Yes | Longest duration |
+| Min Duration | Yes | Shortest duration |
 
-### Devices Group
+These columns are useful to identify recurrent degradation for specific users.
 
-| Column | Description |
-|--------|-------------|
-| **Platform(s)** | Windows, macOS, iOS, Android, Web, Unknown. Shown as colored chips. Full list visible on hover. |
-| **Host(s)** | Computer/host device names, comma-separated |
-| **Input(s)** | Audio input devices (microphones) used |
-| **Output(s)** | Audio output devices (speakers/headphones) used |
+### Devices group
 
-### Teams Version
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| Platform(s) | Yes | Windows/macOS/iOS/Android/Web/Unknown |
+| Host(s) | No | Host device names |
+| Input(s) | No | Audio input devices |
+| Output(s) | No | Audio output devices |
 
-| Column | Description |
-|--------|-------------|
-| **Teams Version** | MS Teams client version(s) used. Each version as a chip. Hover shows full version string. "-" if unavailable. |
+Device columns help identify clusters (same platform/version/peripheral profile across impacted users).
 
-### Last Seen
+### Additional columns
 
-| Column | Description |
-|--------|-------------|
-| **Last Seen** | Timestamp of the user's most recent activity. Sorted descending (most recent first). |
-
----
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| Teams Version | No | Observed client versions |
+| Last Seen | Yes | Most recent activity |
 
 ## Table Controls
 
 | Control | Description |
 |---------|-------------|
-| Column visibility | Show/hide individual columns |
-| Column ordering | Drag to reorder |
-| Line wrap | Toggle text wrapping |
-| Pagination | 10 / 20 / 50 / 100 rows per page |
-
----
+| Column visibility | Show/hide columns |
+| Column ordering | Reorder columns |
+| Line wrap | Toggle wrapping |
+| Pagination | 10/20/50/100 rows |
 
 ## Empty / Error States
 
-| Situation | What you see |
-|-----------|-------------|
+| Situation | Behavior |
+|-----------|----------|
 | Loading | Spinner / skeleton rows |
-| No users match filter | Empty table |
-| Filter syntax invalid | Update button disabled |
-
----
+| No matching users | Empty table |
+| Invalid filter | Update disabled |
 
 ## URL Parameters
 
@@ -122,10 +124,12 @@ Duration values show "-" when no data is available.
 | `from` | Timeframe start | `now()-7d` |
 | `to` | Timeframe end | `now()` |
 
----
-
-## Navigation from this page
+## Navigation from This Page
 
 | Action | Destination |
 |--------|-------------|
-| Click a user name | [Calls](../../../backends/dynatrace/app/calls/) page, pre-filtered for that user, with the same timeframe applied |
+| Click user name | [Calls](/backends/dynatrace/app/calls/) pre-filtered for this user |
+
+<Aside type="note">
+Use Users to identify affected people and recurrence, then use Calls/Call Overview for root-cause analysis.
+</Aside>

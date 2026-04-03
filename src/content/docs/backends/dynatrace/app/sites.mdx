@@ -1,237 +1,287 @@
 ---
 title: Use the Sites Page
-description: The Sites page analyzes MS Teams call quality and network performance aggregated by geographic location and subnet.
+description: "Functional reference of the Sites page: filters, NPA, calls/network sections, and table actions."
 sidebar:
   label: Sites
   order: 2
 ---
 
 import { Aside } from '@astrojs/starlight/components';
+import dynatraceAppSitePageNpaSection from '../../../../../assets/images/dynatrace-app-site-page-npa-section.png';
+import dynatraceAppSitePageNpaSectionMap from '../../../../../assets/images/dynatrace-app-site-page-npa-section-map.png';
+import dynatraceAppSitePageNpaSectionComplianceDistribution from '../../../../../assets/images/dynatrace-app-site-page-npa-section-compliance_distribution.png';
+import dynatraceAppSitePageCallSection from '../../../../../assets/images/dynatrace-app-site-page-call-section.png';
+import dynatraceAppSitePageCallsSectionCountDistribution from '../../../../../assets/images/dynatrace-app-site-page-calls-section-count_distribution.png';
+import dynatraceAppSitePageCallsSectionQualityDistribution from '../../../../../assets/images/dynatrace-app-site-page-calls-section-quality_distribution.png';
+import dynatraceAppSitePageCallsSectionRootCauses from '../../../../../assets/images/dynatrace-app-site-page-calls-section-root_causes.png';
+import dynatraceAppSitePageCallsSectionDetailsTable from '../../../../../assets/images/dynatrace-app-site-page-calls-section-details_table.png';
+import dynatraceAppSitePageNetworkSection from '../../../../../assets/images/dynatrace-app-site-page-network-section.png';
+import dynatraceAppSitePageNetworkSectionOverview from '../../../../../assets/images/dynatrace-app-site-page-network-section-overview.png';
+import dynatraceAppSitePageNetworkSectionStatistics from '../../../../../assets/images/dynatrace-app-site-page-network-section-statistics.png';
 
 > **Path:** `/sites`
 
-The Sites page lets you analyze Microsoft Teams call quality and network performance **aggregated by geographic location**. Each row in the tables represents a site (a named location associated with one or more network subnets).
+## What This Page Shows
 
-<Aside type="caution">
-If you haven't configured email domain filters yet, a warning toast will appear prompting you to go to [Configuration](../../../backends/dynatrace/app/configuration/). Calls won't be filtered by domain until domains are set.
-</Aside>
+The Sites page analyzes Microsoft Teams call quality and network performance aggregated by geographic location.
+
+Each row in site tables represents a location associated with one or more network subnets.
 
 Breadcrumb navigation: `Home > Sites`
 
----
+<Aside type="note">
+If domains are not configured, the page can include unwanted identities. Configure domains in [Configuration](/backends/dynatrace/app/configuration/).
+</Aside>
 
 ## Page Header
 
-The header includes a **menu** (three-dot icon) with two actions:
+Header menu actions:
 
 | Action | Description |
 |--------|-------------|
-| Show NPA Guide | Opens a panel explaining how NPA (Network Performance Assessment) scoring works |
-| Go to Microsoft Documentation | Opens the official Microsoft network quality documentation |
+| Show NPA Guide | Opens guidance about NPA scoring |
+| Go to Microsoft Documentation | Opens Microsoft network quality documentation |
 
----
+The header menu is informational: it helps interpret NPA scoring and align with Microsoft recommendations.
 
 ## Filter Bar
 
 ### Filter Field
 
-An advanced filter input with real-time type-ahead suggestions.
+Advanced filter with real-time suggestions.
 
-**Available filter keys:**
+| Key | Type | Description | Operators |
+|-----|------|-------------|-----------|
+| `location` | String | Site location name | `=`, `!=`, `~`, `!~`, `in ()`, `not in ()` |
+| `country` | String | Country code or name | `=`, `!=`, `~`, `!~`, `in ()`, `not in ()` |
+| `subnet` | CIDR | Network subnet | `=`, `!=`, `~`, `!~`, `in ()`, `not in ()` |
+| `npaStatus` | Enum | NPA status | `=`, `!=`, `in ()`, `not in ()` |
+| `streamCount` | Number | Total streams | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `goodStreamCount` | Number | Good streams | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `poorStreamCount` | Number | Poor streams | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `unclassifiedStreamCount` | Number | Unclassified streams | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `callCount` | Number | Total calls | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `goodCallCount` | Number | Good calls | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `poorCallCount` | Number | Poor calls | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `unclassifiedCallCount` | Number | Unclassified calls | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `usersCount` | Number | Total users | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `jitterIn` / `jitterOut` / `jitterOverall` | Number | Jitter (ms) | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `rttIn` / `rttOut` / `rttOverall` | Number | RTT (ms) | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `packetLossIn` / `packetLossOut` / `packetLossOverall` | Number | Packet loss (%) | `=`, `!=`, `>`, `>=`, `<`, `<=` |
+| `videoFramerateIn` / `videoFramerateOut` / `videoFramerateOverall` | Number | Framerate (fps) | `=`, `!=`, `>`, `>=`, `<`, `<=` |
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `location` | String | Site location name |
-| `country` | String | Country code or name |
-| `subnet` | CIDR | Network subnet (e.g., `10.64.0.0/24`) |
-| `npaStatus` | Enum | NPA compliance status |
-| `streamCount` | Number | Total number of streams |
-| `goodStreamCount` | Number | Number of good streams |
-| `poorStreamCount` | Number | Number of poor streams |
-| `unclassifiedStreamCount` | Number | Number of unclassified streams |
-| `callCount` | Number | Total number of calls |
-| `goodCallCount` | Number | Number of good calls |
-| `poorCallCount` | Number | Number of poor calls |
-| `unclassifiedCallCount` | Number | Number of unclassified calls |
-| `usersCount` | Number | Total number of users |
-| `jitterIn` / `jitterOut` / `jitterOverall` | Number (ms) | Jitter values |
-| `rttIn` / `rttOut` / `rttOverall` | Number (ms) | Round-trip time |
-| `packetLossIn` / `packetLossOut` / `packetLossOverall` | Number (%) | Packet loss |
-| `videoFramerateIn` / `videoFramerateOut` / `videoFramerateOverall` | Number (fps) | Video framerate |
+Valid `npaStatus` values: `compliant`, `uncompliant`, `undetermined`.
 
-**Valid values for `npaStatus`:** `compliant`, `uncompliant`, `undetermined`
-
-**String operators:** `=`, `!=`, `~`, `!~`, `in ()`, `not in ()`
-
-**Numeric operators:** `=`, `!=`, `>`, `>=`, `<`, `<=`
-
-The filter is stored in the URL (`?filter=...`).
+Filter is validated in real time and stored in URL (`?filter=...`).
 
 ### Timeframe
 
-Preset time range selector. Default: **last 2 hours**. Stored in URL as `?from=...&to=...`.
+Preset timeframe selector. Default: last 2 hours.
+
+Stored as `?from=...&to=...`.
 
 ### Include Unmapped
 
-Controls whether sites without a configured location mapping are included.
+Controls inclusion of unmapped locations.
 
 | Value | Behavior |
 |-------|----------|
-| Yes | Includes unmapped network segments |
-| No (default) | Excludes unmapped entries |
+| Yes | Include unmapped segments |
+| No (default) | Exclude unmapped entries |
 
-Stored in URL as `?includeUnmapped=true/false`.
+Stored as `?includeUnmapped=true/false`.
 
 ### Update Button
 
-Applies the current filter and timeframe. Re-fetches if no change was made.
+Applies filter and timeframe. If unchanged, it re-fetches current data.
 
 ### Reset Button
 
-Clears all filters and resets the timeframe to the default (last 2 hours) and Include Unmapped to `true`.
-
----
+Resets filter/timeframe and `includeUnmapped` to defaults.
 
 ## Section 1: Network Performance Assessment (NPA)
 
-### NPA Map (70% width)
+<figure>
+  <img src={dynatraceAppSitePageNpaSection.src} alt="Sites NPA section" />
+  <figcaption>NPA section overview.</figcaption>
+</figure>
 
-A geographic map showing all sites color-coded by NPA compliance status:
+### NPA Map
+
+<figure>
+  <img src={dynatraceAppSitePageNpaSectionMap.src} alt="NPA map" />
+  <figcaption>NPA map by site.</figcaption>
+</figure>
+
+Map markers are color-coded by status:
 
 | Color | Status | Meaning |
 |-------|--------|---------|
-| Green | Compliant | Site meets Microsoft's network quality thresholds |
+| Green | Compliant | Site meets thresholds |
 | Red | Uncompliant | Site does not meet thresholds |
-| Grey | Undetermined | Not enough data to classify |
+| Grey | Undetermined | Not enough data |
 
-### NPA Compliance Distribution Chart (30% width)
+Clicking or hovering a site marker provides direct context for that location in the selected window.
 
-A pie chart showing the proportion of sites in each NPA status.
+### NPA Compliance Distribution
 
----
+<figure>
+  <img src={dynatraceAppSitePageNpaSectionComplianceDistribution.src} alt="NPA compliance distribution" />
+  <figcaption>NPA compliance distribution.</figcaption>
+</figure>
+
+Shows proportion of sites by NPA status.
+
+This chart helps estimate if degradation is localized or widespread.
 
 ## Section 2: Calls
 
-### Call Quality Distribution Chart (50% width)
+<figure>
+  <img src={dynatraceAppSitePageCallSection.src} alt="Sites calls section" />
+  <figcaption>Calls section overview.</figcaption>
+</figure>
 
-Distribution of call quality (Good / Poor / Unclassified) across all sites.
+### Call count distribution
 
-### Issues Causes Chart (50% width)
+<figure>
+  <img src={dynatraceAppSitePageCallsSectionCountDistribution.src} alt="Call count distribution by site" />
+  <figcaption>Call volume by site.</figcaption>
+</figure>
 
-A pie chart breaking down the root causes of poor call quality (e.g., packet loss, jitter, latency).
+### Call quality distribution
 
-### Call Distribution by Site Chart
+<figure>
+  <img src={dynatraceAppSitePageCallsSectionQualityDistribution.src} alt="Call quality distribution chart" />
+  <figcaption>Good / Poor / Unclassified distribution.</figcaption>
+</figure>
 
-A bar chart showing call volume broken down by site.
+### Root causes
+
+<figure>
+  <img src={dynatraceAppSitePageCallsSectionRootCauses.src} alt="Root causes chart" />
+  <figcaption>Distribution of poor-call causes.</figcaption>
+</figure>
 
 ### Calls Details Table
 
-A sortable, paginated table of all sites with call and stream statistics.
+<figure>
+  <img src={dynatraceAppSitePageCallsSectionDetailsTable.src} alt="Sites calls details table" />
+  <figcaption>Calls details table.</figcaption>
+</figure>
 
-#### Search Filter
+#### Search filter
 
-A text input filtering visible rows by **location name, country, or subnet** (client-side — no re-query).
+Client-side text filter by location, country, or subnet.
 
-#### Identity Columns
+This search does not trigger a backend query; it refines the currently loaded rows instantly.
 
-| Column | Sortable | Description |
-|--------|----------|-------------|
-| Location | Yes | Site name. Clicking navigates to [Calls](../../../backends/dynatrace/app/calls/) pre-filtered for that location. |
-| Country | Yes | Country associated with the site |
-| Subnet(s) | Yes | Network subnet(s), sorted numerically |
+#### Columns
 
-#### Summary Column
-
-| Column | Sortable | Description |
-|--------|----------|-------------|
-| Users | Yes | Total unique users from this site |
-
-#### Calls Group
-
-| Column | Sortable | Color coding |
-|--------|----------|-------------|
-| Total | Yes | Neutral |
-| Good | Yes | Green when > 0 |
-| Poor | Yes | Red when > 0 |
-| Unclassified | Yes | Neutral |
-
-#### Streams Group
+Identity columns:
 
 | Column | Sortable | Description |
 |--------|----------|-------------|
-| Total | Yes | Total audio/video streams |
-| Good | Yes | Green when > 0 |
-| Poor | Yes | Red when > 0 |
-| Unclassified | Yes | Neutral |
-| Ratio | Yes | Percentage of poor streams (e.g., `12.50 %`), red when > 0 |
+| Location | Yes | Site name; click opens Calls page filtered by location |
+| Country | Yes | Site country |
+| Subnet(s) | Yes | Associated subnets |
 
-**Row color-coding (NPA status):** Compliant = green accent, Uncompliant = red accent, Undetermined = grey accent.
+Summary:
 
-#### Row Actions (on hover)
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| Users | Yes | Unique users from this site |
+
+Calls group:
+
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| Total | Yes | Total calls |
+| Good | Yes | Good calls |
+| Poor | Yes | Poor calls |
+| Unclassified | Yes | Unclassified calls |
+
+Streams group:
+
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| Total | Yes | Total streams |
+| Good | Yes | Good streams |
+| Poor | Yes | Poor streams |
+| Unclassified | Yes | Unclassified streams |
+| Ratio | Yes | Poor stream ratio |
+
+#### Row actions
 
 | Action | Description |
 |--------|-------------|
-| External link icon | Navigates to Calls filtered by that location |
-| Copy button | Copies the full row data as JSON |
+| External link | Open Calls page filtered by location |
+| Copy | Copy row as JSON |
 
-#### Cell Actions (right-click)
+#### Cell context menu
 
-- **Copy** — copies the cell value
-- **Add filter** (text columns: Location, Country, Subnet): `=` or `!=`
-- **Add filter** (numeric columns): `<`, `<=`, `=`, `>=`, `>`, `!=`
-- **Lookup IPAM** (Subnet column): opens IP in your IPAM solution; links to Configuration if not configured
-- **View calls for this site** — navigates to Calls filtered for this location
+- Copy value
+- Add filter (`=`, `!=` on text; comparison operators on numeric columns)
+- Lookup IPAM (Subnet)
+- View calls for this site
 
-#### Table Controls
+#### Table controls
 
-| Control | Description |
-|---------|-------------|
-| Column visibility | Show/hide individual columns |
-| Column order | Drag to reorder |
-| Line wrap | Toggle text wrapping |
-| Pagination | 10 / 20 / 50 / 100 rows per page |
+- Column visibility
+- Column order
+- Line wrap
+- Pagination (10/20/50/100)
 
 #### Open with Notebooks
 
-Sends the current query to **Dynatrace Notebooks** for deeper DQL exploration.
+Opens current query context in Dynatrace Notebooks.
 
----
+Use this button when you need to inspect or extend the underlying DQL query.
 
 ## Section 3: Network
 
-### Network Overview (4 metric tiles)
+<figure>
+  <img src={dynatraceAppSitePageNetworkSection.src} alt="Sites network section" />
+  <figcaption>Network section overview.</figcaption>
+</figure>
 
-| Tile | Unit | Description |
-|------|------|-------------|
-| Average Latency | ms | Average round-trip time across all sites |
-| Jitter | ms | Average jitter |
-| Packet Loss | % | Average packet loss |
-| Protocol | — | Most common protocol in use |
+### Network Overview
 
-Values are recalculated when the search filter changes.
+<figure>
+  <img src={dynatraceAppSitePageNetworkSectionOverview.src} alt="Network overview metrics" />
+  <figcaption>Latency, jitter, packet loss, protocol summary.</figcaption>
+</figure>
+
+Shows average latency, jitter, packet loss, and most common protocol.
+
+These values are recalculated from the currently visible/filtered dataset.
 
 ### Network Statistics Table
 
-A sortable table of sites with detailed network metrics. Shares the same search filter as the Calls Details table. An **Open with Notebooks** button is also available above this table.
+<figure>
+  <img src={dynatraceAppSitePageNetworkSectionStatistics.src} alt="Network statistics table" />
+  <figcaption>Network statistics by site.</figcaption>
+</figure>
 
----
+Sortable table sharing same search filter context as calls details.
 
 ## URL Parameters
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `filter` | Advanced filter expression | `location = "Paris"` |
-| `from` | Timeframe start | `now()-2h` |
-| `to` | Timeframe end | `now()` |
-| `includeUnmapped` | Include unmapped locations | `true` / `false` |
-
----
+| Parameter | Description |
+|-----------|-------------|
+| `filter` | Advanced filter expression |
+| `from` | Timeframe start |
+| `to` | Timeframe end |
+| `includeUnmapped` | Include unmapped locations |
 
 ## Empty / Error States
 
-| Situation | What you see |
-|-----------|-------------|
-| Loading | Spinner in each section |
+| Situation | Behavior |
+|-----------|----------|
+| Loading | Spinners shown in sections |
 | No sites configured | Empty tables |
-| Filter matches nothing | Tables show 0 rows |
-| Domain filter not configured | Warning toast with link to Configuration |
+| Filter has no match | 0 rows / empty charts |
+| Domains not configured | Warning toast with link to Configuration |
+
+<Aside type="caution">
+For consistent site analytics, configure both domain filters and a valid sites CSV mapping.
+</Aside>
