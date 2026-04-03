@@ -12,15 +12,12 @@ MS Teams Observability gives operations and IT teams full visibility into Micros
 
 ## How It Works
 
-```
-Microsoft Teams (Graph API)
-        │
-        ▼
-  ms-teams-agent (Collector)
-        │
-        ├──▶ Dynatrace (Grail + App)
-        ├──▶ Splunk (HEC + App)
-        └──▶ Any OTLP endpoint
+```mermaid
+graph LR
+    A["Microsoft Teams (Graph API)"] -->|polling| B["ms-teams-agent (Collector)"]
+    B --> C["Dynatrace (Grail + App)"]
+    B --> D["Splunk (HEC + App)"]
+    B --> E["Any OTLP endpoint"]
 ```
 
 1. The **Collector** authenticates to Microsoft Graph using an Azure app registration and polls Teams telemetry on a configurable interval.
@@ -46,10 +43,12 @@ See [Metrics Dictionary](/reference/metrics-dictionary/) for a full field refere
 
 ## Deployment Modes
 
-The Dynatrace application supports two modes:
+The **Dynatrace application** supports two modes:
 
 - **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
-- **Live mode** — uses real tenant data collected by the collector. Requires a valid license.
+- **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See [License](/getting-started/license/).
+
+Demo and Live mode are specific to the Dynatrace application. The Splunk and OTLP backends do not have a demo mode — they display data as soon as the collector starts sending it.
 
 ## Supported Backends
 
