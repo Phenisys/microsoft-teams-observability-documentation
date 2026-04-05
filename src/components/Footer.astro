@@ -1,0 +1,152 @@
+---
+import EditLink from "virtual:starlight/components/EditLink";
+import LastUpdated from "virtual:starlight/components/LastUpdated";
+import Pagination from "virtual:starlight/components/Pagination";
+import config from "virtual:starlight/user-config";
+import { Icon } from "@astrojs/starlight/components";
+
+const phenisysLinks: Array<{ label: string; href: string; icon: "external" | "rss" | "linkedin" | "github" | "comment-alt" }> = [
+	{
+		label: "Website",
+		href: "https://www.phenisys.com/",
+		icon: "external",
+	},
+	{
+		label: "Blog",
+		href: "https://www.phenisys.com/blog/",
+		icon: "rss",
+	},
+	{
+		label: "LinkedIn",
+		href: "https://www.linkedin.com/company/phenisys/",
+		icon: "linkedin",
+	},
+	{
+		label: "GitHub",
+		href: "https://github.com/Phenisys",
+		icon: "github",
+	},
+	{
+		label: "Contact",
+		href: "https://www.phenisys.com/contact/#contact",
+		icon: "comment-alt",
+	},
+];
+---
+
+<footer class="sl-flex">
+	<div class="meta sl-flex">
+		<EditLink />
+		<LastUpdated />
+	</div>
+
+	<Pagination />
+
+	<div class="phenisys-footer">
+		<p>
+			Built by <a href="https://www.phenisys.com/" rel="noopener noreferrer">Phenisys</a>
+		</p>
+		<nav aria-label="Phenisys links" class="phenisys-links">
+			{
+				phenisysLinks.map(({ label, href, icon }) => (
+					<a href={href} rel="noopener noreferrer" aria-label={label} title={label}>
+						<span class="sr-only">{label}</span>
+						<Icon name={icon} />
+					</a>
+				))
+			}
+		</nav>
+	</div>
+
+	{
+		config.credits && (
+			<a class="kudos sl-flex" href="https://starlight.astro.build">
+				<Icon name={"starlight"} /> {Astro.locals.t("builtWithStarlight.label")}
+			</a>
+		)
+	}
+</footer>
+
+<style>
+	@layer starlight.core {
+		footer {
+			flex-direction: column;
+			gap: 1.5rem;
+		}
+
+		.meta {
+			gap: 0.75rem 3rem;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			margin-top: 3rem;
+			font-size: var(--sl-text-sm);
+			color: var(--sl-color-gray-3);
+		}
+
+		.meta > :global(p:only-child) {
+			margin-inline-start: auto;
+		}
+
+		.phenisys-footer {
+			border-top: 1px solid var(--sl-color-gray-5);
+			padding-top: 0.9rem;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem 1rem;
+			justify-content: space-between;
+			align-items: center;
+			font-size: var(--sl-text-xs);
+			color: var(--sl-color-gray-3);
+		}
+
+		.phenisys-footer p {
+			margin: 0;
+		}
+
+		.phenisys-links {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.3rem 0.55rem;
+		}
+
+		.phenisys-links a {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0.35rem;
+			border-radius: 999px;
+			border: 1px solid color-mix(in srgb, var(--sl-color-accent), transparent 82%);
+			background: color-mix(in srgb, var(--sl-color-bg-nav), transparent 10%);
+		}
+
+		.phenisys-links a,
+		.phenisys-footer p a {
+			color: var(--sl-color-text-accent);
+			text-decoration: none;
+		}
+
+		.phenisys-links a:hover,
+		.phenisys-footer p a:hover {
+			color: var(--sl-color-white);
+		}
+
+		.kudos {
+			align-items: center;
+			gap: 0.5em;
+			margin: 1.5rem auto;
+			font-size: var(--sl-text-xs);
+			text-decoration: none;
+			color: var(--sl-color-gray-3);
+		}
+
+		.kudos:hover {
+			color: var(--sl-color-white);
+		}
+	}
+
+	@layer starlight.components {
+		.kudos :global(svg) {
+			color: var(--sl-color-orange);
+		}
+	}
+</style>

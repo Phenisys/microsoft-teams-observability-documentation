@@ -14,21 +14,45 @@ export default defineConfig({
 	base,
 	integrations: [
 		mermaid(),
-		starlight({
-			title: "MS Teams Observability",
-			favicon: "/favicon.ico",
-			lastUpdated: true,
+			starlight({
+				title: "MS Teams Observability",
+				favicon: "/favicon.ico",
+				lastUpdated: true,
+
+				components: {
+					Footer: "./src/components/Footer.astro",
+				},
 			defaultLocale: "root",
 			locales: {
 				root: { label: "English", lang: "en" },
 			},
-			social: [
-				{
-					icon: "github",
-					label: "GitHub",
-					href: "https://github.com/Phenisys/microsoft-teams-observability",
-				},
-			],
+				social: [
+					{
+						icon: "external",
+						label: "Website",
+						href: "https://www.phenisys.com/",
+					},
+					{
+						icon: "rss",
+						label: "Blog",
+						href: "https://www.phenisys.com/blog/",
+					},
+					{
+						icon: "linkedin",
+						label: "LinkedIn",
+						href: "https://www.linkedin.com/company/phenisys/",
+					},
+					{
+						icon: "github",
+						label: "GitHub",
+						href: "https://github.com/Phenisys/microsoft-teams-observability",
+					},
+					{
+						icon: "comment-alt",
+						label: "Contact",
+						href: "https://www.phenisys.com/contact/#contact",
+					},
+				],
 			sidebar: [
 				{
 					label: "Getting Started",
