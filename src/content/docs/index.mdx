@@ -1,114 +1,92 @@
 ---
 title: Home
-description: "Start quickly with Microsoft Teams observability: collector setup, backend integration, dashboards, and troubleshooting."
+description: "Understand MS Teams Observability in seconds, then deploy in 15 minutes."
 template: splash
 hero:
-  tagline: End-to-end Microsoft Teams observability from Graph API collection to operational dashboards.
+  tagline: Detect and resolve Microsoft Teams call issues faster with end-to-end observability from Graph API telemetry to operational dashboards.
   image:
     alt: Microsoft Teams logo
     file: ../../assets/logos/teams.svg
   actions:
-    - text: Get Started
+    - text: Start in 15 min
       link: getting-started/
       icon: right-arrow
       variant: primary
-    - text: Install the Collector
-      link: collector/v1/installation/
+    - text: View Product Overview
+      link: getting-started/overview/
       icon: right-arrow
       variant: secondary
 ---
 
 import { CardGrid, LinkCard, Steps, Aside } from '@astrojs/starlight/components';
-import dynatraceAppHomePage from '../../assets/images/dynatrace-app-home-page.png';
 import dynatraceDashboardSites from '../../assets/images/dynatrace-dashboard-sites.png';
-import splunkDashboardOverviewPage from '../../assets/images/splunk-dashboard-overview-page.png';
 
-MS Teams Observability helps you move from raw Microsoft Graph telemetry to operational visibility on call quality, user impact, site/network health, and Microsoft incidents.
+MS Teams Observability is a collector + backend integration solution for Ops and IT teams: it pulls Microsoft Teams telemetry from Microsoft Graph and turns it into actionable dashboards and incident context in Dynatrace or Splunk.
 
-## Collector Architecture
+## What You Get
+
+- **Faster Incident Triage**: correlate call degradations with Microsoft advisories and isolate impacted users or sites faster.
+- **End-to-End Call Quality Visibility**: track call quality from summary to stream-level metrics across users, devices, and networks.
+- **Multi-Backend Ready**: collect once and route telemetry to Dynatrace or Splunk based on your operating model.
+
+## Start in 15 Minutes
+
+<Steps>
+1. Check <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a> (Azure app, permissions, and network access).
+2. Deploy the <a href={`${import.meta.env.BASE_URL}collector/v1/installation/`}>Collector</a> and run your first collection cycle.
+3. Connect your backend in <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> (Dynatrace or Splunk).
+4. Open dashboards and validate live quality and incident data.
+</Steps>
+
+<Aside type="tip">
+Follow this order for first-time setup. Most onboarding failures come from missing prerequisites or incomplete backend wiring.
+</Aside>
+
+## How It Works
 
 ```mermaid
 flowchart LR
     A[Microsoft Graph API] --> B[MS Teams Observability Collector]
     B --> C[Dynatrace Backend]
     B --> D[Splunk Backend]
-    B --> E[Additional Backend Output]
-
-    C --> F[Dashboards and App Pages]
-    D --> G[Dashboards and Searches]
+    C --> E[Dashboards and App Pages]
+    D --> F[Dashboards and Searches]
 ```
 
-This flow shows how a single collector can ingest Microsoft Teams telemetry once and forward it to multiple observability platforms.
+One collector ingests Teams telemetry once and forwards it to your operational backend.
 
-## Start in 15 Minutes
+1. **Authenticate and collect**: the collector uses your Azure app registration to call Microsoft Graph on a schedule.
+2. **Normalize and enrich**: records are transformed into consistent event families and enriched with context used for operations and troubleshooting.
+3. **Export to one or more backends**: the same collection cycle can send data to Dynatrace, Splunk, or both.
+4. **Operate from dashboards and app pages**: teams investigate degraded calls, impacted users/sites, and Microsoft advisories from a single workflow.
 
-<Steps>
-1. Check <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a> (Azure app, permissions, network access).
-2. Deploy the <a href={`${import.meta.env.BASE_URL}collector/v1/installation/`}>Collector</a> and run one first cycle.
-3. Connect your backend in <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> (Dynatrace or Splunk).
-4. Open dashboards and validate live data.
-</Steps>
+Typical telemetry available after ingestion includes:
 
-<Aside type="tip">
-If you are setting up for the first time, use this order without skipping steps. Most setup issues come from missing prerequisites or incomplete backend wiring.
-</Aside>
-
-## Visual Overview
-
-<figure>
-  <img src={dynatraceAppHomePage.src} alt="Dynatrace extension collector configuration page" />
-  <figcaption>Dynatrace: extension configuration and setup context.</figcaption>
-</figure>
-
-<figure>
-  <img src={dynatraceDashboardSites.src} alt="Dynatrace sites dashboard" />
-  <figcaption>Dynatrace: sites dashboard example.</figcaption>
-</figure>
-
-<figure>
-  <img src={splunkDashboardOverviewPage.src} alt="Splunk overview dashboard" />
-  <figcaption>Splunk: overview dashboard example.</figcaption>
-</figure>
+- Call metadata and stream quality indicators (for example RTT, jitter, and packet loss).
+- PSTN / Direct Routing / Auto Attendant / Call Queue data.
+- Microsoft service announcements and collector health signals.
 
 ## Choose Your Backend
 
 <CardGrid>
   <LinkCard
     title="Dynatrace"
-    description="Full integration with Grail, OpenPipeline, and a dedicated application for operations and troubleshooting."
+    description="Full integration with Grail, OpenPipeline, and a dedicated app for operations and troubleshooting."
     href={`${import.meta.env.BASE_URL}backends/dynatrace/`}
   />
   <LinkCard
     title="Splunk"
-    description="HEC-based ingestion with Splunk dashboards for overview, call details, site quality, and NPA."
+    description="HEC-based ingestion with a dedicated Splunk app and dashboards."
     href={`${import.meta.env.BASE_URL}backends/splunk/`}
   />
 </CardGrid>
 
-## What You Can Monitor
+## Visual Overview
 
-<CardGrid>
-  <LinkCard
-    title="Call Quality"
-    description="Detect degradation trends, isolate poor calls, and inspect stream-level metrics."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}
-  />
-  <LinkCard
-    title="Users Impact"
-    description="Identify who is impacted, how often, and in which device/network context."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/users/`}
-  />
-  <LinkCard
-    title="Sites & Networks"
-    description="Track quality by location/subnet, NPA status, and network indicators."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}
-  />
-  <LinkCard
-    title="Microsoft Issues"
-    description="Correlate tenant degradation with active and resolved Microsoft incidents."
-    href={`${import.meta.env.BASE_URL}backends/dynatrace/app/issues/`}
-  />
-</CardGrid>
+<figure>
+  <img src={dynatraceDashboardSites.src} alt="Dynatrace sites dashboard with call quality and site performance indicators" />
+  <figcaption>Example operational view: site and quality monitoring in Dynatrace.</figcaption>
+</figure>
 
 ## Documentation by Task
 
