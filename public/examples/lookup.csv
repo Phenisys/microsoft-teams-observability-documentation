@@ -1,0 +1,4 @@
+subnet,site,country,lon,lat
+10.64.1.0/24,Paris HQ,FR,2.3522,48.8566
+10.64.2.0/24,London HQ,GB,-0.1276,51.5074
+10.64.3.0/24,New York HQ,US,-74.0060,40.7128
