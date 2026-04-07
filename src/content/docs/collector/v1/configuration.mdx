@@ -101,16 +101,19 @@ output:
 At least one output must be enabled, otherwise the collector exits at startup.
 </Aside>
 
+<Aside type="tip">
+The console output is useful for local testing. Combined with `logfile_log_level: DEBUG` in `collection_config`, it lets you verify the agent is running and collecting data correctly without forwarding anything to an external backend.
+</Aside>
+
 ## 3. Build `collection_config`
 
 This section defines scheduling, logs, license path, and enabled features.
 
 ```yaml
 collection_config:
-    logging_services: ['dynatrace','splunk','console']
     microsoft_max_call_duration_hours: 5
     logfile_log_level: 'INFO'
-    license_file: '/path/to/license.lic'
+    license_file: '/absolute/path/to/license.lic'
     interval_collection_minutes: 1
     features:
         ms_teams_calls_collection:
@@ -130,36 +133,24 @@ collection_config:
 ```
 
 <Aside type="tip">
-`logging_services` should match enabled outputs. Example: if only Splunk is enabled, use `['splunk']`.
+Always use an absolute path for `license_file` to avoid resolution issues.
 </Aside>
 
 <Aside type="caution">
 `DEBUG` can produce large logs and expose sensitive metadata. Use it only for short troubleshooting sessions.
 </Aside>
 
-## 4. Optional `sites.csv` Mapping
+## 4. Site Enrichment
 
-If `ms_teams_site_definition.enabled: true`, add:
+<Aside type="danger">
+`ms_teams_site_definition` will be removed in a future version. If it is present in your config, remove it.
 
-```yaml
-collection_config:
-    features:
-        ms_teams_site_definition:
-            enabled: true
-            site_definition_file: '/path/to/sites.csv'
-```
-
-The CSV must use this header order:
-
-```text
-subnet,site,country,lon,lat
-```
-
-If no valid CSV is loaded, calls appear as unmapped in site views.
+To enrich call data with your network site information, use your backend's native lookup feature instead — see [Lookup File](./lookup-file/).
+</Aside>
 
 ## 5. Full Example (`config.yaml`)
 
-Use this full template as a base and replace placeholders:
+<a href={`${import.meta.env.BASE_URL}examples/config.yaml`} download>Download config.yaml</a> or copy the template below:
 
 ```yaml
 microsoft_authentication:
@@ -184,7 +175,7 @@ collection_config:
     microsoft_max_call_duration_hours: 5
     logfile_log_level: "INFO"
     interval_collection_minutes: 5
-    license_file: '/path/to/your/license.lic'
+    license_file: '/absolute/path/to/your/license.lic'
     features:
         ms_teams_direct_routing_calls_collection:
             enabled: true
