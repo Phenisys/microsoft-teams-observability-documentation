@@ -1,0 +1,74 @@
+---
+title: FAQ
+description: Frequently asked questions for MS Teams Observability, organized by deployment scope and topic.
+sidebar:
+  label: FAQ
+  order: 5
+---
+
+import { Aside, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Use this section when you need a quick answer rather than a step-by-step guide. Questions are split into smaller pages so each topic is easier to scan and maintain.
+
+<Aside type="tip">
+Choose the FAQ page that matches your operating model:
+
+- **Common**: licensing, prerequisites, network, and first-run checks for all deployments
+- **Data & Security**: collected data, storage, transmission, retention, and access control
+- **Dynatrace App**: UI behavior, dashboards, call analysis, and permissions in the Dynatrace application
+- **Dynatrace Extension**: ActiveGate-based deployment and extension-specific behavior
+- **Standalone**: `ms-teams-agent` host deployment, local configuration, and service operations
+</Aside>
+
+<CardGrid>
+  <LinkCard
+    title="Common"
+    description="Licensing, platform requirements, optional features, and operational checks for all modes."
+    href={`${import.meta.env.BASE_URL}reference/faq/common/`}
+  />
+  <LinkCard
+    title="Data & Security"
+    description="What is collected, where it is stored, how it is transmitted, and who can access it."
+    href={`${import.meta.env.BASE_URL}reference/faq/data-security/`}
+  />
+  <LinkCard
+    title="Dynatrace App"
+    description="Questions tied to app configuration, sites, calls, dashboards, and permissions."
+    href={`${import.meta.env.BASE_URL}reference/faq/dynatrace-app/`}
+  />
+  <LinkCard
+    title="Dynatrace Extension"
+    description="ActiveGate deployment, license handling, outputs, and extension-specific behavior."
+    href={`${import.meta.env.BASE_URL}reference/faq/dynatrace-extension/`}
+  />
+  <LinkCard
+    title="Standalone"
+    description="Local config.yaml, supported outputs, service mode, and host-level operations."
+    href={`${import.meta.env.BASE_URL}reference/faq/standalone/`}
+  />
+</CardGrid>
+
+## Quick View: License Setup by Mode
+
+<Tabs>
+  <TabItem label="Standalone">
+Set `collection_config.license_file` in `config.yaml` to a local license path.  
+Reference: <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>, <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+  </TabItem>
+  <TabItem label="Dynatrace Extension">
+Paste the full license JSON into the extension License field as a string, not a file path.  
+Reference: <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>, <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
+  </TabItem>
+  <TabItem label="Dynatrace App">
+License status and health are shown in the app configuration panel; a missing or invalid license can block tenant initialization and configuration saves.  
+Reference: <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a>, <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
+  </TabItem>
+</Tabs>
+
+## Start Here for Missing Data
+
+If data is missing after setup, start with the checks in <a href={`${import.meta.env.BASE_URL}reference/faq/common/`}>Common FAQ</a>, then continue with the relevant troubleshooting guide:
+
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>
+- <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>
+- <a href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}>Splunk Troubleshooting</a>

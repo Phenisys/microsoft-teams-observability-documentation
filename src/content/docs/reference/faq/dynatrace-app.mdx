@@ -1,0 +1,75 @@
+---
+title: Dynatrace App FAQ
+description: Questions about the Dynatrace application, dashboards, sites, call analysis, and permissions.
+sidebar:
+  label: Dynatrace App
+  order: 3
+---
+
+## Configuration
+
+### Where is application configuration managed?
+
+In the app's **Installation & Configuration** screen. Panels and behaviors are documented in <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
+
+### Do I need to redeploy after a license change?
+
+No full redeploy is documented. The expected flow is to save configuration and reload the app when prompted. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a>.
+
+### Can a missing or invalid license break configuration saves?
+
+Yes. Missing or invalid license state can prevent tenant initialization and cause save failures. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>.
+
+### Can configuration be validated before or after save?
+
+Yes. Several panels include **Test** or **Validate** actions and automatic validation states. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
+
+## Sites & Mapping
+
+### Is `sites.csv` mandatory?
+
+No. It is optional in collector configuration, but it is required for complete site mapping and to avoid unmapped-call behavior. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#4-optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
+
+### Why do I see "No Mapped Calls"?
+
+Subnets are not mapped to site definitions. Configure and load `sites.csv`. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#4-optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
+
+### What does the "Undetermined" site status mean?
+
+In Sites NPA status, `Undetermined` means there is not enough data to classify the site. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}>Application Sites</a>.
+
+### What happens if domains are not configured for Sites filtering?
+
+The Sites page warns that calls will not be domain-filtered until domains are set. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/sites/`}>Application Sites</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
+
+## Calls & Analysis
+
+### Can I search calls by caller or callee identity, or by call ID?
+
+Yes. Calls supports advanced filtering including participant and call ID fields. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}>Application Calls</a>.
+
+### What is an "empty call"?
+
+In Calls, empty calls are entries with duration `0` and no recording data. They are included with the **Show Empty Calls** toggle. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/calls/`}>Application Calls</a>.
+
+### Can the app show peak simultaneous calls?
+
+Yes. The dashboards guide lists peak simultaneous calls as a typical Home or Overview widget, though exact widgets can vary by app version. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
+
+### What session and device details are available in call analysis?
+
+Call Overview documents participant, stream, network, and endpoint fields such as device, platform, CPU, latency, jitter, packet loss, subnet, relay or reflexive IP, and protocol. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Application Call Overview</a>.
+
+### Can I download raw call details?
+
+Yes. Call Overview supports Graph call-details JSON download when Microsoft configuration is set. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Application Call Overview</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
+
+### Where is data stored?
+
+The documented architecture stores logs in a dedicated Grail bucket named `ms_teams` and processes them through OpenPipeline. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/`}>Dynatrace Overview</a>.
+
+## Access & Permissions
+
+### How is app access controlled?
+
+The app includes a dedicated **Permissions** panel for role and group access, and some features require explicit Dynatrace permissions such as site file storage permissions. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.

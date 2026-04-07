@@ -1,0 +1,31 @@
+---
+title: Standalone FAQ
+description: Answers for host-based ms-teams-agent deployments with local configuration.
+sidebar:
+  label: Standalone
+  order: 5
+---
+
+## Deployment & License
+
+### Does standalone require ActiveGate?
+
+No. Standalone can run on any suitable host with the required access and resources. See <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>.
+
+### Where is the license configured in standalone mode?
+
+Set `collection_config.license_file` in `config.yaml`, pointing to the local license file path. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+
+## Outputs & Operations
+
+### Which outputs are supported in standalone mode?
+
+Dynatrace, Splunk, and Console outputs are available. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+
+### What should I do after changing standalone configuration?
+
+In service mode, restart the service and verify status and logs. See <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.
+
+### How should tokens and sensitive files be protected?
+
+Use restricted file permissions, keep tokens out of version control, and store secrets in controlled paths. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.

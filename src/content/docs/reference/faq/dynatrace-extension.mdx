@@ -1,0 +1,33 @@
+---
+title: Dynatrace Extension FAQ
+description: Answers for ActiveGate-based deployment with the Dynatrace extension.
+sidebar:
+  label: Dynatrace Extension
+  order: 4
+---
+
+## Deployment & Outputs
+
+### Does the extension run on ActiveGate?
+
+Yes. Extension mode requires Dynatrace with ActiveGate and runs on ActiveGate, not on the former standalone host. See <a href={`${import.meta.env.BASE_URL}collector/extension/`}>Collector Extension Overview</a> and <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
+
+### Which outputs are supported in extension mode?
+
+Dynatrace only. Splunk and Console outputs are not available in extension mode. See <a href={`${import.meta.env.BASE_URL}collector/extension/`}>Collector Extension Overview</a>.
+
+## License & Credentials
+
+### How is the license configured in extension mode?
+
+Paste the full license JSON as a string in the extension License field, not a file path. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
+
+### Can the extension use Dynatrace Credential Vault?
+
+Yes. Extension configuration supports vault-based credentials. See <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
+
+## Operations
+
+### Where are extension logs located?
+
+Troubleshooting paths are documented in the extension installation guide under ActiveGate log paths. See <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.

@@ -156,7 +156,18 @@ export default defineConfig({
 					collapsed: true,
 					items: [
 						{ slug: "reference" },
-						{ slug: "reference/faq" },
+						{
+							label: "FAQ",
+							collapsed: true,
+							items: [
+								{ slug: "reference/faq" },
+								{ slug: "reference/faq/common" },
+								{ slug: "reference/faq/data-security" },
+								{ slug: "reference/faq/dynatrace-app" },
+								{ slug: "reference/faq/dynatrace-extension" },
+								{ slug: "reference/faq/standalone" },
+							],
+						},
 						{ slug: "reference/cli-reference" },
 						{ slug: "reference/metrics-dictionary" },
 						{ slug: "reference/azure-permissions" },

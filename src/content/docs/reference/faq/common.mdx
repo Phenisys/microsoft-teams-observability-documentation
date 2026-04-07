@@ -1,0 +1,78 @@
+---
+title: Common FAQ
+description: Answers that apply to all MS Teams Observability deployment modes.
+sidebar:
+  label: Common
+  order: 1
+---
+
+## Licensing
+
+### How do I get a trial license?
+
+Use the trial request form in <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and provide your Microsoft 365 tenant ID so the license can be generated for your tenant.
+
+### How can I validate license sizing?
+
+Use <a href={`${import.meta.env.BASE_URL}reference/license-estimation/`}>License Estimation</a>, based on Microsoft Teams activity reports and `MSTeams_CollectionHealth` validation.
+
+### How can I verify license file integrity?
+
+Do not edit the license JSON content. The `signature` field validates `license_data`, and modifications invalidate the license. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
+
+## Platform & Network
+
+### Where can the collector run?
+
+For host-based deployment, the collector can run on Linux (recommended) or Windows with the required network access and resources. See <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>.
+
+### Which outbound network targets are required?
+
+At minimum:
+
+- `graph.microsoft.com`
+- `login.microsoftonline.com`
+- your backend endpoint (Dynatrace or Splunk)
+
+For some Dynatrace setups, `ip-api.com` can also be required for geolocation enrichment. See <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a>.
+
+### Which ports should be opened?
+
+The docs define required outbound hosts and HTTPS connectivity, but they do not publish a single fixed port matrix for every environment. Validate against your network policy and backend endpoint requirements.
+
+### What are the minimum CPU and memory requirements?
+
+No fixed global baseline is documented. Size CPU and memory for your call volume. See <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>.
+
+## Optional Collection Features
+
+### Can I enable Auto Attendant and Call Queue collection?
+
+Yes. The collector supports:
+
+- `ms_teams_autoattendant_collection`
+- `ms_teams_callqueue_collection`
+
+See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+
+### Are extra Microsoft permissions required for those features?
+
+Yes. The permissions reference states that VAAC-specific permissions are required when these features are enabled. See <a href={`${import.meta.env.BASE_URL}reference/azure-permissions/`}>Azure Permissions Reference</a>.
+
+## Initial Validation
+
+### What should I verify first when data is missing?
+
+Start with:
+
+1. auth and consent for Microsoft and the backend
+2. outbound connectivity
+3. at least one enabled output
+4. collector logs
+5. backend checks such as Grail, OpenPipeline, or Splunk HEC and index configuration
+
+See <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>, <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>, and <a href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}>Splunk Troubleshooting</a>.
+
+### What is a safe first-run sequence?
+
+Run one cycle with `--ignore_state`, verify ingestion, then enable service mode and monitor status and logs. See <a href={`${import.meta.env.BASE_URL}collector/v1/installation/`}>Installation</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.
