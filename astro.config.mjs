@@ -74,6 +74,7 @@ export default defineConfig({
 							items: [
 								{ slug: "collector/v1/installation" },
 								{ slug: "collector/v1/configuration" },
+								{ slug: "collector/v1/lookup-file" },
 								{ slug: "collector/v1/cli" },
 								{ slug: "collector/v1/service" },
 							],

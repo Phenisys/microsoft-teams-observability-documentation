@@ -1,0 +1,81 @@
+---
+title: Lookup File
+description: Enrich MS Teams call data with your organization's network site information using backend-native lookup tables.
+sidebar:
+  label: Lookup File
+  order: 3
+---
+
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+When a call is recorded, the collector captures the caller's IP subnet. On its own, that subnet has no human-readable meaning. A lookup file maps each subnet to a site name, country, and geographic coordinates, so your dashboards can show which office or location a call originated from.
+
+This replaces the deprecated `ms_teams_site_definition` feature. Instead of bundling the mapping inside the collector, you define it directly on your backend — it is loaded once, stays up to date, and never adds overhead to collection cycles.
+
+## Data Model
+
+Your lookup table must contain these columns:
+
+| Column    | Description                                        |
+| --------- | -------------------------------------------------- |
+| `subnet`  | IP subnet in CIDR notation (e.g. `192.168.1.0/24`) |
+| `site`    | Human-readable site name (e.g. `Paris HQ`)         |
+| `country` | Country name or ISO code                           |
+| `lon`     | Longitude (decimal degrees)                        |
+| `lat`     | Latitude (decimal degrees)                         |
+
+<a href={`${import.meta.env.BASE_URL}examples/lookup.csv`} download>
+  Download lookup.csv
+</a>
+or copy the template below:
+
+```csv
+subnet,site,country,lon,lat
+10.64.1.0/24,Paris HQ,FR,2.3522,48.8566
+10.64.2.0/24,London HQ,GB,-0.1276,51.5074
+10.64.3.0/24,New York HQ,US,-74.0060,40.7128
+```
+
+## Setup by Backend
+
+<Tabs>
+  <TabItem label="Dynatrace">
+
+Dynatrace Grail supports <a href="https://docs.dynatrace.com/docs/platform/grail/lookup-data" target="_blank">Lookup data</a>. You can create a lookup table from a CSV file and reference it in DQL queries or OpenPipeline processors.
+
+1. In the Dynatrace UI, go to **Settings → Lookup data**.
+2. Create a new lookup table at the path `/lookups/ms_teams/sites` — this exact path is required by the MS Teams Observability app.
+3. Upload a CSV file with the columns: `subnet`, `site`, `country`, `lon`, `lat`.
+
+The path used to load the table in DQL is:
+
+```
+/lookups/ms_teams/sites
+```
+
+<Aside type="tip">
+  Grail lookup tables are loaded once at query time, not on every log ingestion. Updates to the table take effect
+  immediately on the next query.
+</Aside>
+
+  </TabItem>
+  <TabItem label="Splunk">
+
+Splunk supports <a href="https://help.splunk.com/en/splunk-cloud-platform/manage-knowledge-objects/knowledge-management-manual/9.3.2411/use-lookups-in-splunk-web/about-lookups" target="_blank">lookup tables</a> that can be applied automatically at search time.
+
+1. In Splunk, go to **Settings → Lookups → Lookup table files** and upload a CSV file with columns: `subnet`, `site`, `country`, `lon`, `lat`.
+2. Define a lookup definition under **Settings → Lookups → Lookup definitions** pointing to your file.
+3. Optionally configure an **Automatic lookup** on the `ms_teams` index so the enrichment is applied transparently:
+
+```spl
+index=ms_teams
+| lookup ms_teams_sites subnet AS caller_subnet OUTPUT site, country, lon, lat
+```
+
+<Aside type="tip">
+  The field names (`subnet`, `site`, `country`, `lon`, `lat`) match the columns previously used by
+  `ms_teams_site_definition`, so you can reuse an existing CSV file directly.
+</Aside>
+
+  </TabItem>
+</Tabs>
