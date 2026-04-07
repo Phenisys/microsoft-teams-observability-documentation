@@ -2,20 +2,15 @@
 title: Getting Started
 description: Start here — understand the product, check prerequisites, and deploy your first collector.
 sidebar:
-  label: Getting Started
+  label: Overview
   order: 0
 ---
 
-import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+import { Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualise that data in Dynatrace or Splunk.
 
 <CardGrid>
-  <LinkCard
-    title="Product Overview"
-    description="Understand what the collector does, what data it collects, and how it connects to backends."
-    href={`${import.meta.env.BASE_URL}getting-started/overview/`}
-  />
   <LinkCard
     title="Prerequisites"
     description="Everything you need before deploying: Azure app, permissions, network access, and backend access."
@@ -31,4 +26,59 @@ MS Teams Observability is a two-part solution: a **Collector** that pulls Teams 
     description="Choose Dynatrace or Splunk and configure the integration end-to-end."
     href={`${import.meta.env.BASE_URL}backends/`}
   />
+  <LinkCard
+    title="License"
+    description="Understand demo versus live mode and the license requirements for production use."
+    href={`${import.meta.env.BASE_URL}getting-started/license/`}
+  />
 </CardGrid>
+
+## How It Works
+
+```mermaid
+graph LR
+    A["Microsoft Teams \(Graph API\)"] -->|polling| B["ms-teams-agent \(Collector\)"]
+    B --> C["Dynatrace \(Grail + App\)"]
+    B --> D["Splunk \(HEC + App\)"]
+```
+
+1. The **Collector** authenticates to Microsoft Graph using an Azure app registration and polls Teams telemetry on a configurable interval.
+2. It enriches and normalises the data, then exports it to one or more backends.
+3. The **backend application** (Dynatrace or Splunk) renders the data in operational dashboards.
+
+## What Data Is Collected
+
+The collector retrieves and exports the following event families:
+
+| Event family | Content |
+|---|---|
+| `MSTeams_CallRecords_CallMetadata` | Call-level summary: type, health, duration |
+| `MSTeams_CallRecords_StreamDetails` | Stream-level quality: RTT, jitter, packet loss |
+| `MSTeams_CallRecords_PSTN` | PSTN telephony calls |
+| `MSTeams_CallRecords_DirectRouting` | SIP / Direct Routing calls |
+| `MSTeams_CallRecords_AutoAttendant` | Auto attendant usage |
+| `MSTeams_CallRecords_CallQueue` | Call queue behaviour |
+| `MSTeams_ServiceAnnouncement` | Microsoft published incidents and advisories |
+| `MSTeams_CollectionHealth` | Collector operational health |
+
+See <a href={`${import.meta.env.BASE_URL}reference/metrics-dictionary/`}>Metrics Dictionary</a> for a full field reference.
+
+## Deployment Modes
+
+The **Dynatrace application** supports two modes:
+
+- **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
+- **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
+
+Demo and Live mode are specific to the Dynatrace application. The Splunk backend does not have a demo mode and displays data as soon as the collector starts sending it.
+
+## Supported Backends
+
+| Backend | Application included | Notes |
+|---|---|---|
+| **Dynatrace** | Yes — Grail + dedicated app | Full-featured integration with dashboards |
+| **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
+
+<Aside type="note">
+Each backend requires its own setup. See <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> for integration guides.
+</Aside>

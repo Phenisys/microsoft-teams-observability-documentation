@@ -58,7 +58,6 @@ export default defineConfig({
 					label: "Getting Started",
 					items: [
 						{ slug: "getting-started" },
-						{ slug: "getting-started/overview" },
 						{ slug: "getting-started/prerequisites" },
 						{ slug: "getting-started/license" },
 					],
