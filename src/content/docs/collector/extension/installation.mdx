@@ -29,6 +29,7 @@ Before starting:
 - Your current configuration values (credentials, features, intervals)
 - Your Phenisys **license string** — the full JSON content of the license file (not the file path). See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
 - A Dynatrace API token with the **`logs.ingest`** permission
+- The **Phenisys root certificate** (`ca.pem`) — <a href={`${import.meta.env.BASE_URL}files/ca.pem`} download>Download ca.pem</a>
 
 <Aside type="note">
 The extension runs on the ActiveGate, not on the host where the standalone agent was installed. The ActiveGate must have outbound network access to `graph.microsoft.com`.
@@ -36,7 +37,42 @@ The extension runs on the ActiveGate, not on the host where the standalone agent
 
 ---
 
-## Step 1 — Upload the extension to Dynatrace
+## Step 1 — Deploy the root certificate
+
+Dynatrace verifies the authenticity of extensions using the publisher's root certificate. This certificate must be present on each ActiveGate host in the target group, and uploaded to the Dynatrace Credential Vault.
+
+<Steps>
+1. Download the Phenisys root certificate: <a href={`${import.meta.env.BASE_URL}files/ca.pem`} download>Download ca.pem</a>
+
+2. Copy the certificate to each ActiveGate host in the target group.
+
+   <Aside type="caution">
+   There may already be a `ca.pem` file on the ActiveGate. **Rename the downloaded file** (e.g. `phenisys-ca.pem`) before copying to avoid overwriting it.
+   </Aside>
+
+   <Tabs>
+     <TabItem label="Linux">
+     ```
+     /var/lib/dynatrace/remotepluginmodule/agent/conf/certificates/
+     ```
+     </TabItem>
+     <TabItem label="Windows">
+     ```
+     %PROGRAMDATA%\dynatrace\remotepluginmodule\agent\conf\certificates\
+     ```
+     </TabItem>
+   </Tabs>
+
+3. Upload the certificate to the Dynatrace Credential Vault:
+   - Navigate to **Settings → Credential Vault → Add new credential**
+   - Set **Credential type** to **Public Certificate**
+   - Under **Credential scope**, check **Extension validation**
+   - In **Certificate file**, upload the certificate
+</Steps>
+
+---
+
+## Step 2 — Upload the extension to Dynatrace
 
 <Steps>
 1. Download the correct extension ZIP from <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-extension/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a>:
@@ -52,7 +88,7 @@ The extension runs on the ActiveGate, not on the host where the standalone agent
 
 ---
 
-## Step 2 — Configure the extension
+## Step 3 — Configure the extension
 
 <Steps>
 1. Open the uploaded extension and click **Add configuration**.
@@ -119,7 +155,7 @@ The `ms_teams_site_definition` feature (custom subnet/site mapping via CSV file)
 
 ---
 
-## Step 3 — Verify data collection
+## Step 4 — Verify data collection
 
 <Steps>
 1. Open the extension configuration in Dynatrace and check the **Status** — it should show **Running** within a few minutes.
@@ -152,7 +188,7 @@ Agent logs (collection errors, Microsoft Graph API issues):
 /var/lib/dynatrace/remotepluginmodule/agent/runtime/extensions/python_venvs/{extension-name}/lib/{python-version}/site-packages/teams_observability_agent/agent/logs/
 ```
 
-Replace `{python-version}` with the Python version in use (e.g. `python3.10`).
+Replace `{python-version}` with the Python version in use (e.g. `python3.14`).
 
   </TabItem>
   <TabItem label="Windows">
@@ -172,7 +208,7 @@ Agent logs:
   </TabItem>
 </Tabs>
 
-In both cases, replace `{extension-name}` with the full extension name (e.g. `custom:teams-observability-agent-linux`).
+In both cases, replace `{extension-name}` with the full extension name (e.g. `custom_teams-observability-agent-linux`).
 
 ---
 
