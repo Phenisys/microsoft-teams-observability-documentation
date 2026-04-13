@@ -116,3 +116,26 @@ Then run:
 ```
 
 For all available configuration fields, see <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+
+## VAAC Account (Auto Attendant & Call Queue)
+
+The `microsoft_username` and `microsoft_password` fields used for Auto Attendant and Call Queue collection (`ms_teams_autoattendant_collection` / `ms_teams_callqueue_collection`) are **not** the App Registration credentials. They refer to a dedicated Microsoft 365 **user** account that must be configured in Teams.
+
+<Steps>
+1. Create or designate a dedicated Microsoft 365 user account for the collector.
+
+2. In the [Microsoft Teams admin center](https://admin.microsoft.com/), go to **Voice** > **Voice applications policies**.
+
+3. Click **Add** to create a new custom policy. Grant it the minimum permissions needed (the global default policy grants no access and must not be used).
+
+4. Assign the custom policy to the account via **Manage users** or with the PowerShell cmdlet:
+   ```powershell
+   Grant-CsTeamsVoiceApplicationsPolicy -Identity "user@domain.com" -PolicyName "YourCustomPolicy"
+   ```
+
+5. Set the account as an **Authorized user** on at least one Auto Attendant or Call Queue in **Voice** > **Auto attendants** / **Call queues** > **Authorized users**.
+</Steps>
+
+<Aside type="note">
+Many advanced capabilities — including real-time metrics and most configuration options — require a **Teams Premium** license on this account. See the [Microsoft documentation](https://learn.microsoft.com/en-us/microsoftteams/manage-voice-applications-policies) for the full permissions matrix.
+</Aside>
