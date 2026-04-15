@@ -35,6 +35,7 @@ microsoft_authentication:
     microsoft_client_secret: 'your_client_secret'
     microsoft_scope: 'https://graph.microsoft.com/.default'
     microsoft_grant_type: 'client_credentials'
+    # cloud_deployment: 'global'  # Options: global, us_gov_gcc_high, us_gov_dod, china
 ```
   </TabItem>
   <TabItem label="Certificate">
@@ -47,6 +48,7 @@ microsoft_authentication:
     microsoft_client_certificate_passphrase: 'my_passphrase'
     microsoft_scope: 'https://graph.microsoft.com/.default'
     microsoft_grant_type: 'client_credentials'
+    # cloud_deployment: 'global'  # Options: global, us_gov_gcc_high, us_gov_dod, china
 ```
   </TabItem>
   <TabItem label="VAAC Add-on">
@@ -62,6 +64,22 @@ microsoft_authentication:
 <Aside type="tip">
 VAAC credentials are needed only for:
 `ms_teams_autoattendant_collection` and `ms_teams_callqueue_collection`.
+</Aside>
+
+<Aside type="note">
+**National Cloud Deployments**
+
+By default the collector targets the worldwide Microsoft cloud. If your organisation uses a national cloud, set `cloud_deployment` in `microsoft_authentication`:
+
+| Value | Environment |
+|---|---|
+| `global` | Worldwide (default) |
+| `us_gov_gcc_high` | Microsoft 365 GCC High |
+| `us_gov_dod` | Microsoft 365 DoD |
+| `china` | Microsoft 365 operated by 21Vianet (China) |
+
+Setting this value automatically adjusts the Microsoft Entra ID authentication endpoint and the Microsoft Graph API endpoint used by the collector.
+See the [Microsoft Graph national cloud deployments](https://learn.microsoft.com/en-us/graph/deployments) reference for the full endpoint list.
 </Aside>
 
 ## 2. Build `output`
@@ -140,7 +158,29 @@ Always use an absolute path for `license_file` to avoid resolution issues.
 `DEBUG` can produce large logs and expose sensitive metadata. Use it only for short troubleshooting sessions.
 </Aside>
 
-## 4. Site Enrichment
+## 4. Advanced Options
+
+The optional `advanced` block exposes settings for non-standard network environments.
+
+### Custom CA Bundle (TLS-inspecting proxies)
+
+If the collector host sits behind a **TLS-inspecting proxy** or has a **non-standard CA chain**, certificate verification may fail for Microsoft Graph API calls — including report downloads that redirect through `reportsncu.office.com`. Set `ca_bundle_path` to the absolute path of your enterprise CA bundle in PEM format:
+
+```yaml
+advanced:
+    ca_bundle_path: "/etc/ssl/certs/corporate-ca-bundle.pem"
+```
+
+This setting applies to:
+- All Microsoft Graph API calls
+- Report downloads (including the `reportsncu.office.com` redirect)
+- VAAC API calls
+
+<Aside type="tip">
+If you see a `TLS certificate verification failed` error mentioning `reportsncu.office.com` in the collector logs, this is the setting to configure. This is **not** a licensing issue.
+</Aside>
+
+## 5. Site Enrichment
 
 <Aside type="danger">
 `ms_teams_site_definition` will be removed in a future version. If it is present in your config, remove it.
@@ -148,7 +188,7 @@ Always use an absolute path for `license_file` to avoid resolution issues.
 To enrich call data with your network site information, use your backend's native lookup feature instead — see [Lookup File](./lookup-file/).
 </Aside>
 
-## 5. Full Example (`config.yaml`)
+## 6. Full Example (`config.yaml`)
 
 <a href={`${import.meta.env.BASE_URL}examples/config.yaml`} download>Download config.yaml</a> or copy the template below:
 
@@ -158,6 +198,7 @@ microsoft_authentication:
     microsoft_client_id: "your-client-id"
     microsoft_client_secret: "your-client-secret"
     microsoft_grant_type: "client_credentials"
+    # cloud_deployment: "global"  # Options: global, us_gov_gcc_high, us_gov_dod, china
 
 output:
     dynatrace:
@@ -192,9 +233,14 @@ collection_config:
         ms_teams_site_definition:
             enabled: false
 
+# advanced:
+#     # Optional: path to a CA bundle PEM file.
+#     # Required when running behind a TLS-inspecting proxy or using a non-standard CA chain.
+#     # Applies to all Microsoft Graph API calls (incl. reportsncu.office.com) and VAAC API calls.
+#     ca_bundle_path: "/etc/ssl/certs/corporate-ca-bundle.pem"
 ```
 
-## 6. Validate Before Production Start
+## 7. Validate Before Production Start
 
 <Steps>
 1. Check the binary and config path:

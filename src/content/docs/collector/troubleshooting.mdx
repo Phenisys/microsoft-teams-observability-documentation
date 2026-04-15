@@ -17,8 +17,23 @@ sidebar:
 - Validate outbound access to:
   - `graph.microsoft.com`
   - `login.microsoftonline.com`
+  - `reportsncu.office.com` (Microsoft Graph report download redirect)
   - your backend endpoint
 - Confirm proxy/firewall rules for HTTPS traffic.
+
+## TLS Certificate Errors
+
+If the collector logs show a `TLS certificate verification failed` error mentioning `reportsncu.office.com`, this is **not a licensing problem**. That domain is a Microsoft redirect used for Graph API report downloads.
+
+**Cause:** The collector host's CA trust store does not include the certificate authority of the server or TLS-inspecting proxy.
+
+**Fix options (choose one):**
+
+1. Update the OS CA trust store on the collector host:
+   - Linux: `sudo update-ca-certificates`
+   - Windows: import the CA certificate into the system certificate store
+
+2. Set `advanced.ca_bundle_path` in `config.yaml` pointing to your enterprise CA bundle in PEM format — see [Advanced Options](./configuration/#4-advanced-options).
 
 ## Data Not Visible in Backend
 
