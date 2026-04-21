@@ -26,6 +26,14 @@ Paste the full license JSON as a string in the extension License field, not a fi
 
 Yes. Extension configuration supports vault-based credentials. See <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
 
+### How do I configure Microsoft national cloud in extension mode?
+
+Use the **Microsoft Cloud Deployment** field in the extension configuration. It maps to `microsoft_authentication.cloud_deployment` in standalone `config.yaml`. Supported values are `global`, `us_gov_gcc_high`, `us_gov_dod`, and `china`.
+
+### How do I configure a custom CA bundle in extension mode?
+
+Use the **Custom CA Bundle Path** field in the extension configuration. It maps to `advanced.ca_bundle_path` in standalone `config.yaml` and should be an absolute path to a PEM bundle on the ActiveGate host. This is useful behind TLS-inspecting proxies or with enterprise custom CA chains.
+
 ## Operations
 
 ### Where are extension logs located?

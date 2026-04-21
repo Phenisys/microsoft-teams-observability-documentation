@@ -7,6 +7,7 @@ sidebar:
 ---
 
 import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import dynatraceExtensionConfigurationScreen from '../../../../assets/images/dynatrace-extension-configuration_screen.png';
 
 <Aside type="caution">
 The Dynatrace Extension is currently in **beta**. It wraps the same agent code as the standalone binary and covers the same data collection capabilities. Behaviour may change before general availability.
@@ -100,6 +101,13 @@ Dynatrace verifies the authenticity of extensions using the publisher's root cer
 4. Click **Save**.
 </Steps>
 
+### Screenshot
+
+<figure>
+  <img src={dynatraceExtensionConfigurationScreen.src} alt="Dynatrace extension configuration screen showing Microsoft Cloud Deployment and Custom CA Bundle Path fields." />
+  <figcaption>Dynatrace extension configuration screen.</figcaption>
+</figure>
+
 ### Configuration mapping
 
 Use this table to map values from your existing `config.yaml` to the extension UI fields.
@@ -109,6 +117,7 @@ Use this table to map values from your existing `config.yaml` to the extension U
 | YAML field | Extension UI field | Notes |
 |---|---|---|
 | `microsoft_authentication.microsoft_tenant_id` | **Microsoft Tenant ID** | |
+| `microsoft_authentication.cloud_deployment` | **Microsoft Cloud Deployment** | Default `global`. Options: `global`, `us_gov_gcc_high`, `us_gov_dod`, `china` |
 | `microsoft_authentication.microsoft_client_id` | **Microsoft Client ID** | Or use Credential Vault |
 | `microsoft_authentication.microsoft_client_secret` | **Microsoft Client Secret** | Or use Credential Vault |
 | `microsoft_authentication.microsoft_username` | **Microsoft VAAC Username** | Only visible when PSTN collection is enabled |
@@ -130,6 +139,12 @@ Use this table to map values from your existing `config.yaml` to the extension U
 | Content of `.lic` / `license.json` | **License** | Paste the full JSON string — not the file path |
 
 Open your license file and copy its entire content into the **License** field. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> for format details.
+
+#### Advanced / Network
+
+| YAML field | Extension UI field | Notes |
+|---|---|---|
+| `advanced.ca_bundle_path` | **Custom CA Bundle Path** | Optional. Absolute path to a PEM CA bundle on the ActiveGate host (for TLS-inspecting proxies or enterprise custom CA chains). |
 
 #### Features
 
