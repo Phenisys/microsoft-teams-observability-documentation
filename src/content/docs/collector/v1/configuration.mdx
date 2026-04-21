@@ -1,259 +1,192 @@
 ---
 title: Configuration
-description: Build a complete collector config.yaml step by step, with guidance, tips, and a final full example.
+description: Full configuration reference for the v1 collector — YAML schema, outputs, features, and backward compatibility.
 sidebar:
   label: Configuration
   order: 2
 ---
 
-import { Tabs, TabItem, Aside, Steps } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
-This page helps you build your file by sections, understand what each part does, then use a complete example at the end.
+Use this page as the reference for `config.yaml` in v1.
 
 ## Required Sections
 
-Your `config.yaml` should contain these top-level sections:
+Your configuration must include:
 
 - `microsoft_authentication`
-- `output`
+- `output` (at least one backend enabled)
 - `collection_config`
+- `collection_config.license_file`
 
-<Aside type="caution">
-`CallRecords.Read.All`, `Reports.Read.All`, and `ServiceHealth.Read.All` application permissions are required before startup.
-</Aside>
+## Microsoft Authentication
 
-## 1. Build `microsoft_authentication`
-
-Use one of these authentication approaches.
+Use your Microsoft Entra ID app credentials for Microsoft Graph.
 
 <Tabs>
-  <TabItem label="Client Secret">
+  <TabItem label="Client secret">
 ```yaml
 microsoft_authentication:
-    microsoft_tenant_id: 'your_tenant_id'
-    microsoft_client_id: 'your_client_id'
-    microsoft_client_secret: 'your_client_secret'
-    microsoft_scope: 'https://graph.microsoft.com/.default'
-    microsoft_grant_type: 'client_credentials'
-    # cloud_deployment: 'global'  # Options: global, us_gov_gcc_high, us_gov_dod, china
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_secret: "<client_secret>"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
 ```
   </TabItem>
   <TabItem label="Certificate">
 ```yaml
 microsoft_authentication:
-    microsoft_tenant_id: 'your_tenant_id'
-    microsoft_client_id: 'your_client_id'
-    microsoft_client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
-    microsoft_client_certificate_path: '/path/to/pem'
-    microsoft_client_certificate_passphrase: 'my_passphrase'
-    microsoft_scope: 'https://graph.microsoft.com/.default'
-    microsoft_grant_type: 'client_credentials'
-    # cloud_deployment: 'global'  # Options: global, us_gov_gcc_high, us_gov_dod, china
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_certificate_path: "<path/to/cert.pem>"
+  microsoft_client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
 ```
   </TabItem>
-  <TabItem label="VAAC Add-on">
+  <TabItem label="VAAC (Auto Attendant / Call Queue)">
 ```yaml
 microsoft_authentication:
-    # add these only for Auto Attendant / Call Queue features
-    microsoft_username: 'your_account'
-    microsoft_password: 'your_password'
+  microsoft_tenant_id: "<tenant_id>"
+  microsoft_client_id: "<client_id>"
+  microsoft_client_secret: "<client_secret>"
+  microsoft_scope: "https://graph.microsoft.com/.default"
+  microsoft_grant_type: "client_credentials"
+  microsoft_username: "<vaac_username>"
+  microsoft_password: "<vaac_password>"
 ```
   </TabItem>
 </Tabs>
 
-<Aside type="tip">
-VAAC credentials are needed only for:
-`ms_teams_autoattendant_collection` and `ms_teams_callqueue_collection`.
-</Aside>
+| Field | Description |
+| --- | --- |
+| `microsoft_tenant_id` | Entra ID tenant ID |
+| `microsoft_client_id` | Application (client) ID |
+| `microsoft_client_secret` | Client secret |
+| `microsoft_client_certificate_path` | Path to PEM certificate (alternative to secret) |
+| `microsoft_client_assertion_type` | Assertion type for certificate auth |
+| `microsoft_username` | VAAC username (Auto Attendant / Call Queue only) |
+| `microsoft_password` | VAAC password (Auto Attendant / Call Queue only) |
 
-<Aside type="note">
-**National Cloud Deployments**
+## Output Platforms
 
-By default the collector targets the worldwide Microsoft cloud. If your organisation uses a national cloud, set `cloud_deployment` in `microsoft_authentication`:
-
-| Value | Environment |
-|---|---|
-| `global` | Worldwide (default) |
-| `us_gov_gcc_high` | Microsoft 365 GCC High |
-| `us_gov_dod` | Microsoft 365 DoD |
-| `china` | Microsoft 365 operated by 21Vianet (China) |
-
-Setting this value automatically adjusts the Microsoft Entra ID authentication endpoint and the Microsoft Graph API endpoint used by the collector.
-See the [Microsoft Graph national cloud deployments](https://learn.microsoft.com/en-us/graph/deployments) reference for the full endpoint list.
-</Aside>
-
-## 2. Build `output`
-
-Enable only the destinations you need.
+Enable at least one output backend. You can enable multiple backends.
 
 <Tabs>
   <TabItem label="Dynatrace">
 ```yaml
 output:
-    dynatrace:
-        enabled: true
-        dynatrace_tenant_id: 'your_tenant_id'
-        dynatrace_api_token: 'your_token'
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "<tenant_id>"
+    dynatrace_api_token: "dt0c01..."
 ```
   </TabItem>
   <TabItem label="Splunk">
 ```yaml
 output:
-    splunk:
-        enabled: true
-        splunk_hec_url: 'https://mysplunk:8088/services/collector/event'
-        splunk_hec_token: 'hec_token'
-        splunk_ssl_check: false
+  splunk:
+    enabled: true
+    splunk_url: "https://splunk.example.com:8088/services/collector"
+    splunk_token: "<hec_token>"
 ```
   </TabItem>
   <TabItem label="Console">
 ```yaml
 output:
-    console:
-        enabled: true
+  console:
+    enabled: true
 ```
   </TabItem>
 </Tabs>
 
 <Aside type="note">
-At least one output must be enabled, otherwise the collector exits at startup.
+If all outputs are disabled, the collector fails to start.
 </Aside>
 
-<Aside type="tip">
-The console output is useful for local testing. Combined with `logfile_log_level: DEBUG` in `collection_config`, it lets you verify the agent is running and collecting data correctly without forwarding anything to an external backend.
-</Aside>
-
-## 3. Build `collection_config`
-
-This section defines scheduling, logs, license path, and enabled features.
+## Collection Settings
 
 ```yaml
 collection_config:
-    microsoft_max_call_duration_hours: 5
-    logfile_log_level: 'INFO'
-    license_file: '/absolute/path/to/license.lic'
-    interval_collection_minutes: 1
-    features:
-        ms_teams_calls_collection:
-            enabled: true
-        ms_teams_issues_collection:
-            enabled: true
-        ms_teams_pstn_calls_collection:
-            enabled: true
-        ms_teams_direct_routing_calls_collection:
-            enabled: true
-        ms_teams_site_definition:
-            enabled: false
-        ms_teams_autoattendant_collection:
-            enabled: false
-        ms_teams_callqueue_collection:
-            enabled: false
+  microsoft_max_call_duration_hours: 5
+  interval_collection_minutes: 1
+  logfile_log_level: "INFO"
+  license_file: "<path/to/license.lic>"
 ```
 
-<Aside type="tip">
-Always use an absolute path for `license_file` to avoid resolution issues.
-</Aside>
+| Field | Default | Description |
+| --- | --- | --- |
+| `microsoft_max_call_duration_hours` | `5` | Retention window for the processed call ID cache |
+| `interval_collection_minutes` | `1` | Pause between collection cycles |
+| `logfile_log_level` | `INFO` | Log level: `DEBUG`, `INFO`, `WARNING`, `ERROR` |
+| `license_file` | — | Absolute path to the license file (required) |
+
+## Feature Flags
+
+All features default to `false`. Enable only what you need.
+
+```yaml
+collection_config:
+  features:
+    ms_teams_calls_collection:
+      enabled: true
+    ms_teams_issues_collection:
+      enabled: false
+    ms_teams_pstn_calls_collection:
+      enabled: false
+    ms_teams_direct_routing_calls_collection:
+      enabled: false
+    ms_teams_site_definition:
+      enabled: false
+    ms_teams_autoattendant_collection:
+      enabled: false
+    ms_teams_callqueue_collection:
+      enabled: false
+```
+
+| Feature key | Description |
+| --- | --- |
+| `ms_teams_calls_collection` | Call records (metadata + stream details) |
+| `ms_teams_issues_collection` | Microsoft 365 service health incidents |
+| `ms_teams_pstn_calls_collection` | PSTN call records |
+| `ms_teams_direct_routing_calls_collection` | Direct Routing call records |
+| `ms_teams_site_definition` | Custom subnet-to-site mapping via CSV |
+| `ms_teams_autoattendant_collection` | Auto Attendant Voice Analytics (requires VAAC credentials) |
+| `ms_teams_callqueue_collection` | Call Queue Voice Analytics (requires VAAC credentials) |
+
+## Optional: Site Definition CSV
 
 <Aside type="caution">
-`DEBUG` can produce large logs and expose sensitive metadata. Use it only for short troubleshooting sessions.
+This feature is deprecated and may be removed in a future version.
 </Aside>
 
-## 4. Advanced Options
-
-The optional `advanced` block exposes settings for non-standard network environments.
-
-### Custom CA Bundle (TLS-inspecting proxies)
-
-If the collector host sits behind a **TLS-inspecting proxy** or has a **non-standard CA chain**, certificate verification may fail for Microsoft Graph API calls — including report downloads that redirect through `reportsncu.office.com`. Set `ca_bundle_path` to the absolute path of your enterprise CA bundle in PEM format:
+When `ms_teams_site_definition.enabled: true`, define `site_definition_file`:
 
 ```yaml
-advanced:
-    ca_bundle_path: "/etc/ssl/certs/corporate-ca-bundle.pem"
+collection_config:
+  features:
+    ms_teams_site_definition:
+      enabled: true
+      site_definition_file: "<path/to/sites.csv>"
 ```
 
-This setting applies to:
-- All Microsoft Graph API calls
-- Report downloads (including the `reportsncu.office.com` redirect)
-- VAAC API calls
+Required header:
+
+```
+subnet,site,country,lat,lon
+```
+
+Without this file, calls appear as unmapped in site views.
+
+## Backward Compatibility
+
+At startup, v1 can rewrite older YAML schemas automatically:
+
+- `enabled_features` -> `features`
+- `logging_services` -> `output.*.enabled`
+- missing feature keys -> added with `enabled: false`
 
 <Aside type="tip">
-If you see a `TLS certificate verification failed` error mentioning `reportsncu.office.com` in the collector logs, this is the setting to configure. This is **not** a licensing issue.
+If you maintain older v1 configs, keep a backup before first startup with a new binary.
 </Aside>
-
-## 5. Site Enrichment
-
-<Aside type="danger">
-`ms_teams_site_definition` will be removed in a future version. If it is present in your config, remove it.
-
-To enrich call data with your network site information, use your backend's native lookup feature instead — see [Lookup File](./lookup-file/).
-</Aside>
-
-## 6. Full Example (`config.yaml`)
-
-<a href={`${import.meta.env.BASE_URL}examples/config.yaml`} download>Download config.yaml</a> or copy the template below:
-
-```yaml
-microsoft_authentication:
-    microsoft_tenant_id: "your-tenant-id"
-    microsoft_client_id: "your-client-id"
-    microsoft_client_secret: "your-client-secret"
-    microsoft_grant_type: "client_credentials"
-    # cloud_deployment: "global"  # Options: global, us_gov_gcc_high, us_gov_dod, china
-
-output:
-    dynatrace:
-        dynatrace_tenant_id: "your-tenant-id"
-        dynatrace_api_token: "your-api-token"
-        enabled: true
-    splunk:
-        splunk_hec_url: "https://your-splunk-url:8088/services/collector/event"
-        splunk_hec_token: "your-hec-token"
-        splunk_ssl_check: false
-        enabled: false
-    console:
-      enabled: true
-collection_config:
-    microsoft_max_call_duration_hours: 5
-    logfile_log_level: "INFO"
-    interval_collection_minutes: 5
-    license_file: '/absolute/path/to/your/license.lic'
-    features:
-        ms_teams_direct_routing_calls_collection:
-            enabled: true
-        ms_teams_calls_collection:
-            enabled: true
-        ms_teams_issues_collection:
-            enabled: false
-        ms_teams_pstn_calls_collection:
-            enabled: false
-        ms_teams_autoattendant_collection:
-            enabled: false
-        ms_teams_callqueue_collection:
-            enabled: false
-        ms_teams_site_definition:
-            enabled: false
-
-# advanced:
-#     # Optional: path to a CA bundle PEM file.
-#     # Required when running behind a TLS-inspecting proxy or using a non-standard CA chain.
-#     # Applies to all Microsoft Graph API calls (incl. reportsncu.office.com) and VAAC API calls.
-#     ca_bundle_path: "/etc/ssl/certs/corporate-ca-bundle.pem"
-```
-
-## 7. Validate Before Production Start
-
-<Steps>
-1. Check the binary and config path:
-
-   ```bash
-   ./ms-teams-agent.bin --version
-   ```
-
-2. Run one first cycle without historical state:
-
-   ```bash
-   ./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
-   ```
-
-3. Check logs and backend ingestion before enabling service mode.
-</Steps>

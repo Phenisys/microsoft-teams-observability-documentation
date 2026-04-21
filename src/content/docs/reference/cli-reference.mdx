@@ -1,89 +1,160 @@
 ---
 title: CLI Reference
-description: Complete reference for collector binary flags.
+description: Complete reference for all ms-teams-agent commands, sub-commands, options, and flags.
 sidebar:
   label: CLI Reference
   order: 3
 ---
 
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
-
-This page summarizes the collector CLI flags.
+This page documents the current `ms-teams-agent` CLI.
 
 ## Command Shape
 
 ```bash
-ms-teams-agent [--config <path>] [options]
+ms-teams-agent <command> [options]
 ```
 
-The collector uses a single binary command style (no sub-commands).
+## Global Options
 
-## Binary Names by OS
-
-- Linux: `ms-teams-agent.bin`
-- Windows: `ms-teams-agent.exe`
-
-## Global Flags
-
-| Flag | Purpose |
+| Option | Description |
 | --- | --- |
-| `--version` | Print version and exit |
-| `--config <path>` | Start continuous collection |
-| `--ignore_state` | Run one cycle and ignore state file |
-| `--call_id <ID>` | Process one call and exit |
-| `--enable_boot_start` | Install as a Linux systemd service |
-| `--disable_boot_start` | Remove the Linux systemd service |
-| `--service_name_suffix=<suffix>` | Add suffix for named service instances |
-| `--force_service_creation` | Replace an existing service with same name |
+| `--version` | Print the agent version and exit. |
 
-## Common Usage
+## Commands
 
-<Tabs>
-  <TabItem label="Linux">
-```bash
-# Print version
-./ms-teams-agent.bin --version
+| Command | Description |
+| --- | --- |
+| `run` | Collect and export Teams call data. |
+| `validate` | Validate a YAML config file and exit. |
+| `test-connection` | Validate Microsoft Graph auth and exporter connectivity. |
+| `service` | Manage Linux `systemd` service instances. |
+| `state` | Inspect, export, reset, or migrate collector state. |
 
-# Start continuous collection
-./ms-teams-agent.bin --config ./conf/config.yaml
-
-# First run without previous state
-./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
-
-# Debug a single call
-./ms-teams-agent.bin --config ./conf/config.yaml --call_id "<CALL_ID>"
-```
-  </TabItem>
-  <TabItem label="Windows">
-```powershell
-# Print version
-.\ms-teams-agent.exe --version
-
-# Start continuous collection
-.\ms-teams-agent.exe --config .\conf\config.yaml
-
-# First run without previous state
-.\ms-teams-agent.exe --config .\conf\config.yaml --ignore_state
-
-# Debug a single call
-.\ms-teams-agent.exe --config .\conf\config.yaml --call_id "<CALL_ID>"
-```
-  </TabItem>
-</Tabs>
-
-## Service Flags (Linux)
+## `run`
 
 ```bash
-# Install and start service
-sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --enable_boot_start
-
-# Remove service
-sudo ./ms-teams-agent.bin --config /absolute/path/to/config.yaml --disable_boot_start
-
-# Named instance
-sudo ./ms-teams-agent.bin --config /path/to/config-prod.yaml --enable_boot_start --service_name_suffix=-prod
+ms-teams-agent run --config <FILE> [options]
 ```
 
-<Aside type="tip">
-For operational procedures and service lifecycle details, see <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.
-</Aside>
+| Option | Description |
+| --- | --- |
+| `--config` | Required. Path to YAML config file. |
+| `--log-level` | Optional. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
+| `--call-id` | Optional. Process a specific call ID. |
+| `--ignore-state` | Optional. Ignore existing state file. |
+| `--state-file` | Optional. Override state DB path. |
+| `--dry-run` | Optional. Run collection without exporting to backends. |
+
+## `validate`
+
+```bash
+ms-teams-agent validate --config <FILE>
+```
+
+| Option | Description |
+| --- | --- |
+| `--config` | Required. Path to YAML config file. |
+
+## `test-connection`
+
+```bash
+ms-teams-agent test-connection --config <FILE> [options]
+```
+
+| Option | Description |
+| --- | --- |
+| `--config` | Required. Path to YAML config file. |
+| `--log-level` | Optional. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
+
+## `service`
+
+```bash
+ms-teams-agent service <action> [options]
+```
+
+Actions:
+
+- `install`
+- `install-config`
+- `enable`
+- `restart`
+- `status`
+- `disable`
+- `remove`
+- `provision`
+- `enable-service`
+- `disable-service`
+
+Options:
+
+| Option | Description |
+| --- | --- |
+| `--config` | Path to YAML config file. Required for `enable-service`, `install`, `provision`, and `install-config`. |
+| `--instance` | Service instance name (for example `prod`). |
+| `--force-service-creation`, `--force-unit` | Force overwrite of existing service unit template. Valid only with `enable-service`, `install`, or `provision`. |
+| `--service-restart-if-active` | For `install-config` only. Restart instance if already active. |
+
+## `state`
+
+```bash
+ms-teams-agent state [--state-file <FILE>] <action> [options]
+```
+
+Actions:
+
+- `show`: display current state entries.
+- `reset`: clear all state (timestamps and dedup cache).
+- `export`: export state as JSON.
+- `migrate-v1`: import legacy v1 JSON state into v2 SQLite state.
+
+Common option:
+
+| Option | Description |
+| --- | --- |
+| `--state-file` | Path to state DB. Defaults to `state.db`. |
+
+### `state export`
+
+```bash
+ms-teams-agent state export [options]
+```
+
+| Option | Description |
+| --- | --- |
+| `--output`, `-o` | Write JSON to file instead of stdout. |
+| `--include-objects` | Include processed object IDs and metadata (can be large). |
+| `--type` | Filter by object type. Repeatable. |
+| `--since` | Include types processed on/after ISO-8601 datetime. |
+| `--until` | Include types processed on/before ISO-8601 datetime. |
+| `--limit` | Max objects per type, most recent first. Effective only with `--include-objects`. |
+
+### `state migrate-v1`
+
+```bash
+ms-teams-agent state migrate-v1 --source <FILE> [options]
+```
+
+| Option | Description |
+| --- | --- |
+| `--source`, `-s` | Required. Path to v1 JSON state file. |
+| `--overwrite` | Overwrite existing entries in v2 state DB. |
+| `--force`, `-f` | Skip interactive confirmation prompt. |
+
+## Practical Examples
+
+```bash
+# Validate configuration
+ms-teams-agent validate --config ./config.yaml
+
+# Connectivity test before production rollout
+ms-teams-agent test-connection --config ./config.yaml
+
+# Run collector in dry-run mode
+ms-teams-agent run --config ./config.yaml --dry-run
+
+# Enable service instance
+sudo ms-teams-agent service enable-service --config /etc/ms-teams-observability-agent/prod.yaml --instance prod
+
+# Export detailed state snapshot
+ms-teams-agent state export --include-objects --type calls_collection --since 2026-03-28 --output ./state.json
+```

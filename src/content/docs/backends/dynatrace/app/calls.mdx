@@ -1,28 +1,20 @@
 ---
-title: Use the Calls Page
-description: "Detailed functional guide for the Calls page: filters, table behavior, states, and navigation."
+title: Application — Calls
+description: The Calls page provides a searchable and filterable list of all MS Teams calls recorded in Dynatrace.
 sidebar:
   label: Calls
   order: 3
 ---
 
 import { Aside } from '@astrojs/starlight/components';
-import dynatraceAppCallsPage from '../../../../../assets/images/dynatrace-app-calls-page.png';
 
 > **Path:** `/calls`
 
-## What This Page Shows
-
-The Calls page provides a searchable and filterable list of all Microsoft Teams calls recorded in Dynatrace. Use it to find specific calls, investigate quality issues, compare call types, or drill down into a particular call.
+The Calls page provides a **searchable and filterable list of all Microsoft Teams calls** recorded in Dynatrace. Use it to find specific calls, investigate quality issues, or drill down into a particular call's full details.
 
 Breadcrumb navigation: `Home > Calls`
 
-## Screenshot
-
-<figure>
-  <img src={dynatraceAppCallsPage.src} alt="Calls page with filter bar and calls table" />
-  <figcaption>Calls page overview.</figcaption>
-</figure>
+---
 
 ## Filter Bar
 
@@ -30,7 +22,7 @@ Breadcrumb navigation: `Home > Calls`
 
 An advanced filter input with type-ahead suggestions. Multiple conditions can be combined with `AND`.
 
-When you type, the field proposes keys/operators/values and validates the expression before query execution.
+**Available filter keys:**
 
 | Key | Display name | Type | Description |
 |-----|-------------|------|-------------|
@@ -42,18 +34,27 @@ When you type, the field proposes keys/operators/values and validates the expres
 | `start` | Start | Date/Time | Call start timestamp |
 | `end` | End | Date/Time | Call end timestamp |
 | `duration` | Duration | Number (seconds) | Call duration |
-| `subnet` | Subnet | IP/CIDR | Any participant subnet |
-| `location` | Location | String | Any participant site location |
+| `subnet` | Subnet | IP/CIDR | Any participant's network subnet |
+| `location` | Location | String | Any participant's site location |
 
-Valid values:
+**Valid values for `health`:** `Good`, `Poor`, `Unclassified`
 
-- `health`: `Good`, `Poor`, `Unclassified`
-- `type`: `peerToPeer`, `groupCall`
+**Valid values for `type`:** `peerToPeer`, `groupCall`
 
-Duration suggestions:
+**String operators** (participant, id, location): `=`, `!=`, `in ()`, `not in ()`, `~` (contains), `starts with`, `ends with`
 
-| Label | Value |
-|-------|-------|
+**Numeric operators** (participantCount, duration): `=`, `!=`, `>`, `>=`, `<`, `<=`
+
+**Health / Type:** equality operators only (`=`, `!=`, `in ()`, `not in ()`)
+
+**Subnet:** requires a full IP address or CIDR notation; invalid values show an inline error.
+
+The filter is stored in the URL (`?filter=...`) and validated in real-time. The Update button is disabled if syntax is invalid.
+
+**Duration suggestions** (pre-filled):
+
+| Label | Value (seconds) |
+|-------|-----------------|
 | 1 minute | 60 |
 | 5 minutes | 300 |
 | 10 minutes | 600 |
@@ -61,88 +62,63 @@ Duration suggestions:
 | 1 hour | 3600 |
 | 2 hours | 7200 |
 
-Operators:
-
-- String (`participant`, `id`, `location`): `=`, `!=`, `in ()`, `not in ()`, `~`, `starts with`, `ends with`
-- Numeric (`participantCount`, `duration`): `=`, `!=`, `>`, `>=`, `<`, `<=`
-- Enum (`health`, `type`): `=`, `!=`, `in ()`, `not in ()`
-
-The filter is validated in real time and stored in URL (`?filter=...`).
-
 ### Timeframe Selector
 
-Standard preset timeframe picker. Stored as `?from=...&to=...`.
+Standard preset time range picker. Stored in URL as `?from=...&to=...`.
 
 ### Show Empty Calls
 
-Checkbox to include calls with duration `0` (no recording data).
+A checkbox toggle. When checked, calls with a duration of `0` (no recording data) are included.
 
-- Default: unchecked
-- Stored as `?showEmptyCalls=true`
-- Useful when you want a full activity inventory, even for calls without analyzable media streams.
+- Default: **unchecked**
+- Stored in URL as `?showEmptyCalls=true`
 
 ### Update Button
 
-Applies filter, timeframe, and empty-call option.
+Applies the current filter, timeframe, and "Show empty calls" setting. Highlighted when filters differ from the last applied values. Disabled if filter syntax is invalid or a query is in progress.
 
-- Highlighted when values changed but not applied.
-- Disabled when filter syntax is invalid.
-- Disabled while query is running.
-- If values are unchanged, it refreshes the current result set.
+---
 
 ## Calls Table
 
-A sortable, paginated table listing calls matching current criteria.
+A sortable, paginated data table listing all calls matching the current filter.
 
-This table is the operational entry point to select one call and open detailed diagnostics in Call Overview.
+### Columns
 
 | Column | Sortable | Description |
 |--------|----------|-------------|
-| Health | Yes | Colored status icon (Good/Poor/Unclassified) |
-| Type | No | Group Call or Peer To Peer chip |
-| ID | No | Call identifier; link to Call Overview when recording exists |
-| Participants | No | Participant list with guest summary |
-| Count | Yes | Number of participants |
-| Start | No | Call start timestamp |
-| End | No | Call end timestamp |
-| Duration | Yes | `HH:MM:SS` duration |
+| **Health** | Yes | Call quality status shown as a colored icon. Sort order: Good → Poor → Unknown |
+| **Type** | No | "Group Call" or "Peer To Peer" chip |
+| **ID** | No | Unique call identifier. Clickable link to [Call Overview](../../../backends/dynatrace/app/call-overview/) for calls with a recording |
+| **Participants** | No | Participant names. Guest users summarized (e.g., "and 2 Guests") |
+| **Count** | Yes | Number of participants |
+| **Start** | No | Call start timestamp |
+| **End** | No | Call end timestamp |
+| **Duration** | Yes | Call duration formatted as `HH:MM:SS` |
 
-### Health column
+#### ID Column details
 
-| Icon | Status | Meaning |
-|------|--------|---------|
-| Green | Good | Quality met thresholds |
-| Red | Poor | Quality degraded |
-| Grey | Unclassified | No quality data |
+- **Duration > 0** (recording available): ID is a clickable link to [Call Overview](../../../backends/dynatrace/app/call-overview/). The link includes a 10-minute padding before the start and after the end.
+- **Duration = 0** (no recording): ID is plain text. Hover shows: *"No call recording available"*.
 
-### Type column
+#### Participants Column details
 
-| Label | Value |
-|-------|-------|
-| Group Call | `groupCall` |
-| Peer To Peer | `peerToPeer` |
+- Named participants listed comma-separated.
+- Guest users are counted and shown as "and N Guest(s)".
+- If all participants are guests: shows "N Guests".
 
-### ID column behavior
-
-- Duration > 0: clickable link to <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Call Overview</a>, with time padding around call interval.
-- Duration = 0: non-clickable text with tooltip: `No call recording available`.
-
-The automatic time padding around start/end is used to load surrounding stream context in Call Overview.
-
-### Participants column behavior
-
-- Named participants are listed.
-- Guests are grouped as `and N Guest(s)`.
-- If all are guests, shows `N Guests`.
+---
 
 ## Empty / Error States
 
-| Situation | Behavior |
-|-----------|----------|
+| Situation | What you see |
+|-----------|-------------|
 | Loading | Spinner / skeleton rows |
-| No calls match | Empty table |
-| Invalid filter | Update disabled + inline error |
-| Network error | Error in table area |
+| No calls match filters | Empty table |
+| Filter syntax invalid | Update button disabled; inline error |
+| Network error | Error message in the table area |
+
+---
 
 ## URL Parameters
 
@@ -151,16 +127,14 @@ The automatic time padding around start/end is used to load surrounding stream c
 | `filter` | Advanced filter expression | `health = "Poor"` |
 | `from` | Timeframe start | `now()-7d` |
 | `to` | Timeframe end | `now()` |
-| `showEmptyCalls` | Include empty calls | `true` / `false` |
+| `showEmptyCalls` | Include calls with no recording | `true` / `false` |
 
-## Navigation from This Page
+---
+
+## Navigation from this page
 
 | Action | Destination |
 |--------|-------------|
-| Click call ID (with recording) | <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Call Overview</a> |
-| Opened from Users page | User filter pre-populated |
-| Opened from Sites table | Location filter pre-populated |
-
-<Aside type="note">
-Use this page to identify the right call, then continue in Call Overview for stream-level analysis.
-</Aside>
+| Click a call ID (with recording) | [Call Overview](../../../backends/dynatrace/app/call-overview/) for that call |
+| Navigated from Users page | Filter pre-populated with the selected user's name |
+| Navigated from Sites table | Filter pre-populated with the selected location |

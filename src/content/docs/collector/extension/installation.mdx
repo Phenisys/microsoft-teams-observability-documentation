@@ -1,5 +1,5 @@
 ---
-title: Install the Dynatrace Extension
+title: Dynatrace Extension — Installation
 description: Upload the MS Teams Observability extension to Dynatrace, configure it in the UI, and verify data collection.
 sidebar:
   label: Installation
@@ -7,14 +7,13 @@ sidebar:
 ---
 
 import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
-import dynatraceExtensionConfigurationScreen from '../../../../assets/images/dynatrace-extension-configuration_screen.png';
 
 <Aside type="caution">
 The Dynatrace Extension is currently in **beta**. It wraps the same agent code as the standalone binary and covers the same data collection capabilities. Behaviour may change before general availability.
 </Aside>
 
 <Aside type="note">
-If you are replacing an existing standalone agent, stop it first. See <a href={`${import.meta.env.BASE_URL}collector/extension/migration/`}>Migrate from Standalone</a>.
+If you are replacing an existing standalone agent, stop it first. See [Migrate from Standalone](/collector/extension/migration/).
 </Aside>
 
 ## Prerequisites
@@ -25,12 +24,10 @@ Before starting:
 - The extension package matching your ActiveGate OS:
   - **Linux** ActiveGate → `custom_teams-observability-agent-linux_X.Y.Z.zip`
   - **Windows** ActiveGate → `custom_teams-observability-agent-windows_X.Y.Z.zip`
-  - Download from the <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-extension/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a> page
-- Extension source repository: <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-extension" target="_blank" rel="noopener noreferrer">microsoft-teams-observability-dynatrace-extension</a>
+  - Download from the [GitHub Releases](https://github.com/Phenisys/dynatrace-extension-teams-observability-agent/releases) page
 - Your current configuration values (credentials, features, intervals)
-- Your Phenisys **license string** — the full JSON content of the license file (not the file path). See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
+- Your Phenisys **license string** — the full JSON content of the license file (not the file path). See [License](/getting-started/license/).
 - A Dynatrace API token with the **`logs.ingest`** permission
-- The **Phenisys root certificate** (`ca.pem`) — <a href={`${import.meta.env.BASE_URL}files/ca.pem`} download>Download ca.pem</a>
 
 <Aside type="note">
 The extension runs on the ActiveGate, not on the host where the standalone agent was installed. The ActiveGate must have outbound network access to `graph.microsoft.com`.
@@ -38,45 +35,10 @@ The extension runs on the ActiveGate, not on the host where the standalone agent
 
 ---
 
-## Step 1 — Deploy the root certificate
-
-Dynatrace verifies the authenticity of extensions using the publisher's root certificate. This certificate must be present on each ActiveGate host in the target group, and uploaded to the Dynatrace Credential Vault.
+## Step 1 — Upload the extension to Dynatrace
 
 <Steps>
-1. Download the Phenisys root certificate: <a href={`${import.meta.env.BASE_URL}files/ca.pem`} download>Download ca.pem</a>
-
-2. Copy the certificate to each ActiveGate host in the target group.
-
-   <Aside type="caution">
-   There may already be a `ca.pem` file on the ActiveGate. **Rename the downloaded file** (e.g. `phenisys-ca.pem`) before copying to avoid overwriting it.
-   </Aside>
-
-   <Tabs>
-     <TabItem label="Linux">
-     ```
-     /var/lib/dynatrace/remotepluginmodule/agent/conf/certificates/
-     ```
-     </TabItem>
-     <TabItem label="Windows">
-     ```
-     %PROGRAMDATA%\dynatrace\remotepluginmodule\agent\conf\certificates\
-     ```
-     </TabItem>
-   </Tabs>
-
-3. Upload the certificate to the Dynatrace Credential Vault:
-   - Navigate to **Settings → Credential Vault → Add new credential**
-   - Set **Credential type** to **Public Certificate**
-   - Under **Credential scope**, check **Extension validation**
-   - In **Certificate file**, upload the certificate
-</Steps>
-
----
-
-## Step 2 — Upload the extension to Dynatrace
-
-<Steps>
-1. Download the correct extension ZIP from <a href="https://github.com/Phenisys/microsoft-teams-observability-dynatrace-extension/releases/latest" target="_blank" rel="noopener noreferrer">GitHub Releases</a>:
+1. Download the correct extension ZIP from [GitHub Releases](https://github.com/Phenisys/dynatrace-extension-teams-observability-agent/releases):
    - `custom_teams-observability-agent-linux_X.Y.Z.zip` for Linux ActiveGate
    - `custom_teams-observability-agent-windows_X.Y.Z.zip` for Windows ActiveGate
 
@@ -89,7 +51,7 @@ Dynatrace verifies the authenticity of extensions using the publisher's root cer
 
 ---
 
-## Step 3 — Configure the extension
+## Step 2 — Configure the extension
 
 <Steps>
 1. Open the uploaded extension and click **Add configuration**.
@@ -101,13 +63,6 @@ Dynatrace verifies the authenticity of extensions using the publisher's root cer
 4. Click **Save**.
 </Steps>
 
-### Screenshot
-
-<figure>
-  <img src={dynatraceExtensionConfigurationScreen.src} alt="Dynatrace extension configuration screen showing Microsoft Cloud Deployment and Custom CA Bundle Path fields." />
-  <figcaption>Dynatrace extension configuration screen.</figcaption>
-</figure>
-
 ### Configuration mapping
 
 Use this table to map values from your existing `config.yaml` to the extension UI fields.
@@ -117,7 +72,6 @@ Use this table to map values from your existing `config.yaml` to the extension U
 | YAML field | Extension UI field | Notes |
 |---|---|---|
 | `microsoft_authentication.microsoft_tenant_id` | **Microsoft Tenant ID** | |
-| `microsoft_authentication.cloud_deployment` | **Microsoft Cloud Deployment** | Default `global`. Options: `global`, `us_gov_gcc_high`, `us_gov_dod`, `china` |
 | `microsoft_authentication.microsoft_client_id` | **Microsoft Client ID** | Or use Credential Vault |
 | `microsoft_authentication.microsoft_client_secret` | **Microsoft Client Secret** | Or use Credential Vault |
 | `microsoft_authentication.microsoft_username` | **Microsoft VAAC Username** | Only visible when PSTN collection is enabled |
@@ -138,13 +92,7 @@ Use this table to map values from your existing `config.yaml` to the extension U
 |---|---|---|
 | Content of `.lic` / `license.json` | **License** | Paste the full JSON string — not the file path |
 
-Open your license file and copy its entire content into the **License** field. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> for format details.
-
-#### Advanced / Network
-
-| YAML field | Extension UI field | Notes |
-|---|---|---|
-| `advanced.ca_bundle_path` | **Custom CA Bundle Path** | Optional. Absolute path to a PEM CA bundle on the ActiveGate host (for TLS-inspecting proxies or enterprise custom CA chains). |
+Open your license file and copy its entire content into the **License** field. See [License](/getting-started/license/) for format details.
 
 #### Features
 
@@ -170,7 +118,7 @@ The `ms_teams_site_definition` feature (custom subnet/site mapping via CSV file)
 
 ---
 
-## Step 4 — Verify data collection
+## Step 3 — Verify data collection
 
 <Steps>
 1. Open the extension configuration in Dynatrace and check the **Status** — it should show **Running** within a few minutes.
@@ -203,7 +151,7 @@ Agent logs (collection errors, Microsoft Graph API issues):
 /var/lib/dynatrace/remotepluginmodule/agent/runtime/extensions/python_venvs/{extension-name}/lib/{python-version}/site-packages/teams_observability_agent/agent/logs/
 ```
 
-Replace `{python-version}` with the Python version in use (e.g. `python3.14`).
+Replace `{python-version}` with the Python version in use (e.g. `python3.10`).
 
   </TabItem>
   <TabItem label="Windows">
@@ -223,7 +171,7 @@ Agent logs:
   </TabItem>
 </Tabs>
 
-In both cases, replace `{extension-name}` with the full extension name (e.g. `custom_teams-observability-agent-linux`).
+In both cases, replace `{extension-name}` with the full extension name (e.g. `custom:teams-observability-agent-linux`).
 
 ---
 

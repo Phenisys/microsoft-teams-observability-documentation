@@ -1,0 +1,89 @@
+---
+title: Service Management
+description: Run ms-teams-agent as a Linux systemd service.
+sidebar:
+  label: Service Management
+  order: 5
+  badge:
+    text: Linux only
+    variant: caution
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Use this page to run the collector as a background service on Linux.
+
+## Prerequisites
+
+- Linux host with `systemd`
+- Root privileges (`sudo`)
+- Valid collector config file
+
+## Recommended License Path
+
+```bash
+sudo install -d -m 0750 /etc/ms-teams-observability-agent
+sudo install -m 0640 -o root -g ms-teams-observability-agent \
+  ./license.json /etc/ms-teams-observability-agent/license.json
+```
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+```
+
+<Aside type="caution">
+Avoid storing the license under `/home/...` because service hardening can block access.
+</Aside>
+
+## Enable the Service
+
+```bash
+sudo ms-teams-agent service enable-service --config /absolute/path/config.yaml
+sudo ms-teams-agent service status
+```
+
+## Enable a Named Service (Optional)
+
+```bash
+sudo ms-teams-agent service enable-service \
+  --config /etc/ms-teams-observability-agent/prod.yaml \
+  --instance prod
+
+sudo ms-teams-agent service status --instance prod
+```
+
+## Common Operations
+
+```bash
+sudo ms-teams-agent service status --instance default
+sudo ms-teams-agent service restart --instance default
+sudo systemctl status ms-teams-observability-agent@default.service
+sudo journalctl -u ms-teams-observability-agent@default.service -f
+```
+
+## Update Configuration Safely
+
+<Steps>
+1. Back up your config file.
+2. Install updated config:
+
+   ```bash
+   sudo ms-teams-agent service install-config \
+     --config /etc/ms-teams-observability-agent/prod.yaml \
+     --instance prod \
+     --service-restart-if-active
+   ```
+
+3. Verify status and logs.
+</Steps>
+
+## Disable the Service
+
+```bash
+sudo ms-teams-agent service disable-service --instance default
+```
+
+<Aside type="danger">
+Disabling a service instance removes its local service data for that instance.
+</Aside>

@@ -1,63 +1,61 @@
 ---
-title: Use the Issues Page
-description: "Detailed functional guide for the Issues page: sections, cards, states, and correlation behavior."
+title: Application — Issues
+description: The Issues page displays Microsoft service health incidents affecting your tenant — active and recently resolved.
 sidebar:
   label: Issues
   order: 6
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-import dynatraceAppIssuesPage from '../../../../../assets/images/dynatrace-app-issues-page.png';
-
 > **Path:** `/issues`
 
-## What This Page Shows
-
-The Issues page displays Microsoft service health incidents affecting your tenant, including active and recently resolved issues.
+The Issues page displays **Microsoft service health incidents** affecting your tenant — both currently active issues and recently resolved ones. Use it to correlate call quality degradation with known Microsoft outages.
 
 Breadcrumb navigation: `Home > Issues`
 
-## Screenshot
-
-<figure>
-  <img src={dynatraceAppIssuesPage.src} alt="Issues page with active and closed incidents" />
-  <figcaption>Issues page overview.</figcaption>
-</figure>
+---
 
 ## Filter Bar
 
 ### Timeframe Selector
 
-Controls which closed issues are shown. Active issues are always shown.
+Controls which **closed issues** are shown (issues that ended within the selected window). Currently active issues are always shown regardless of the timeframe.
 
-Stored as `?from=...&to=...`.
+Stored in URL as `?from=...&to=...`.
 
 ### Update Button
 
-Applies selected timeframe and refreshes closed issues list.
+Fetches issues for the selected timeframe. Highlighted when the timeframe has changed but not yet been applied.
 
-If you change only the timeframe, this is the action that recalculates the closed-issues list.
+---
 
-## Current Issues
+## Section 1: Current Issues
 
-- Displays currently active incidents.
-- Header includes active issue count.
-- Includes **Open in Notebooks** action.
-- Empty state: `No current issues`.
+Displays all **currently open / active** Microsoft service incidents.
 
-Use this section to confirm whether an active Microsoft event can explain a current quality degradation.
+**Header:**
+- Title: "Current Issues"
+- Issue count badge
+- **"Open in Notebooks"** intent button — opens the underlying query in Dynatrace Notebooks
 
-## Closed Issues
+**Empty state:** "No current issues"
 
-- Displays resolved incidents within selected timeframe.
-- Includes **Open in Notebooks** action.
-- Empty state: `No closed issues`.
+---
 
-Use this section to verify whether a recent issue overlaps your investigation period.
+## Section 2: Closed Issues
+
+Displays **recently resolved** Microsoft service incidents within the selected timeframe.
+
+**Header:**
+- Title: "Closed Issues"
+- **"Open in Notebooks"** intent button
+
+**Empty state:** "No closed issues"
+
+---
 
 ## Issue Card
 
-Card colors reflect severity.
+Each issue is displayed as a message container card. The card color matches the issue's severity:
 
 | Severity | Card color | Chip color |
 |----------|-----------|-----------|
@@ -65,28 +63,32 @@ Card colors reflect severity.
 | Advisory | Yellow/Warning | Yellow |
 | Other | Neutral | Grey |
 
-Card header fields:
+### Card Header
 
 | Element | Description |
 |---------|-------------|
-| Feature name | Affected Microsoft service |
-| Issue ID | Incident identifier |
-| Start time | Issue start timestamp |
-| End time | Closed issues only; approximated |
-| Classification | Severity chip |
+| Feature name | Microsoft service affected (e.g., "Microsoft Teams") |
+| Issue ID | Unique identifier |
+| Start time | When the issue began |
+| End time | (Closed issues only) Approximated end time with tooltip: *"approximated end time"* |
+| Classification chip | Severity label (e.g., "Incident", "Advisory") |
 
-Card body is expandable and renders detailed incident sections in Markdown.
+### Card Body (expandable)
 
-Expanding a card shows detailed Microsoft-provided information (impact scope, service details, and updates).
+The card body is an **accordion** — click the issue title to expand it and see the full details. The full incident report includes affected services, impact description, and any remediation steps provided by Microsoft, rendered as formatted Markdown.
+
+---
 
 ## Empty / Error States
 
-| Situation | Behavior |
-|-----------|----------|
-| Loading | Skeleton cards |
-| No current issues | Empty text in current section |
-| No closed issues | Empty text in closed section |
-| Fetch error | Error state in relevant section |
+| Situation | What you see |
+|-----------|-------------|
+| Loading | Loading skeletons |
+| No current issues | "No current issues" |
+| No closed issues in range | "No closed issues" |
+| Data fetch error | Error state in the relevant section |
+
+---
 
 ## URL Parameters
 
@@ -95,6 +97,9 @@ Expanding a card shows detailed Microsoft-provided information (impact scope, se
 | `from` | Timeframe start | `now()-7d` |
 | `to` | Timeframe end | `now()` |
 
-<Aside type="note">
-Closed issue end times are approximated. Always validate impact and recovery with telemetry from Home, Sites, Calls, and Call Overview.
-</Aside>
+---
+
+## Notes
+
+- **End times for closed issues are approximated** (start time + 30 minutes). The tooltip on the end time makes this explicit.
+- The **navigation bar badge** shows the count of current open issues as a number, so you can see at a glance if there are active incidents without visiting the page.

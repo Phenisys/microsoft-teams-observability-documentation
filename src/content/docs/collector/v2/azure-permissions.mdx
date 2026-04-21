@@ -55,13 +55,13 @@ flowchart TD
 1. Open **Certificates & secrets**.
 2. In **Client secrets**, click **New client secret**.
 3. Copy the secret **Value** immediately after creation.
-4. Put this value in `microsoft_authentication.microsoft_client_secret`.
+4. Put this value in `microsoft_authentication.graph.client_secret`.
   </TabItem>
   <TabItem label="Certificate (PEM)">
 1. Open **Certificates & secrets**.
 2. In **Certificates**, upload the public certificate (`.cer`, `.pem`, or `.crt`).
 3. Keep a PEM file that contains both private and public keys for the collector host.
-4. Put the PEM path in `microsoft_authentication.microsoft_client_certificate_path`.
+4. Put the PEM path in `microsoft_authentication.graph.client_certificate_path`.
 
 Expected PEM layout:
 
@@ -101,23 +101,20 @@ Use one of the two authentication patterns below.
   <TabItem label="Client secret">
 ```yaml
 microsoft_authentication:
-  microsoft_tenant_id: "<tenant-id>"
-  microsoft_client_id: "<client-id>"
-  microsoft_client_secret: "<secret>"
-  microsoft_scope: "https://graph.microsoft.com/.default"
-  microsoft_grant_type: "client_credentials"
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>"
 ```
   </TabItem>
   <TabItem label="Certificate">
 ```yaml
 microsoft_authentication:
-  microsoft_tenant_id: "<tenant-id>"
-  microsoft_client_id: "<client-id>"
-  microsoft_client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-  microsoft_client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
-  microsoft_client_certificate_passphrase: "optional"
-  microsoft_scope: "https://graph.microsoft.com/.default"
-  microsoft_grant_type: "client_credentials"
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
+    client_certificate_passphrase: "optional"
 ```
   </TabItem>
 </Tabs>
@@ -125,30 +122,8 @@ microsoft_authentication:
 Then run:
 
 ```bash
-./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
 ```
 
-For all available configuration fields, see <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
-
-## VAAC Account (Auto Attendant & Call Queue)
-
-The `microsoft_username` and `microsoft_password` fields used for Auto Attendant and Call Queue collection (`ms_teams_autoattendant_collection` / `ms_teams_callqueue_collection`) are **not** the App Registration credentials. They refer to a dedicated Microsoft 365 **user** account that must be configured in Teams.
-
-<Steps>
-1. Create or designate a dedicated Microsoft 365 user account for the collector.
-
-2. In the [Microsoft Teams admin center](https://admin.microsoft.com/), go to **Voice** > **Voice applications policies**.
-
-3. Click **Add** to create a new custom policy. Grant it the minimum permissions needed (the global default policy grants no access and must not be used).
-
-4. Assign the custom policy to the account via **Manage users** or with the PowerShell cmdlet:
-   ```powershell
-   Grant-CsTeamsVoiceApplicationsPolicy -Identity "user@domain.com" -PolicyName "YourCustomPolicy"
-   ```
-
-5. Set the account as an **Authorized user** on at least one Auto Attendant or Call Queue in **Voice** > **Auto attendants** / **Call queues** > **Authorized users**.
-</Steps>
-
-<Aside type="note">
-Many advanced capabilities — including real-time metrics and most configuration options — require a **Teams Premium** license on this account. See the [Microsoft documentation](https://learn.microsoft.com/en-us/microsoftteams/manage-voice-applications-policies) for the full permissions matrix.
-</Aside>
+For all available configuration fields, see [Configuration Reference](/collector/v2/configuration/).

@@ -3,47 +3,53 @@ title: Troubleshooting the Collector
 description: Diagnose and resolve common issues with the MS Teams Observability Collector — authentication, connectivity, configuration, and service.
 sidebar:
   label: Troubleshooting
-  order: 80
+  order: 7
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-## Authentication Issues
+## Configuration Errors
 
-- Verify tenant ID, client ID, and secret/certificate in your config.
-- Confirm admin consent is granted for required Microsoft Graph permissions.
-- Check system time drift on the collector host.
+**Symptom:** `ms-teams-agent validate` exits with errors.
 
-## Connectivity Issues
+**Checks:**
+1. Ensure all required sections are present: `microsoft_authentication`, `license`, `output`, `collection_config`.
+2. Verify YAML formatting — indentation errors are a common cause of validation failures.
+3. Confirm the license file path exists and is readable by the collector process.
+4. Confirm at least one output backend is `enabled: true`.
 
-- Validate outbound access to:
-  - `graph.microsoft.com`
-  - `login.microsoftonline.com`
-  - `reportsncu.office.com` (Microsoft Graph report download redirect)
-  - your backend endpoint
-- Confirm proxy/firewall rules for HTTPS traffic.
+Run:
+```bash
+ms-teams-agent validate --config ./config.yaml
+```
 
-## TLS Certificate Errors
+## Microsoft Authentication Errors
 
-If the collector logs show a `TLS certificate verification failed` error mentioning `reportsncu.office.com`, this is **not a licensing problem**. That domain is a Microsoft redirect used for Graph API report downloads.
+**Symptom:** `test-connection` fails with authentication errors, or collector logs show `401` / `403` from Microsoft Graph.
 
-**Cause:** The collector host's CA trust store does not include the certificate authority of the server or TLS-inspecting proxy.
+**Checks:**
+1. Verify `tenant_id` and `client_id` are correct (no extra spaces or characters).
+2. For client secret: confirm the secret has not expired in Azure.
+3. For certificate: confirm the PEM file contains both private and public key, and the passphrase (if any) is correct.
+4. Confirm admin consent has been granted for all required Graph permissions (`CallRecords.Read.All`, `Reports.Read.All`, `ServiceHealth.Read.All`).
+5. Confirm the app registration is not disabled in Microsoft Entra ID.
 
-**Fix options (choose one):**
+Run with debug logging for more detail:
+```bash
+ms-teams-agent run --config ./config.yaml --log-level DEBUG
+```
 
-1. Update the OS CA trust store on the collector host:
-   - Linux: `sudo update-ca-certificates`
-   - Windows: import the CA certificate into the system certificate store
+## Microsoft Graph Connectivity Issues
 
-2. Set `advanced.ca_bundle_path` in `config.yaml` pointing to your enterprise CA bundle in PEM format — see [Advanced Options](./configuration/#4-advanced-options).
+**Symptom:** `test-connection` fails with network errors or timeouts.
 
-## Data Not Visible in Backend
+**Checks:**
+1. Confirm outbound access to `graph.microsoft.com` and `login.microsoftonline.com` from the collector host.
+2. Check firewall and proxy rules.
+3. Validate DNS resolution for `graph.microsoft.com`.
+4. If using a proxy, ensure it is configured correctly in the collector environment.
 
-- Confirm at least one output is enabled in configuration.
-- Review collector logs for export errors.
-- Validate backend-side credentials (Dynatrace token or Splunk HEC token).
-
-## Next Steps
+## No Data Being Exported
 
 **Symptom:** Collector runs without errors but no data appears in the backend.
 
