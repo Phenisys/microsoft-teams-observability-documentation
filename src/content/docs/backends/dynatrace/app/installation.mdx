@@ -47,11 +47,16 @@ Complete the following steps **after** configuring Dynatrace (Grail, OpenPipelin
 2. Configure tenant and backend settings.
 3. Add and activate your license.
 4. Save and reload the app.
-5. Wait for at least one full collector cycle.
+5. Upload the sites file via the **Site File Management** panel.
+6. Wait for at least one full collector cycle.
 </Steps>
 
 <Aside type="caution">
 If the license is missing or invalid, the app may fail to initialise tenant-specific data and configuration saves can fail.
+</Aside>
+
+<Aside type="caution">
+Without a sites file, the Sites/Locations page will be empty and location-based queries will return no data. See <a href={`${import.meta.env.BASE_URL}reference/sites-file/`}>Sites File</a> for the CSV format and a downloadable template.
 </Aside>
 
 ## Verification Checklist

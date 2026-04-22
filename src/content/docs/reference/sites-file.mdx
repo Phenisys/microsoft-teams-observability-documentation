@@ -1,0 +1,62 @@
+---
+title: Sites File
+description: Map IP subnets to site names and geographic coordinates to enrich call data with location information across all backends.
+sidebar:
+  label: Sites File
+  order: 5
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+When call records are captured, they include the caller's IP subnet but no location context. A sites file maps each subnet to a site name, country, and geographic coordinates, so your dashboards can show which office or location a call originated from.
+
+The sites file applies to all backends — the upload mechanism differs per backend.
+
+## CSV Format
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `subnet` | CIDR | Network subnet (e.g. `10.64.0.0/24`) |
+| `location` | String | Human-readable site name (e.g. `Paris`) |
+| `country` | String | ISO 3166-1 alpha-2 country code (e.g. `FR`) |
+| `latitude` | Number | Latitude, -90 to 90 |
+| `longitude` | Number | Longitude, -180 to 180 |
+
+```csv
+subnet,location,country,latitude,longitude
+10.64.0.0/24,Paris,FR,48.8588,2.2646
+10.64.1.0/24,Berlin,DE,52.5200,13.4050
+10.64.2.0/24,New York,US,40.7128,-74.0060
+```
+
+<a href={`${import.meta.env.BASE_URL}examples/sites.csv`} download>
+  Download sites.csv template
+</a>
+
+## Upload by Backend
+
+<Tabs>
+  <TabItem label="Dynatrace">
+
+Upload via the **Site File Management** panel in the app's [Configuration]({`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/#7-site-file-management`}) page.
+
+Required permissions: `storage:files:read`, `storage:files:write`, `storage:files:delete`.
+
+<Aside type="caution">
+The sites file must be uploaded before the Sites/Locations page will display any data. Internal location queries depend on it.
+</Aside>
+
+  </TabItem>
+  <TabItem label="Splunk">
+
+1. In Splunk, go to **Settings → Lookups → Lookup table files** and upload the CSV.
+2. Define a lookup definition under **Settings → Lookups → Lookup definitions** pointing to your file.
+3. Optionally configure an automatic lookup on the `ms_teams` index:
+
+```spl
+index=ms_teams
+| lookup ms_teams_sites subnet AS caller_subnet OUTPUT location, country, latitude, longitude
+```
+
+  </TabItem>
+</Tabs>

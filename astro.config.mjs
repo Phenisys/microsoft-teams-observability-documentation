@@ -189,6 +189,7 @@ export default defineConfig({
             { slug: "reference/metrics-dictionary" },
             { slug: "reference/azure-permissions" },
             { slug: "reference/license-estimation" },
+            { slug: "reference/sites-file" },
             {
               label: "Archive",
               collapsed: true,

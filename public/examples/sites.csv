@@ -1,0 +1,4 @@
+subnet,location,country,latitude,longitude
+10.64.0.0/24,Paris,FR,48.8588,2.2646
+10.64.1.0/24,Berlin,DE,52.5200,13.4050
+10.64.2.0/24,New York,US,40.7128,-74.0060
