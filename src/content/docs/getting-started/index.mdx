@@ -8,7 +8,7 @@ sidebar:
 
 import { Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualise that data in Dynatrace or Splunk.
+MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualize that data in Dynatrace, Splunk, or any OTLP-compatible backend like **Grafana** or **Datadog**.
 
 <CardGrid>
   <LinkCard
@@ -23,7 +23,7 @@ MS Teams Observability is a two-part solution: a **Collector** that pulls Teams 
   />
   <LinkCard
     title="Connect a Backend"
-    description="Choose Dynatrace or Splunk and configure the integration end-to-end."
+    description="Choose Dynatrace, Splunk, or OTLP-compatible platforms like Grafana Cloud and Datadog."
     href={`${import.meta.env.BASE_URL}backends/`}
   />
   <LinkCard
@@ -40,11 +40,12 @@ graph LR
     A["Microsoft Teams \(Graph API\)"] -->|polling| B["ms-teams-agent \(Collector\)"]
     B --> C["Dynatrace \(Grail + App\)"]
     B --> D["Splunk \(HEC + App\)"]
+    B --> G["OTLP-compatible Backend"]
 ```
 
 1. The **Collector** authenticates to Microsoft Graph using an Azure app registration and polls Teams telemetry on a configurable interval.
-2. It enriches and normalises the data, then exports it to one or more backends.
-3. The **backend application** (Dynatrace or Splunk) renders the data in operational dashboards.
+2. It enriches and normalizes the data, then exports it to one or more backends.
+3. The **backend application** renders the data in operational dashboards.
 
 ## What Data Is Collected
 
@@ -57,7 +58,7 @@ The collector retrieves and exports the following event families:
 | `MSTeams_CallRecords_PSTN` | PSTN telephony calls |
 | `MSTeams_CallRecords_DirectRouting` | SIP / Direct Routing calls |
 | `MSTeams_CallRecords_AutoAttendant` | Auto attendant usage |
-| `MSTeams_CallRecords_CallQueue` | Call queue behaviour |
+| `MSTeams_CallRecords_CallQueue` | Call queue behavior |
 | `MSTeams_ServiceAnnouncement` | Microsoft published incidents and advisories |
 | `MSTeams_CollectionHealth` | Collector operational health |
 
@@ -70,7 +71,7 @@ The **Dynatrace application** supports two modes:
 - **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
 - **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
 
-Demo and Live mode are specific to the Dynatrace application. The Splunk backend does not have a demo mode and displays data as soon as the collector starts sending it.
+Demo and Live mode are specific to the Dynatrace application. Splunk and OTLP-compatible backends like Grafana Cloud and Datadog display data as soon as the collector exports records.
 
 ## Supported Backends
 
@@ -78,6 +79,7 @@ Demo and Live mode are specific to the Dynatrace application. The Splunk backend
 |---|---|---|
 | **Dynatrace** | Yes — Grail + dedicated app | Full-featured integration with dashboards |
 | **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
+| **OTLP-compatible backend** | No native app | Use with Grafana Cloud, Datadog, or another OTLP receiver |
 
 <Aside type="note">
 Each backend requires its own setup. See <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> for integration guides.

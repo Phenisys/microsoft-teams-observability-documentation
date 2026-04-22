@@ -12,38 +12,37 @@ Before configuring the Dynatrace integration, ensure the following are in place.
 
 ## Dynatrace Platform
 
-- **Dynatrace SaaS** tenant (cloud). Dynatrace Managed (on-premise) is not supported.
-- **Grail** enabled on your tenant (required for log storage and OpenPipeline).
+This connector requires **Dynatrace SaaS with Grail enabled**.
 
 <Aside type="caution">
-This integration requires **Dynatrace SaaS (cloud)**. Dynatrace Managed (on-premise) is not supported. Additionally, Grail must be active on your SaaS tenant — classic log management (without Grail) is not supported.
+Not supported: Dynatrace Managed (on-premise) and classic log management without Grail.
 </Aside>
 
 ## Required Dynatrace Permissions
 
-Your Dynatrace account must have permissions to:
+Your Dynatrace account must be able to:
 
 | Action | Where |
 |---|---|
-| Create and manage **log buckets** | Grail settings |
-| Create and manage **OpenPipeline** pipelines | OpenPipeline settings |
-| Create **Credential Vault** entries | Settings > Credential Vault |
-| Manage **outbound host allowlist** | Settings > Preferences |
-| Install apps from **Hub / Marketplace** | Dynatrace Hub |
-| Create **API tokens** | Access tokens settings |
+| Create and manage log buckets | Grail settings |
+| Create and manage OpenPipeline pipelines | OpenPipeline settings |
+| Create Credential Vault entries | Settings -> Credential Vault |
+| Manage outbound host allowlist | Settings -> Preferences |
+| Install apps from Hub / Marketplace | Dynatrace Hub |
+| Create API tokens | Access token settings |
 
-## Required API Token Scopes
+## Required API Token Scope
 
-Create an API token with the following scopes for the collector to send data:
+Create an API token with:
 
 | Scope | Purpose |
 |---|---|
 | `logs.ingest` | Send log records to Dynatrace |
 
 <Aside type="note">
-Keep this token in a secure location. It will be used in the collector configuration and optionally stored in Credential Vault.
+Keep this token secure. It is required in collector output configuration and can be stored in Credential Vault.
 </Aside>
 
 ## Dynatrace Hub Access
 
-Access to **Dynatrace Hub** is required to install the MS Teams Observability application. If Hub access is restricted in your environment, the app can alternatively be installed via ZIP upload (see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}>App Installation</a>).
+Access to **Dynatrace Hub** is required to install the MS Teams Observability app. If Hub access is restricted, install via ZIP upload: <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}>App Installation</a>.

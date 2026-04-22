@@ -1,6 +1,6 @@
 ---
 title: Azure Permissions
-description: Configure Microsoft Entra ID app registration and Graph permissions required by ms-teams-agent.
+description: Canonical guide for Microsoft Entra app registration and Graph permissions required by ms-teams-agent.
 sidebar:
   label: Azure Permissions
   order: 1
@@ -8,7 +8,11 @@ sidebar:
 
 import { Steps, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
-Use this guide to create the Microsoft Entra application used by the collector to call Microsoft Graph API.
+<Aside type="note">
+This is the canonical Azure permissions page for the collector. Other pages link here to avoid configuration drift.
+</Aside>
+
+Use this guide to create the Microsoft Entra application used by the collector to call Microsoft Graph APIs.
 
 ## Required Outcome
 
@@ -18,49 +22,46 @@ At the end you must have:
 - `client_id`
 - One authentication method:
   - `client_secret`, or
-  - `client_certificate_path` (PEM with private + public key)
+  - `client_certificate_path` (PEM with private and public key)
 - Admin-consented Graph application permissions
 
 ```mermaid
 flowchart TD
     A[Azure Portal] --> B[Microsoft Entra ID]
-    B --> C["New App Registration → tenant_id + client_id"]
-    C --> D{Auth method?}
-    D -->|Client Secret| E[Create client secret]
-    D -->|Certificate PEM| F["Upload public cert\nStore PEM on host"]
-    E --> G[Add Graph API Permissions]
-    F --> G
-    G --> H[Grant admin consent]
-    H --> I[Copy credentials to config.yaml]
+    B --> C[New App Registration]
+    C --> D[Copy tenant_id and client_id]
+    D --> E{Auth method}
+    E -->|Client secret| F[Create client secret]
+    E -->|Certificate| G[Upload public cert and store PEM on host]
+    F --> H[Add Graph API permissions]
+    G --> H
+    H --> I[Grant admin consent]
+    I --> J[Validate in collector config]
 ```
 
 ## Create the App Registration
 
 <Steps>
-1. Open the [Azure Portal](https://aad.portal.azure.com/) and go to **Microsoft Entra ID**.
-
-2. In **Overview**, copy your **Tenant ID**.
-
-3. Open **App registrations** and click **New registration**.
-
-4. Set a name (for example `MS Teams Observability`) and select **Accounts in this organizational directory only**.
-
-5. Create the application and copy the **Application (client) ID**.
+1. Open [Azure Portal](https://aad.portal.azure.com/) and go to **Microsoft Entra ID**.
+2. Copy **Tenant ID** from **Overview**.
+3. Go to **App registrations** and click **New registration**.
+4. Select **Accounts in this organizational directory only**.
+5. Create the application and copy **Application (client) ID**.
 </Steps>
 
 ## Configure Authentication
 
 <Tabs>
   <TabItem label="Client Secret">
-1. Open **Certificates & secrets**.
+1. Open **Certificates and secrets**.
 2. In **Client secrets**, click **New client secret**.
 3. Copy the secret **Value** immediately after creation.
 4. Put this value in `microsoft_authentication.graph.client_secret`.
   </TabItem>
   <TabItem label="Certificate (PEM)">
-1. Open **Certificates & secrets**.
+1. Open **Certificates and secrets**.
 2. In **Certificates**, upload the public certificate (`.cer`, `.pem`, or `.crt`).
-3. Keep a PEM file that contains both private and public keys for the collector host.
+3. Keep a PEM file containing both private and public keys on the collector host.
 4. Put the PEM path in `microsoft_authentication.graph.client_certificate_path`.
 
 Expected PEM layout:
@@ -77,7 +78,7 @@ Expected PEM layout:
 </Tabs>
 
 <Aside type="caution">
-Use RSA certificates. EC/DSA certificates are not supported by this integration flow.
+Use RSA certificates. EC or DSA certificates are not supported by this integration flow.
 </Aside>
 
 ## Add Microsoft Graph API Permissions
@@ -85,8 +86,8 @@ Use RSA certificates. EC/DSA certificates are not supported by this integration 
 In **API permissions**:
 
 1. Click **Add a permission**.
-2. Choose **Microsoft Graph**.
-3. Choose **Application permissions** (not Delegated).
+2. Select **Microsoft Graph**.
+3. Select **Application permissions** (not Delegated).
 4. Add:
    - `CallRecords.Read.All`
    - `Reports.Read.All`
@@ -95,7 +96,7 @@ In **API permissions**:
 
 ## Validate Collector Configuration
 
-Use one of the two authentication patterns below.
+Use one of these authentication patterns.
 
 <Tabs>
   <TabItem label="Client secret">
@@ -119,11 +120,45 @@ microsoft_authentication:
   </TabItem>
 </Tabs>
 
-Then run:
+Run:
 
 ```bash
 ms-teams-agent validate --config ./config.yaml
 ms-teams-agent test-connection --config ./config.yaml
 ```
 
-For all available configuration fields, see [Configuration Reference](/collector/v2/configuration/).
+For all configuration fields, see [Configuration Reference](/collector/v2/configuration/).
+
+<details>
+  <summary>Complete permission and authentication reference</summary>
+
+### Required Permissions
+
+| Permission | Type | Required | Purpose |
+|---|---|---|---|
+| `CallRecords.Read.All` | Application | Yes | Retrieve Teams call records, stream details, PSTN, and Direct Routing data |
+| `Reports.Read.All` | Application | Yes | Access Teams activity reports (user activity, usage) |
+| `ServiceHealth.Read.All` | Application | Yes | Access Microsoft 365 service health incidents and advisories |
+
+### Optional Permissions (VAAC Features)
+
+| Permission | Type | Required For | Purpose |
+|---|---|---|---|
+| VAAC-specific permissions | Application | Auto Attendant and Call Queue | Voice application analytics |
+
+### Permission Type Notes
+
+| Attribute | Value |
+|---|---|
+| Permission type | Application (not Delegated) |
+| Admin consent | Required |
+| Token flow | Client credentials |
+
+### Supported Authentication Methods
+
+| Method | Description |
+|---|---|
+| Client secret | Secret generated in Azure App Registration |
+| Certificate (PEM) | RSA certificate with private and public key |
+
+</details>

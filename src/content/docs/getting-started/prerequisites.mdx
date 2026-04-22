@@ -16,15 +16,13 @@ Before deploying the collector, ensure you have the following in place.
 - An **Azure account** with rights to create app registrations in Microsoft Entra ID.
 - Rights to **grant admin consent** for Microsoft Graph application permissions.
 
-The collector requires the following Graph permissions (application type, not delegated):
+Minimum Graph permissions:
 
-| Permission | Purpose |
-|---|---|
-| `CallRecords.Read.All` | Retrieve call records and stream details |
-| `Reports.Read.All` | Access Teams activity reports |
-| `ServiceHealth.Read.All` | Access Microsoft service health announcements |
+- `CallRecords.Read.All`
+- `Reports.Read.All`
+- `ServiceHealth.Read.All`
 
-See <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a> for the step-by-step setup guide.
+See <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Collector Azure Permissions</a> for the canonical setup and full permission details.
 
 ## Collector Host
 
@@ -33,30 +31,40 @@ See <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Pe
   - `graph.microsoft.com`
   - `login.microsoftonline.com`
   - `reportsncu.office.com` (Microsoft Graph report download redirect)
-  - Your backend endpoint (Dynatrace or Splunk)
+  - Your backend endpoint (Dynatrace, Splunk, Grafana Cloud, Datadog, or another OTLP-compatible target)
 - Sufficient CPU and memory for your call volume.
 
 <Aside type="tip">
-The collector does not need to run on an ActiveGate or any Dynatrace component. Any host with the required network access and resources is suitable.
+The collector does not need to run on ActiveGate or Dynatrace components. Any host with the required network access and resources is suitable.
 </Aside>
 
 <Aside type="note">
-For national cloud deployments (GCC High, DoD, China), the Microsoft Entra ID and Microsoft Graph endpoints differ from the global addresses listed above. Set `cloud_deployment` in your `microsoft_authentication` configuration — see [Configuration](../collector/v2/configuration/) for details.
+For national cloud deployments (GCC High, DoD, China), Microsoft Entra ID and Graph endpoints differ from global defaults. Set `cloud_deployment` in your configuration. See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Collector Configuration</a>.
 </Aside>
 
 ## Backend Access
 
-Depending on your chosen backend:
+Choose one or more output targets.
 
 **Dynatrace**
-- Dynatrace SaaS (cloud) tenant with Grail enabled — Dynatrace Managed (on-premise) is not supported.
-- Permissions to create buckets, OpenPipeline pipelines, and Credential Vault entries.
-- Access to Dynatrace Hub (to install the app).
+
+This connector requires **Dynatrace SaaS with Grail enabled**. Full prerequisites: <a href={`${import.meta.env.BASE_URL}backends/dynatrace/prerequisites/`}>Dynatrace Prerequisites</a>.
 
 **Splunk**
+
 - Splunk instance (Search Head) with admin access.
 - Ability to create HTTP Event Collector (HEC) inputs and indexes.
 
+**OTLP-compatible platforms (Grafana, Datadog, etc.)**
+
+- A reachable OTLP logs endpoint.
+- Platform credentials configured as OTLP headers.
+- Typical endpoints:
+  - `https://otlp-gateway.grafana.net/otlp/v1/logs`
+  - `https://otlp.datadoghq.com/v1/logs`
+
+See <a href={`${import.meta.env.BASE_URL}backends/otlp/configuration/`}>OTLP Collector Connection</a> for endpoint and header examples.
+
 ## License
 
-A valid **MS Teams Observability license** is required to activate Live mode. Contact your vendor representative to obtain a license file before starting the deployment.
+A valid **MS Teams Observability license** is required to activate Live mode. For license request and format details, see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.

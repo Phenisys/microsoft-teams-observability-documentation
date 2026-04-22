@@ -12,6 +12,14 @@ const base = env.PUBLIC_BASE_PATH ?? "/";
 export default defineConfig({
   site: "https://phenisys.github.io",
   base,
+  redirects: {
+    "/collector/v2/troubleshooting/": "/collector/troubleshooting/",
+    "/collector/v1/installation/": "/reference/archive/v1-deprecated/installation/",
+    "/collector/v1/configuration/": "/reference/archive/v1-deprecated/configuration/",
+    "/collector/v1/lookup-file/": "/reference/archive/v1-deprecated/lookup-file/",
+    "/collector/v1/cli/": "/reference/archive/v1-deprecated/cli/",
+    "/collector/v1/service/": "/reference/archive/v1-deprecated/service/",
+  },
   integrations: [
     mermaid(),
     starlight({
@@ -76,7 +84,6 @@ export default defineConfig({
                 { slug: "collector/v2/cli" },
                 { slug: "collector/v2/service" },
                 { slug: "collector/v2/runbook" },
-                { slug: "collector/v2/troubleshooting" },
                 { slug: "collector/v2/faq" },
                 { slug: "collector/v2/migration" },
               ],
@@ -88,17 +95,6 @@ export default defineConfig({
                 { slug: "collector/extension" },
                 { slug: "collector/extension/installation" },
                 { slug: "collector/extension/migration" },
-              ],
-            },
-            {
-              label: "v1 (Deprecated)",
-              collapsed: true,
-              items: [
-                { slug: "collector/v1/installation" },
-                { slug: "collector/v1/configuration" },
-                { slug: "collector/v1/lookup-file" },
-                { slug: "collector/v1/cli" },
-                { slug: "collector/v1/service" },
               ],
             },
             { slug: "collector/troubleshooting" },
@@ -166,6 +162,8 @@ export default defineConfig({
               items: [
                 { slug: "backends/otlp" },
                 { slug: "backends/otlp/configuration" },
+                { slug: "backends/otlp/grafana" },
+                { slug: "backends/otlp/datadog" },
               ],
             },
           ],
@@ -191,6 +189,11 @@ export default defineConfig({
             { slug: "reference/metrics-dictionary" },
             { slug: "reference/azure-permissions" },
             { slug: "reference/license-estimation" },
+            {
+              label: "Archive",
+              collapsed: true,
+              items: [{ slug: "reference/archive/v1-deprecated" }],
+            },
           ],
         },
       ],

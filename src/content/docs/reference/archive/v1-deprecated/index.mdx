@@ -1,0 +1,40 @@
+---
+title: v1 Deprecated Archive
+description: Archived documentation for legacy collector v1 pages kept for existing deployments.
+---
+
+import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+These pages are archived for existing v1 deployments. Use <a href={`${import.meta.env.BASE_URL}collector/v2/`}>collector v2</a> for new installations.
+</Aside>
+
+## Archived v1 Pages
+
+<CardGrid>
+  <LinkCard
+    title="Installation"
+    description="Legacy v1 installation flow."
+    href={`${import.meta.env.BASE_URL}reference/archive/v1-deprecated/installation/`}
+  />
+  <LinkCard
+    title="Configuration"
+    description="Legacy v1 YAML schema and feature flags."
+    href={`${import.meta.env.BASE_URL}reference/archive/v1-deprecated/configuration/`}
+  />
+  <LinkCard
+    title="CLI Reference"
+    description="Legacy v1 CLI flags and execution model."
+    href={`${import.meta.env.BASE_URL}reference/archive/v1-deprecated/cli/`}
+  />
+  <LinkCard
+    title="Lookup File"
+    description="Legacy lookup mapping guidance for v1 workflows."
+    href={`${import.meta.env.BASE_URL}reference/archive/v1-deprecated/lookup-file/`}
+  />
+  <LinkCard
+    title="Service Management"
+    description="Legacy v1 systemd operations."
+    href={`${import.meta.env.BASE_URL}reference/archive/v1-deprecated/service/`}
+  />
+</CardGrid>

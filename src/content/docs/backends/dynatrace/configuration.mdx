@@ -8,7 +8,7 @@ sidebar:
 
 import { Steps, Aside } from '@astrojs/starlight/components';
 
-Use this guide to prepare the Dynatrace side of the integration so it can receive and process data from the collector.
+Use this guide to prepare Dynatrace so it can receive and process collector data.
 
 ## 1. Create a Logs Bucket
 
@@ -21,37 +21,52 @@ Recommended settings:
 | Name | `ms_teams` |
 | Display name | `Microsoft Teams Observability` |
 | Table type | `logs` |
-| Retention | `90` days (adjust to your data retention policy) |
+| Retention | `90` days (adjust to policy) |
 
 ## 2. Create an OpenPipeline Logs Pipeline
 
-Create a logs pipeline with the following steps:
+```mermaid
+flowchart LR
+    A[Incoming MSTeams JSON logs] --> B[Processing step]
+    B --> C[Metric extraction]
+    C --> D[Storage assignment]
+    D --> E[ms_teams Grail bucket]
+```
 
-1. **Processing step** — parse `startDateTime` from the JSON payload.
-2. **Metric extraction steps** for:
-   - `ms.teams.callDurationS`
-   - `ms.teams.streamDurationS`
-3. **Storage assignment** — assign processed records to the `ms_teams` bucket.
+Configure these steps:
+
+- **Processing step**
+  Why: parse and normalize fields used by dashboards and queries.
+  What: parse `startDateTime` and key call metadata fields.
+  Example: convert timestamp text into queryable datetime.
+- **Metric extraction step**
+  Why: expose reusable quality metrics from logs.
+  What: extract `ms.teams.callDurationS` and `ms.teams.streamDurationS`.
+  Example: build percentile widgets from extracted values.
+- **Storage assignment step**
+  Why: guarantee Teams records are stored in the expected bucket.
+  What: route processed Teams records to `ms_teams`.
+  Example: assign all `MSTeams_*` records to one storage target.
 
 <Aside type="note">
-Follow your platform team's naming conventions for pipeline names if you have enforced standards.
+If your platform team enforces naming standards, use those standards for pipeline and route names.
 </Aside>
 
 ## 3. Create a Dynamic Route
 
-Create a routing rule that sends logs matching `MSTeams_*` source patterns to your Teams pipeline.
+Create a routing rule that sends records matching `MSTeams_*` source patterns to your Teams pipeline.
 
 ## 4. Allow Required Outbound Hosts
 
-In Dynatrace **Settings → Preferences → Outbound connections**, add the following hosts to the allowlist:
+In Dynatrace **Settings -> Preferences -> Outbound connections**, allow:
 
 - `graph.microsoft.com`
 - `login.microsoftonline.com`
-- `ip-api.com` *(only if geolocation enrichment is enabled)*
+- `ip-api.com` (only if geolocation enrichment is enabled)
 
 ## 5. Add Microsoft Credentials to Credential Vault
 
-Create a credential entry for the Microsoft app registration used by the Dynatrace app:
+Create a credential entry for the Microsoft app registration used by the Dynatrace app.
 
 | Field | Value |
 |---|---|
@@ -60,21 +75,21 @@ Create a credential entry for the Microsoft app registration used by the Dynatra
 | Value | `client_id/client_secret` or certificate with passphrase |
 
 <Steps>
-1. Go to **Settings → Credential Vault**.
-2. Create a new credential.
-3. Set the scope to `AppEngine` and grant access to the MS Teams Observability app.
-4. Enter the credential value (client secret or certificate).
-5. Save and note the credential ID for the app configuration.
+1. Go to **Settings -> Credential Vault**.
+2. Create a credential.
+3. Set scope to `AppEngine` and grant access to the MS Teams Observability app.
+4. Enter the credential value.
+5. Save and note the credential ID.
 </Steps>
 
 ## 6. Complete App Configuration
 
 <Steps>
-1. Open **Apps → Microsoft Teams Observability**.
-2. Open **Installation & Configuration**.
-3. Set the tenant ID and credential vault reference.
-4. Save the configuration.
-5. Verify that live data appears in the dashboards.
+1. Open **Apps -> Microsoft Teams Observability**.
+2. Open **Installation and Configuration**.
+3. Set tenant ID and credential vault reference.
+4. Save configuration.
+5. Verify live data appears in dashboards.
 </Steps>
 
-If no data appears, check the <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Troubleshooting</a> guides.
+If data is missing, continue with <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>.

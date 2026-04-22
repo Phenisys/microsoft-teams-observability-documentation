@@ -23,6 +23,10 @@ Your configuration must include these four sections:
 
 Use the tenant and app credentials from [Azure Permissions](/collector/azure-permissions/).
 
+<Aside type="note">
+Azure app registration steps and full permissions reference are maintained in the canonical page: [Collector Azure Permissions](/collector/azure-permissions/).
+</Aside>
+
 <Tabs>
   <TabItem label="Client secret">
 ```yaml
@@ -65,6 +69,10 @@ The collector will not start without a valid license file.
 ## Output Platforms
 
 Enable at least one output backend. Multiple outputs can be active simultaneously.
+
+<Aside type="note">
+Besides Dynatrace and Splunk, common OTLP targets include Grafana Cloud and Datadog. Use the OTLP tabs below and see [OTLP Backend Configuration](/backends/otlp/configuration/) for endpoint details.
+</Aside>
 
 <Tabs>
   <TabItem label="Dynatrace">
