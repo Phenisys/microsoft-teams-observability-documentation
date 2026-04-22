@@ -1,0 +1,254 @@
+---
+title: Configuring the Collector
+description: Guide to configuring ms-teams-agent — authentication, outputs, collection settings, and optional sections.
+sidebar:
+  label: Configuration
+  order: 3
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+This page explains the settings you can configure in `config.yaml`. For command usage and operational flags, see [CLI Reference](/reference/cli-reference/).
+
+## Required Sections
+
+Your configuration must include these four sections:
+
+- `microsoft_authentication`
+- `license`
+- `output`
+- `collection_config`
+
+## Microsoft Authentication
+
+Use the tenant and app credentials from [Azure Permissions](/collector/azure-permissions/).
+
+<Aside type="note">
+Azure app registration steps and full permissions reference are maintained in the canonical page: [Collector Azure Permissions](/collector/azure-permissions/).
+</Aside>
+
+<Tabs>
+  <TabItem label="Client secret">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "your-tenant-id"
+    client_id: "your-client-id"
+    client_secret: "your-secret"
+    grant_type: "client_credentials"
+    cloud_deployment: "global"
+```
+  </TabItem>
+  <TabItem label="Certificate">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "your-tenant-id"
+    client_id: "your-client-id"
+    client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
+    client_certificate_passphrase: "optional"
+    grant_type: "client_credentials"
+    cloud_deployment: "global"
+```
+  </TabItem>
+</Tabs>
+
+<Aside type="note">
+`cloud_deployment` controls Graph host, authority, and default scope. Supported values are `global`, `us_gov_gcc_high`, `us_gov_dod`, and `china`. If you explicitly set `scope`, it overrides the derived default.
+</Aside>
+
+## License
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+```
+
+The collector will not start without a valid license file.
+
+## Output Platforms
+
+Enable at least one output backend. Multiple outputs can be active simultaneously.
+
+<Aside type="note">
+Besides Dynatrace and Splunk, common OTLP targets include Grafana Cloud and Datadog. Use the OTLP tabs below and see [OTLP Backend Configuration](/backends/otlp/configuration/) for endpoint details.
+</Aside>
+
+<Tabs>
+  <TabItem label="Dynatrace">
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "your-tenant-id"
+    dynatrace_api_token: "your-token"
+```
+  </TabItem>
+  <TabItem label="Splunk">
+```yaml
+output:
+  splunk:
+    enabled: true
+    splunk_hec_url: "https://your-splunk:8088/services/collector"
+    splunk_hec_token: "your-hec-token"
+    splunk_ssl_check: true
+```
+  </TabItem>
+  <TabItem label="Grafana (OTLP)">
+```yaml
+output:
+  otel:
+    - name: "grafana"
+      enabled: true
+      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "test"
+      headers:
+        Authorization: "Basic your-token"
+```
+  </TabItem>
+  <TabItem label="Datadog (OTLP)">
+```yaml
+output:
+  otel:
+    - name: "datadog"
+      enabled: true
+      endpoint: "https://otlp.datadoghq.com/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "test"
+      headers:
+        DD-API-KEY: "your-api-key"
+```
+  </TabItem>
+  <TabItem label="Other OTEL">
+```yaml
+output:
+  otel:
+    - name: "custom-otel"
+      enabled: true
+      endpoint: "https://your-otel-endpoint/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "test"
+      headers:
+        Authorization: "Bearer your-token"
+```
+  </TabItem>
+  <TabItem label="Console">
+```yaml
+output:
+  console:
+    enabled: true
+```
+  </TabItem>
+</Tabs>
+
+<Aside type="note">
+For OTel outputs, `headers` must be provided and non-empty for each enabled entry. Common targets include Grafana, Datadog, and Dynatrace OTLP ingestion. See [OTLP Backend Configuration](/backends/otlp/configuration/) for integration details.
+</Aside>
+
+## Collection Settings
+
+```yaml
+collection_config:
+  interval_collection_minutes: 10
+  log_level: "INFO"
+  features:
+    calls_collection:
+      enabled: true
+    issues_collection:
+      enabled: true
+```
+
+<Aside type="tip">
+`interval_collection_minutes` should balance freshness and processing capacity. A range between `2` and `10` minutes works well for most tenants, with `5` minutes as a practical sweet spot. For high call volume tenants, prefer higher intervals to let the agent finish processing cleanly and avoid backlog.
+</Aside>
+
+### Feature flags
+
+All feature flags default to `false`. Enable only what you need:
+
+| Feature flag | Default | Notes |
+| --- | --- | --- |
+| `calls_collection` | `false` | Core call records and stream details |
+| `issues_collection` | `false` | Microsoft service health announcements |
+| `pstn_calls_collection` | `false` | PSTN call records |
+| `direct_routing_calls_collection` | `false` | Direct Routing call records |
+| `autoattendant_collection` | `false` | Requires VAAC credentials |
+| `callqueue_collection` | `false` | Requires VAAC credentials |
+
+<Aside type="note">
+`autoattendant_collection` and `callqueue_collection` require a `microsoft_authentication.vaac` section with dedicated credentials.
+</Aside>
+
+## Optional: `sites.csv` Mapping
+
+To enable site/location mapping in dashboards:
+
+```yaml
+collection_config:
+  sites_file: /etc/ms-teams-observability-agent/sites.csv
+```
+
+Without this file, calls appear as unmapped in site views.
+
+## Optional: Timestamp Format
+
+Configure how timestamps are formatted in exported records. Applies per output:
+
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "..."
+    dynatrace_api_token: "..."
+    time_fields_format: "iso8601"
+```
+
+| Value | Example |
+| --- | --- |
+| `epoch_ms` (default) | `1767262830500` |
+| `epoch_s` | `1767262830` |
+| `epoch_ns` | `1767262830500000000` |
+| `iso8601` | `2026-01-01T10:20:30.50Z` |
+| `rfc3339` | `2026-01-01T10:20:30.50Z` |
+
+## Optional: Database Retention
+
+The collector stores state in a local SQLite database (`state.db`). Use the `database` section to control its growth:
+
+```yaml
+database:
+  outbox_sent_retention_days: 7
+  max_processed_objects_per_type: 100000
+```
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `outbox_sent_retention_days` | `7` | Days to keep sent outbox messages before purging |
+| `max_processed_objects_per_type` | `100000` | Max deduplication cache entries per object type |
+| `processed_objects_max_age_hours` | auto | Max age for cache entries (derived automatically if unset) |
+
+Omitting the `database` section keeps all defaults.
+
+## Optional: Quality Thresholds
+
+Override default call quality classification thresholds:
+
+```yaml
+advanced:
+  quality_thresholds:
+    audio:
+      max_rtt_ms: 500
+      max_jitter_ms: 30
+```
+
+Quality thresholds are configurable, but it is recommended to keep the default values unless you have a validated operational reason to tune them.
+
+## Validation
+
+Always validate before production rollout:
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+```

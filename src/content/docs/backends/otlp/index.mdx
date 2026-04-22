@@ -1,0 +1,46 @@
+---
+title: OTel / OTLP — Overview
+description: Export MS Teams telemetry to OTLP-compatible backends including Grafana Cloud, Datadog, and other OpenTelemetry platforms.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+The collector supports exporting to any **OTLP-compatible endpoint** (OpenTelemetry Protocol). For example, ship data to **Grafana Cloud** for logs analytics or **Datadog** for unified monitoring, while keeping the same collector workflow.
+
+## What Is Exported
+
+All standard MS Teams event families are exported as OTLP log records:
+
+- `MSTeams_CallRecords_CallMetadata`
+- `MSTeams_CallRecords_StreamDetails`
+- `MSTeams_CallRecords_PSTN`
+- `MSTeams_CallRecords_DirectRouting`
+- `MSTeams_ServiceAnnouncement`
+- `MSTeams_CollectionHealth`
+
+## Use Cases
+
+- Forward Teams telemetry into your existing OpenTelemetry pipeline.
+- Route to Grafana Cloud or Datadog when your organization standardizes on OTLP ingestion.
+- Keep Dynatrace or Splunk as primary backends while sending a second stream to OTLP for cross-platform analytics.
+
+<CardGrid>
+  <LinkCard
+    title="Configure OTLP Output"
+    description="Set up endpoint, headers, and validation commands in collector config.yaml."
+    href={`${import.meta.env.BASE_URL}backends/otlp/configuration/`}
+  />
+  <LinkCard
+    title="Grafana Cloud Setup"
+    description="Use OTLP gateway, token headers, and starter queries for Teams telemetry."
+    href={`${import.meta.env.BASE_URL}backends/otlp/grafana/`}
+  />
+  <LinkCard
+    title="Datadog Setup"
+    description="Configure regional OTLP endpoints, API key headers, and verification checks."
+    href={`${import.meta.env.BASE_URL}backends/otlp/datadog/`}
+  />
+</CardGrid>

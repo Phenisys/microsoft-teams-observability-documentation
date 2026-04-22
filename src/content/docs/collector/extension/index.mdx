@@ -1,5 +1,5 @@
 ---
-title: Use the Dynatrace Extension
+title: Collector — Dynatrace Extension
 description: Run the MS Teams Observability collector as a Dynatrace Extension on your ActiveGate instead of a standalone binary.
 sidebar:
   label: Overview
@@ -12,17 +12,17 @@ import { Aside, LinkCard, CardGrid } from '@astrojs/starlight/components';
 **Dynatrace only.** This deployment mode requires a Dynatrace environment with an ActiveGate. Console and Splunk outputs are **not available** in this mode — data is forwarded exclusively to Dynatrace.
 </Aside>
 
-The collector ships in two deployment variants:
+The collector ships in three deployment variants:
 
-| | Standalone Collector | Extension |
-|---|---|---|
-| **Packaging** | Binary (`.exe` / `.bin`) | Dynatrace EF2 extension (ZIP) |
-| **Configuration** | YAML file on disk | Dynatrace UI |
-| **Process management** | systemd / Task Scheduler / manual | Managed by Dynatrace |
-| **License** | `.lic` / `.json` file on disk | JSON string pasted in the UI |
-| **Supported outputs** | Dynatrace, Splunk, Console | Dynatrace only |
-| **State** | JSON file (`state_<tenant>.json`) | Managed by ActiveGate |
-| **Monitoring** | Manual log inspection | Dynatrace Extension health monitoring |
+| | Standalone v1 | Standalone v2 | Extension |
+|---|---|---|---|
+| **Packaging** | Binary (`.exe` / `.bin`) | Binary (`.exe` / `.bin`) | Dynatrace EF2 extension (ZIP) |
+| **Configuration** | YAML file on disk | YAML file on disk | Dynatrace UI |
+| **Process management** | systemd / Task Scheduler / manual | systemd / Task Scheduler / manual | Managed by Dynatrace |
+| **License** | `.lic` / `.json` file on disk | `.json` file on disk | JSON string pasted in the UI |
+| **Supported outputs** | Dynatrace, Splunk, Console | Dynatrace, Splunk, Console, OTel | Dynatrace only |
+| **State** | JSON file (`state_<tenant>.json`) | SQLite (`state.db`) | Managed by ActiveGate |
+| **Monitoring** | Manual log inspection | Manual log inspection | Dynatrace Extension health monitoring |
 
 The Extension wraps the same agent code as the standalone binaries and covers the same data collection capabilities.
 

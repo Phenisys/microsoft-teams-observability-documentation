@@ -1,6 +1,6 @@
 ---
 title: Troubleshoot the Splunk Integration
-description: Diagnose and resolve common issues with the MS Teams Observability Splunk integration.
+description: Diagnose Splunk-side ingestion and dashboard issues after collector checks are green.
 sidebar:
   label: Troubleshooting
   order: 3
@@ -8,53 +8,69 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-## No Data in the ms_teams Index
+<Aside type="note">
+Run <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a> first. Use this page when collector-side authentication and connectivity checks are already green.
+</Aside>
 
-**Symptom:** No events appear in `index=ms_teams`.
+## HEC Ingestion
 
-**Checks:**
-1. Run `./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state` and confirm export succeeds.
-2. Verify the HEC token is valid and enabled in Splunk (**Settings → Data Inputs → HTTP Event Collector**).
-3. Confirm the HEC URL is correct — it must end with `/services/collector`.
-4. Check that the `ms_teams` index exists and the HEC token is configured to write to it.
-5. Check collector logs for export errors (`tail -f logs/pheniAgent_<tenant_id>.log`).
+### No data in `index=ms_teams`
 
-## HEC Authentication Errors
+If collector-side checks are green, focus on HEC and index routing.
 
-**Symptom:** Collector logs show `401 Unauthorized` or `403 Forbidden` on Splunk export.
+**Checks**
+1. Confirm the HEC endpoint URL is correct and ends with `/services/collector`.
+2. Confirm the HEC token is enabled.
+3. Confirm token write permissions include `ms_teams`.
+4. Confirm the `ms_teams` index exists and is not frozen.
 
-**Checks:**
-1. Verify the HEC token is copied correctly (no trailing space).
-2. Confirm the token is enabled in Splunk.
-3. Verify the token has write access to the `ms_teams` index.
+## HEC Authentication
 
-## TLS / SSL Errors
+### `401 Unauthorized` or `403 Forbidden`
 
-**Symptom:** Collector logs show certificate or TLS handshake errors.
+If collector-side checks are green, the HEC token or index permission is the likely cause.
 
-**Checks:**
-1. If you are using a self-signed certificate on Splunk, either:
-   - Install the CA certificate on the collector host, or
-   - Set `splunk_ssl_check: false` (testing only — not recommended for production).
-2. Verify the Splunk HEC endpoint URL uses the correct hostname matching the certificate.
+**Checks**
+1. Re-copy token value without trailing spaces.
+2. Confirm token is still active.
+3. Confirm token permissions include target index write.
+4. Re-test with a single collector cycle.
 
-## Dashboards Show No Data
+## TLS / SSL
 
-**Symptom:** Splunk app dashboards are empty despite events being in the index.
+### TLS handshake or certificate validation errors
 
-**Checks:**
-1. Confirm field extractions are working: search `index=ms_teams | head 1 | table *` and verify expected fields.
-2. Check time parsing — ensure `startDateTime` is parsed correctly.
-3. Verify the dashboard time range covers the data collection window.
+If collector-side checks are green, validate Splunk certificate trust.
 
-## Site Mapping Not Working
+**Checks**
+1. Install the Splunk CA certificate on the collector host.
+2. Confirm the endpoint hostname matches the certificate.
+3. Use `splunk_ssl_check: false` only for temporary testing.
 
-**Symptom:** Sites/locations dashboard shows "No Mapped Calls" or blank results.
+## Field Extraction
 
-**Checks:**
-1. Confirm the subnet-to-site lookup table (`SubnetToSite`) is imported in Splunk.
-2. Verify `sites.csv` is configured in the <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#optional-site-definition-csv`}>Configuration</a>.
+### Events are indexed but dashboards are empty
+
+If collector-side checks are green, investigate field extraction and time parsing.
+
+**Checks**
+1. Run `index=ms_teams | head 1 | table *` and verify expected fields.
+2. Verify `startDateTime` parsing for dashboard time filters.
+3. Confirm dashboard time range includes recent ingestion.
+
+## SubnetToSite Mapping
+
+### Sites views show no mapped calls
+
+If collector-side checks are green, the lookup table is likely missing or misconfigured.
+
+**Checks**
+1. Confirm `SubnetToSite` lookup file is present in Splunk.
+2. Confirm lookup definition and automatic lookup configuration are active.
+3. Confirm collector `sites.csv` path is configured when site mapping is required.
 
 <Aside type="tip">
-For collector-side issues (Microsoft Graph authentication, collection errors), see <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>.
+For Splunk configuration details, see <a href={`${import.meta.env.BASE_URL}backends/splunk/configuration/`}>Configure Splunk</a>.
 </Aside>
+
+If the collector also exports to Grafana Cloud or Datadog via OTLP, compare ingestion timestamps across platforms to confirm whether the issue is Splunk-only.

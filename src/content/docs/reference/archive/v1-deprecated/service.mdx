@@ -1,17 +1,18 @@
 ---
 title: Service Management
-description: Run the collector as a Linux systemd service using built-in CLI flags.
+description: Run the v1 collector as a Linux systemd service using built-in CLI flags.
 sidebar:
   label: Service
   order: 4
-  badge:
-    text: Linux only
-    variant: caution
 ---
 
 import { Steps, Aside } from '@astrojs/starlight/components';
 
-Use this page to operate the collector as a background Linux service.
+<Aside type="caution">
+This v1 page is deprecated. Use <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>v2 Service Management</a> for new deployments, or <a href={`${import.meta.env.BASE_URL}collector/v2/migration/`}>Migrate from v1</a>.
+</Aside>
+
+Use this page to operate the v1 collector as a background Linux service.
 
 ## Prerequisites
 

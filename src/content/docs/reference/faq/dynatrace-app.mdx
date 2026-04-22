@@ -14,11 +14,11 @@ In the app's **Installation & Configuration** screen. Panels and behaviors are d
 
 ### Do I need to redeploy after a license change?
 
-No full redeploy is documented. The expected flow is to save configuration and reload the app when prompted. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a>.
+No full redeploy is documented. The expected flow is to save configuration and reload the app when prompted. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}>Dynatrace App Installation</a>.
 
 ### Can a missing or invalid license break configuration saves?
 
-Yes. Missing or invalid license state can prevent tenant initialization and cause save failures. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/installation/`}>Dynatrace Installation</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>.
+Yes. Missing or invalid license state can prevent tenant initialization and cause save failures. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}>Dynatrace App Installation</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>.
 
 ### Can configuration be validated before or after save?
 
@@ -28,11 +28,11 @@ Yes. Several panels include **Test** or **Validate** actions and automatic valid
 
 ### Is `sites.csv` mandatory?
 
-No. It is optional in collector configuration, but it is required for complete site mapping and to avoid unmapped-call behavior. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#4-optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
+No. It is optional in collector configuration, but it is required for complete site mapping and to avoid unmapped-call behavior. See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/#optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
 
 ### Why do I see "No Mapped Calls"?
 
-Subnets are not mapped to site definitions. Configure and load `sites.csv`. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/#4-optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
+Subnets are not mapped to site definitions. Configure and load `sites.csv`. See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/#optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
 
 ### What does the "Undetermined" site status mean?
 

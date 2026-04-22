@@ -1,6 +1,6 @@
 ---
 title: Troubleshoot the Dynatrace Integration
-description: Diagnose and resolve common issues with the MS Teams Observability Dynatrace integration.
+description: Diagnose Dynatrace-side ingestion and app issues after collector checks are green.
 sidebar:
   label: Troubleshooting
   order: 6
@@ -8,66 +8,84 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-## No Data in Dynatrace Grail
+<Aside type="note">
+Run <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a> first. Use this page only when collector validation and connectivity checks are already green.
+</Aside>
 
-**Symptom:** Logs are not appearing in the `ms_teams` bucket.
+## Grail Bucket Issues
 
-**Checks:**
-1. Run `./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state` and confirm export succeeds.
-2. Verify the `dynatrace_api_token` has the `logs.ingest` scope.
-3. Confirm the `dynatrace_tenant_id` matches your Dynatrace tenant URL.
-4. Check collector logs for export errors (`tail -f logs/pheniAgent_<tenant_id>.log`).
-5. Confirm the Grail bucket `ms_teams` exists and is active.
+### No data in `ms_teams` bucket
 
-## Collector Reports Authentication Error to Dynatrace
+If collector-side checks are green, focus on Grail storage.
 
-**Symptom:** Collector logs show `401 Unauthorized` or `403 Forbidden` on Dynatrace export.
+**Checks**
+1. Confirm `ms_teams` bucket exists and is active.
+2. Confirm retention settings and write permissions are valid.
+3. Confirm collector export target tenant is correct.
+4. Query recent logs in Grail to verify ingestion timestamps.
 
-**Checks:**
-1. Verify the API token is valid and not expired.
-2. Confirm the token has `logs.ingest` permission.
-3. Confirm the token is correctly copied (no trailing space or missing characters).
+## Dynatrace API Authentication
 
-## OpenPipeline Not Processing Data
+### `401 Unauthorized` or `403 Forbidden` on export
 
-**Symptom:** Logs arrive in Grail but metrics are not extracted, or data goes to the wrong bucket.
+If collector-side checks are green, the Dynatrace token or tenant settings are the likely cause.
 
-**Checks:**
-1. Open **Logs → OpenPipeline** and confirm the pipeline is active.
-2. Verify the dynamic route pattern matches `MSTeams_*`.
-3. Check the storage assignment in the pipeline points to the `ms_teams` bucket.
-4. Look for pipeline errors in the OpenPipeline diagnostics view.
+**Checks**
+1. Confirm `dynatrace_api_token` is valid and not expired.
+2. Confirm the token has `logs.ingest` scope.
+3. Confirm `dynatrace_tenant_id` matches the target tenant URL.
+4. Re-test with one collector cycle after token rotation.
 
-## App Dashboards Show No Data (Live Mode)
+## OpenPipeline Processing
 
-**Symptom:** App is installed and configured, but dashboards remain empty.
+### Logs arrive but metrics are missing or routed incorrectly
 
-**Checks:**
-1. Confirm Live mode is activated in **Installation & Configuration**.
-2. Verify the credential vault reference is correct and the credential is accessible to the app.
-3. Confirm at least one full collector cycle has completed.
-4. Check that the `ms_teams` bucket contains recent log records (use Logs Explorer).
-5. Review the app's built-in status or health indicators if available.
+If collector-side checks are green, the issue is in OpenPipeline processing.
 
-## Configuration Save Fails in the App
+**Checks**
+1. Confirm the Teams pipeline is active.
+2. Confirm routing pattern matches `MSTeams_*`.
+3. Confirm storage assignment points to `ms_teams`.
+4. Check OpenPipeline diagnostics for step-level errors.
 
-**Symptom:** Saving settings in **Installation & Configuration** returns an error.
+## Application Live Mode
 
-**Checks:**
-1. Verify the license is valid and correctly applied.
-2. Confirm backend endpoint connectivity from the app (outbound hosts allowlist).
-3. Check Credential Vault access permissions for the app.
+### App dashboards remain empty
 
-## Outbound Connectivity Issues
+If collector-side checks are green, verify app configuration and data visibility.
 
-**Symptom:** App or collector cannot reach external endpoints.
+**Checks**
+1. Confirm Live mode is enabled in Installation and Configuration.
+2. Confirm Credential Vault reference is valid and accessible to the app.
+3. Confirm recent records exist in the `ms_teams` bucket.
+4. Wait at least one full collector cycle after any app configuration change.
 
-**Checks:**
-1. In **Settings → Preferences → Outbound connections**, confirm these hosts are allowed:
+## Credential Vault or Save Errors
+
+### Configuration save fails in app UI
+
+If collector-side checks are green, check Dynatrace app prerequisites and permissions.
+
+**Checks**
+1. Confirm app has permission to read the selected credential.
+2. Confirm license is valid and tenant initialization completed.
+3. Confirm outbound host allowlist includes required Microsoft endpoints.
+4. Retry save after correcting access rights.
+
+## Outbound Allowlist
+
+### Dynatrace app cannot reach Microsoft endpoints
+
+If collector-side checks are green, validate Dynatrace outbound settings.
+
+**Checks**
+1. In **Settings -> Preferences -> Outbound connections**, allow:
    - `graph.microsoft.com`
    - `login.microsoftonline.com`
-2. If geolocation is enabled, also allow `ip-api.com`.
+2. Add `ip-api.com` only when geolocation enrichment is enabled.
 
 <Aside type="tip">
-For collector-side connectivity issues (Microsoft Graph authentication, export errors), see <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>.
+Use <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> for platform setup and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> for output configuration.
 </Aside>
+
+If you run multi-output (for example Dynatrace plus Grafana Cloud or Datadog via OTLP), validate each backend independently to isolate platform-specific failures.
