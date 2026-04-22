@@ -179,18 +179,6 @@ All feature flags default to `false`. Enable only what you need:
 <Aside type="note">
 `autoattendant_collection` and `callqueue_collection` require a `microsoft_authentication.vaac` section with dedicated credentials.
 </Aside>
-
-## Optional: `sites.csv` Mapping
-
-To enable site/location mapping in dashboards:
-
-```yaml
-collection_config:
-  sites_file: /etc/ms-teams-observability-agent/sites.csv
-```
-
-Without this file, calls appear as unmapped in site views.
-
 ## Optional: Timestamp Format
 
 Configure how timestamps are formatted in exported records. Applies per output:
