@@ -121,7 +121,15 @@ v2 accepts v1 legacy keys via an internal migrator, but this compatibility is tr
 
 ## State Migration
 
-v2 does not read the v1 JSON state (`state/state_<tenant>.json`). There is no automatic converter. On first v2 startup, starting with a clean state is the recommended path:
+v2 does not read the v1 JSON state (`state/state_<tenant>.json`) automatically at startup. You can still migrate v1 state manually with the temporary CLI command:
+
+```bash
+ms-teams-agent state migrate-v1 --source ./state-v1.json
+```
+
+See [Temporary Migration Command](/collector/v2/cli/#temporary-migration-command) for details and non-interactive flags.
+
+If you prefer a clean cutover, starting with a clean state remains a valid path:
 
 ```bash
 ms-teams-agent run --config ./config.yaml --ignore-state
