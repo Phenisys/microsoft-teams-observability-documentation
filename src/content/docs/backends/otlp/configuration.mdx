@@ -1,0 +1,103 @@
+---
+title: Connect the Collector to OTLP Backends (Dynatrace, Datadog, Grafana)
+description: Configure the collector OTLP output to send MS Teams telemetry to Dynatrace, Datadog, Grafana, and other OTLP-compatible platforms.
+sidebar:
+  label: Collector Connection
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Collector Output Configuration
+
+Add an `otel` entry under the `output` section of your `config.yaml`:
+
+```yaml
+output:
+  otel:
+    - name: "my-otel-backend"
+      enabled: true
+      endpoint: "https://your-otlp-endpoint/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        Authorization: "Bearer <token>"
+```
+
+### Parameters
+
+| Parameter | Required | Description |
+|---|---|---|
+| `name` | Yes | Identifier for this OTLP output (used in logs) |
+| `enabled` | Yes | Set to `true` to activate the OTLP output |
+| `endpoint` | Yes | Full URL of the OTLP logs endpoint |
+| `service_name` | No | Service name attached to exported logs |
+| `deployment_environment` | No | Environment label attached to exported logs |
+| `headers` | No | HTTP headers, usually used for authentication |
+
+<Aside type="caution">
+Keep OTLP credentials out of version control. Use secure secret management for API keys and tokens.
+</Aside>
+
+## Grafana OTLP Configuration
+
+```yaml
+output:
+  otel:
+    - name: "grafana"
+      enabled: true
+      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        Authorization: "Basic <credentials>"
+```
+
+## Datadog OTLP Configuration
+
+```yaml
+output:
+  otel:
+    - name: "datadog"
+      enabled: true
+      endpoint: "https://otlp.datadoghq.com/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        DD-API-KEY: "<api-key>"
+```
+
+## Dynatrace OTLP Configuration
+
+```yaml
+output:
+  otel:
+    - name: "dynatrace"
+      enabled: true
+      endpoint: "https://{your-tenant}.live.dynatrace.com/api/v2/otlp/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        Authorization: "Api-token <token>"
+```
+
+<Aside type="note">
+Dynatrace can be configured either with native `output.dynatrace` or via `output.otel` when your architecture is OTLP-first.
+</Aside>
+
+## Validate the Connection
+
+After editing the configuration, run:
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+ms-teams-agent test-connection --config ./config.yaml
+ms-teams-agent run --config ./config.yaml --dry-run
+```
+
+## Verify Data Arrival
+
+1. Grafana: confirm logs are visible in your configured Grafana Cloud logs data source and filtered by `service_name`.
+2. Datadog: confirm logs arrive in Log Explorer and contain expected Teams event families.
+3. Dynatrace OTLP: confirm logs arrive in Dynatrace Logs/Grail with expected source fields.
+4. If data is not arriving, check collector logs and then follow [Collector Troubleshooting](/collector/v2/troubleshooting/).

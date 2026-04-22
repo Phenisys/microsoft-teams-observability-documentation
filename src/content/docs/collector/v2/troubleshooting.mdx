@@ -34,6 +34,62 @@ ms-teams-agent validate --config ./config.yaml
 4. Confirm admin consent has been granted for all required Graph permissions (`CallRecords.Read.All`, `Reports.Read.All`, `ServiceHealth.Read.All`).
 5. Confirm the app registration is not disabled in Microsoft Entra ID.
 
+### Error: `AADSTS500011` (resource principal not found)
+
+This error indicates the tenant does not recognize the application/resource principal used by the collector.
+
+Typical message:
+
+```text
+Authentication failed: AADSTS500011: The resource principal named [Application ID] was not found in the tenant named [Tenant Name].
+```
+
+**Checks:**
+1. Confirm `microsoft_authentication.graph.tenant_id` points to the correct tenant.
+2. Confirm `client_id` matches the app registration expected in that tenant.
+3. Verify the application is registered/available in this tenant and not in a different directory.
+4. Re-run **admin consent** for required Graph application permissions.
+5. If this is multi-tenant/app-to-app, ensure the service principal exists in the target tenant.
+
+### Error: `401 InvalidAuthenticationToken`
+
+This error indicates the access token is invalid, expired, or generated with incorrect credentials.
+
+Typical message:
+
+```text
+APIError Code: 401, Message: InvalidAuthenticationToken
+```
+
+**Checks:**
+1. Regenerate/rotate the client secret (or validate certificate/key pair) and update config.
+2. Ensure `grant_type: "client_credentials"` and credentials are valid for the same tenant.
+3. Confirm collector host time is synchronized (clock drift can invalidate tokens).
+4. Run `ms-teams-agent validate --config ./config.yaml` then `test-connection`.
+
+### Error: `401 InvalidAuthenticationToken / InvalidCloudInstance`
+
+This indicates a cloud instance mismatch (for example token/authority for one cloud, Graph endpoint for another).
+
+Typical message:
+
+```text
+APIError Code: 401, Message: InvalidAuthenticationToken / InvalidCloudInstance
+```
+
+**Checks:**
+1. Verify `microsoft_authentication.graph.cloud_deployment` matches your tenant cloud:
+   - `global`
+   - `us_gov_gcc_high`
+   - `us_gov_dod`
+   - `china`
+2. If `scope` is explicitly set, ensure it matches the same cloud instance as `cloud_deployment`.
+3. Re-test with `test-connection` and debug logs after updating config.
+
+<Aside type="note">
+These authentication failures commonly block collection of user activity/report and service health data, not only call records.
+</Aside>
+
 Run with debug logging for more detail:
 ```bash
 ms-teams-agent run --config ./config.yaml --log-level DEBUG

@@ -50,10 +50,10 @@ No fixed global baseline is documented. Size CPU and memory for your call volume
 
 Yes. The collector supports:
 
-- `ms_teams_autoattendant_collection`
-- `ms_teams_callqueue_collection`
+- `autoattendant_collection`
+- `callqueue_collection`
 
-See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a>.
 
 ### Are extra Microsoft permissions required for those features?
 
@@ -75,4 +75,4 @@ See <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector 
 
 ### What is a safe first-run sequence?
 
-Run one cycle with `--ignore_state`, verify ingestion, then enable service mode and monitor status and logs. See <a href={`${import.meta.env.BASE_URL}collector/v1/installation/`}>Installation</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.
+Run one cycle with `--ignore-state`, verify ingestion, then enable service mode and monitor status and logs. See <a href={`${import.meta.env.BASE_URL}collector/v2/installation/`}>Installation</a> and <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>Service Management</a>.

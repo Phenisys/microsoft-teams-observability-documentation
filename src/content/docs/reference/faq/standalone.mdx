@@ -14,18 +14,18 @@ No. Standalone can run on any suitable host with the required access and resourc
 
 ### Where is the license configured in standalone mode?
 
-Set `collection_config.license_file` in `config.yaml`, pointing to the local license file path. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+Set `license.filepath` in `config.yaml`, pointing to the local license file path. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a> and <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a>.
 
 ## Outputs & Operations
 
 ### Which outputs are supported in standalone mode?
 
-Dynatrace, Splunk, and Console outputs are available. See <a href={`${import.meta.env.BASE_URL}collector/v1/configuration/`}>Configuration</a>.
+Dynatrace, Splunk, Console, and OTLP outputs are available. See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a>.
 
 ### What should I do after changing standalone configuration?
 
-In service mode, restart the service and verify status and logs. See <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.
+In service mode, restart the service and verify status and logs. See <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>Service Management</a>.
 
 ### How should tokens and sensitive files be protected?
 
-Use restricted file permissions, keep tokens out of version control, and store secrets in controlled paths. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> and <a href={`${import.meta.env.BASE_URL}collector/v1/service/`}>Service Management</a>.
+Use restricted file permissions, keep tokens out of version control, and store secrets in controlled paths. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> and <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>Service Management</a>.

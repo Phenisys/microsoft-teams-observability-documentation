@@ -67,17 +67,6 @@ export default defineConfig({
             { slug: "collector" },
             { slug: "collector/azure-permissions" },
             {
-              label: "v1",
-              collapsed: true,
-              items: [
-                { slug: "collector/v1/installation" },
-                { slug: "collector/v1/configuration" },
-                { slug: "collector/v1/lookup-file" },
-                { slug: "collector/v1/cli" },
-                { slug: "collector/v1/service" },
-              ],
-            },
-            {
               label: "v2",
               collapsed: true,
               items: [
@@ -90,7 +79,6 @@ export default defineConfig({
                 { slug: "collector/v2/troubleshooting" },
                 { slug: "collector/v2/faq" },
                 { slug: "collector/v2/migration" },
-                { slug: "collector/v2/azure-permissions" },
               ],
             },
             {
@@ -102,7 +90,17 @@ export default defineConfig({
                 { slug: "collector/extension/migration" },
               ],
             },
-            { slug: "collector/migration" },
+            {
+              label: "v1 (Deprecated)",
+              collapsed: true,
+              items: [
+                { slug: "collector/v1/installation" },
+                { slug: "collector/v1/configuration" },
+                { slug: "collector/v1/lookup-file" },
+                { slug: "collector/v1/cli" },
+                { slug: "collector/v1/service" },
+              ],
+            },
             { slug: "collector/troubleshooting" },
           ],
         },
@@ -160,6 +158,14 @@ export default defineConfig({
                   ],
                 },
                 { slug: "backends/splunk/troubleshooting" },
+              ],
+            },
+            {
+              label: "OTel / OTLP",
+              collapsed: true,
+              items: [
+                { slug: "backends/otlp" },
+                { slug: "backends/otlp/configuration" },
               ],
             },
           ],

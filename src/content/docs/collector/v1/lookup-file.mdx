@@ -8,6 +8,10 @@ sidebar:
 
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
+<Aside type="caution">
+This v1 page is deprecated. For active deployments, prefer <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/#optional-sitescsv-mapping`}>v2 sites.csv mapping</a> and <a href={`${import.meta.env.BASE_URL}collector/v2/migration/`}>Migrate from v1</a>.
+</Aside>
+
 When a call is recorded, the collector captures the caller's IP subnet. On its own, that subnet has no human-readable meaning. A lookup file maps each subnet to a site name, country, and geographic coordinates, so your dashboards can show which office or location a call originated from.
 
 This replaces the deprecated `ms_teams_site_definition` feature. Instead of bundling the mapping inside the collector, you define it directly on your backend — it is loaded once, stays up to date, and never adds overhead to collection cycles.

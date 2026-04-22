@@ -21,7 +21,7 @@ Your configuration must include these four sections:
 
 ## Microsoft Authentication
 
-Use the tenant and app credentials from [Azure Permissions](/collector/v2/azure-permissions/).
+Use the tenant and app credentials from [Azure Permissions](/collector/azure-permissions/).
 
 <Tabs>
   <TabItem label="Client secret">
@@ -31,6 +31,8 @@ microsoft_authentication:
     tenant_id: "your-tenant-id"
     client_id: "your-client-id"
     client_secret: "your-secret"
+    grant_type: "client_credentials"
+    cloud_deployment: "global"
 ```
   </TabItem>
   <TabItem label="Certificate">
@@ -41,9 +43,15 @@ microsoft_authentication:
     client_id: "your-client-id"
     client_certificate_path: "/etc/ms-teams-observability-agent/graph.pem"
     client_certificate_passphrase: "optional"
+    grant_type: "client_credentials"
+    cloud_deployment: "global"
 ```
   </TabItem>
 </Tabs>
+
+<Aside type="note">
+`cloud_deployment` controls Graph host, authority, and default scope. Supported values are `global`, `us_gov_gcc_high`, `us_gov_dod`, and `china`. If you explicitly set `scope`, it overrides the derived default.
+</Aside>
 
 ## License
 
@@ -78,13 +86,41 @@ output:
     splunk_ssl_check: true
 ```
   </TabItem>
-  <TabItem label="OTel / OTLP">
+  <TabItem label="Grafana (OTLP)">
 ```yaml
 output:
   otel:
-    - name: "custom"
+    - name: "grafana"
+      enabled: true
+      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "test"
+      headers:
+        Authorization: "Basic your-token"
+```
+  </TabItem>
+  <TabItem label="Datadog (OTLP)">
+```yaml
+output:
+  otel:
+    - name: "datadog"
+      enabled: true
+      endpoint: "https://otlp.datadoghq.com/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "test"
+      headers:
+        DD-API-KEY: "your-api-key"
+```
+  </TabItem>
+  <TabItem label="Other OTEL">
+```yaml
+output:
+  otel:
+    - name: "custom-otel"
       enabled: true
       endpoint: "https://your-otel-endpoint/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "test"
       headers:
         Authorization: "Bearer your-token"
 ```
@@ -99,7 +135,7 @@ output:
 </Tabs>
 
 <Aside type="note">
-For OTel outputs, `headers` must be provided and non-empty for each enabled entry.
+For OTel outputs, `headers` must be provided and non-empty for each enabled entry. Common targets include Grafana, Datadog, and Dynatrace OTLP ingestion. See [OTLP Backend Configuration](/backends/otlp/configuration/) for integration details.
 </Aside>
 
 ## Collection Settings
@@ -114,6 +150,10 @@ collection_config:
     issues_collection:
       enabled: true
 ```
+
+<Aside type="tip">
+`interval_collection_minutes` should balance freshness and processing capacity. A range between `2` and `10` minutes works well for most tenants, with `5` minutes as a practical sweet spot. For high call volume tenants, prefer higher intervals to let the agent finish processing cleanly and avoid backlog.
+</Aside>
 
 ### Feature flags
 
@@ -194,7 +234,7 @@ advanced:
       max_jitter_ms: 30
 ```
 
-Keep defaults unless you have a specific operational requirement.
+Quality thresholds are configurable, but it is recommended to keep the default values unless you have a validated operational reason to tune them.
 
 ## Validation
 

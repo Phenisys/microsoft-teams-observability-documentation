@@ -52,7 +52,7 @@ Supported values: `epoch_ms` (default), `epoch_s`, `epoch_ns`, `iso8601`, `rfc33
 After editing the configuration, run one first cycle:
 
 ```bash
-./ms-teams-agent.bin --config ./conf/config.yaml --ignore_state
+ms-teams-agent run --config ./config.yaml --ignore-state
 ```
 
 Then check collector logs to confirm Graph authentication and Dynatrace export are successful.
