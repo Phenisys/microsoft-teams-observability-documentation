@@ -8,7 +8,7 @@ sidebar:
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
-This page explains the settings you can configure in `config.yaml`. For command usage and operational flags, see [CLI Reference](/reference/cli-reference/).
+This page explains the settings you can configure in `config.yaml`. For command usage and operational flags, see [CLI Reference](../../../reference/cli-reference/).
 
 ## Required Sections
 
@@ -21,10 +21,10 @@ Your configuration must include these four sections:
 
 ## Microsoft Authentication
 
-Use the tenant and app credentials from [Azure Permissions](/collector/azure-permissions/).
+Use the tenant and app credentials from [Azure Permissions](../../azure-permissions/).
 
 <Aside type="note">
-Azure app registration steps and full permissions reference are maintained in the canonical page: [Collector Azure Permissions](/collector/azure-permissions/).
+Azure app registration steps and full permissions reference are maintained in the canonical page: [Collector Azure Permissions](../../azure-permissions/).
 </Aside>
 
 <Tabs>
@@ -71,7 +71,7 @@ The collector will not start without a valid license file.
 Enable at least one output backend. Multiple outputs can be active simultaneously.
 
 <Aside type="note">
-Besides Dynatrace and Splunk, common OTLP targets include Grafana Cloud and Datadog. Use the OTLP tabs below and see [OTLP Backend Configuration](/backends/otlp/configuration/) for endpoint details.
+Besides Dynatrace and Splunk, common OTLP targets include Grafana Cloud and Datadog. Use the OTLP tabs below and see [OTLP Backend Configuration](../../../backends/otlp/configuration/) for endpoint details.
 </Aside>
 
 <Tabs>
@@ -143,7 +143,7 @@ output:
 </Tabs>
 
 <Aside type="note">
-For OTel outputs, `headers` must be provided and non-empty for each enabled entry. Common targets include Grafana, Datadog, and Dynatrace OTLP ingestion. See [OTLP Backend Configuration](/backends/otlp/configuration/) for integration details.
+For OTel outputs, `headers` must be provided and non-empty for each enabled entry. Common targets include Grafana, Datadog, and Dynatrace OTLP ingestion. See [OTLP Backend Configuration](../../../backends/otlp/configuration/) for integration details.
 </Aside>
 
 ## Collection Settings

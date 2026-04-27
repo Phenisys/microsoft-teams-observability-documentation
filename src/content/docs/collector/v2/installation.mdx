@@ -10,9 +10,9 @@ import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Before You Start
 
-1. Configure Microsoft Graph access (see [Azure Permissions](/collector/azure-permissions/)).
+1. Configure Microsoft Graph access (see [Azure Permissions](../../azure-permissions/)).
 2. Download collector binary and template config.
-3. Obtain your license file (see [License](/getting-started/license/)).
+3. Obtain your license file (see [License](../../../getting-started/license/)).
 
 ## Prerequisites
 
@@ -50,7 +50,7 @@ collection_config:
       enabled: true
 ```
 
-Full settings reference: [Configuration Reference](/collector/v2/configuration/)
+Full settings reference: [Configuration Reference](../configuration/)
 
 ## Validate and Test
 
@@ -110,7 +110,7 @@ sudo ms-teams-agent service enable-service --config /absolute/path/config.yaml
 sudo ms-teams-agent service status
 ```
 
-See [Service Management](/collector/v2/service/) for Linux service operation.
+See [Service Management](../service/) for Linux service operation.
 
 ## Verify Ingestion
 
@@ -131,5 +131,5 @@ ms-teams-agent state show
   - Splunk: check `ms_teams` index receives events
 
 <Aside type="tip">
-If data still does not appear after one interval, follow [Runbook Troubleshooting](/collector/v2/runbook/#common-errors-and-fixes).
+If data still does not appear after one interval, follow [Runbook Troubleshooting](../runbook/#common-errors-and-fixes).
 </Aside>

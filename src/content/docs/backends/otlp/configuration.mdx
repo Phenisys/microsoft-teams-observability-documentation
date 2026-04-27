@@ -53,7 +53,7 @@ output:
         Authorization: "Basic <credentials>"
 ```
 
-Detailed setup: [OTLP to Grafana Cloud](/backends/otlp/grafana/).
+Detailed setup: [OTLP to Grafana Cloud](../grafana/).
 
 ## Datadog OTLP Configuration
 
@@ -69,7 +69,7 @@ output:
         DD-API-KEY: "<api-key>"
 ```
 
-Detailed setup: [OTLP to Datadog](/backends/otlp/datadog/).
+Detailed setup: [OTLP to Datadog](../datadog/).
 
 ## Dynatrace OTLP Configuration
 
@@ -104,4 +104,4 @@ ms-teams-agent run --config ./config.yaml --dry-run
 1. Grafana: confirm logs are visible in your logs data source and filter on `service_name`.
 2. Datadog: confirm logs arrive in Log Explorer and contain Teams event families.
 3. Dynatrace OTLP: confirm logs arrive in Logs/Grail with expected source fields.
-4. If data is not arriving, check collector logs and then follow [Collector Troubleshooting](/collector/troubleshooting/).
+4. If data is not arriving, check collector logs and then follow [Collector Troubleshooting](../../../collector/troubleshooting/).

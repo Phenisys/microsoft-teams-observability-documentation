@@ -6,7 +6,7 @@ sidebar:
   order: 4
 ---
 
-Practical guide to the most-used `ms-teams-agent` commands for v2 operations. For complete flags and subcommands, see [CLI Reference](/reference/cli-reference/).
+Practical guide to the most-used `ms-teams-agent` commands for v2 operations. For complete flags and subcommands, see [CLI Reference](../../reference/cli-reference/).
 
 ## Command Shape
 
@@ -82,7 +82,7 @@ sudo ms-teams-agent service disable-service --instance default
 
 Available service actions are: `install`, `install-config`, `enable`, `restart`, `status`, `disable`, `remove`, `provision`, `enable-service`, `disable-service`.
 
-See [Service Management](/collector/v2/service/) for lifecycle procedures and rollout-safe updates.
+See [Service Management](../service/) for lifecycle procedures and rollout-safe updates.
 
 ## State Operations
 
