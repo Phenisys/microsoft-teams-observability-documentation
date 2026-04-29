@@ -103,6 +103,12 @@ ms-teams-agent state export \
   --limit 200 \
   --output state-detailed.json
 
+# Dry-run stale pending outbox cleanup (7 days)
+ms-teams-agent state purge-stale --older-than 168 --dry-run
+
+# Purge stale pending messages in logs category only
+ms-teams-agent state purge-stale --older-than 72 --category logs
+
 # Reset state (forces full re-collection on next run)
 ms-teams-agent state reset
 ```

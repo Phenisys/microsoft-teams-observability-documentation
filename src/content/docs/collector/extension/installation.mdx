@@ -9,8 +9,8 @@ sidebar:
 import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 import dynatraceExtensionCertificateConfiguration from '../../../../assets/images/dynatrace-extension-certificate_configuration.png';
 
-<Aside type="caution">
-The Dynatrace Extension is currently in **beta**. It wraps the same agent code as the standalone binary and covers the same data collection capabilities. Behaviour may change before general availability.
+<Aside type="note">
+The extension wraps the same collector core as the standalone binary and exposes equivalent collection features, while configuration and lifecycle are managed from Dynatrace.
 </Aside>
 
 <Aside type="note">
@@ -141,13 +141,20 @@ Use this table to map values from your existing `config.yaml` to the extension U
 
 | YAML field | Extension UI field | Notes |
 |---|---|---|
-| `microsoft_authentication.microsoft_tenant_id` | **Microsoft Tenant ID** | |
-| `microsoft_authentication.microsoft_client_id` | **Microsoft Client ID** | Or use Credential Vault |
-| `microsoft_authentication.microsoft_client_secret` | **Microsoft Client Secret** | Or use Credential Vault |
-| `microsoft_authentication.microsoft_username` | **Microsoft VAAC Username** | Only visible when PSTN collection is enabled |
-| `microsoft_authentication.microsoft_password` | **Microsoft VAAC Password** | Only visible when PSTN collection is enabled |
+| `microsoft_authentication.graph.tenant_id` | **Microsoft Tenant ID** | |
+| `microsoft_authentication.graph.client_id` | **Microsoft Client ID** | Or use Credential Vault |
+| `microsoft_authentication.graph.client_secret` | **Microsoft Client Secret** | Or use Credential Vault |
+| `microsoft_authentication.vaac.username` | **Microsoft VAAC Username** | Only visible when PSTN collection is enabled |
+| `microsoft_authentication.vaac.password` | **Microsoft VAAC Password** | Only visible when PSTN collection is enabled |
 
 **Credential Vault (optional):** Enable **Use credential vault** and select the vault entry that stores your Client ID (as username) and Client Secret (as password). When enabled, the individual Client ID/Secret fields are hidden.
+
+#### Cloud & TLS options
+
+| YAML field | Extension UI field | Notes |
+|---|---|---|
+| `microsoft_authentication.graph.cloud_deployment` | **Microsoft Cloud Deployment** | Supported values: `global`, `us_gov_gcc_high`, `us_gov_dod`, `china` |
+| `advanced.ca_bundle_path` | **Custom CA Bundle Path** | Absolute PEM path on the ActiveGate host |
 
 #### Dynatrace output
 
@@ -168,12 +175,12 @@ Open your license file and copy its entire content into the **License** field. S
 
 | YAML field | Extension UI field | Default |
 |---|---|---|
-| `features.ms_teams_calls_collection.enabled` | **Enable calls data collection** | `true` |
-| `features.ms_teams_pstn_calls_collection.enabled` | **Enable PSTN calls data collection** | `false` |
-| `features.ms_teams_direct_routing_calls_collection.enabled` | **Enable Direct Routing calls data collection** | `false` |
-| `features.ms_teams_autoattendant_collection.enabled` | **Enable Auto Attendant data collection** | `false` |
-| `features.ms_teams_callqueue_collection.enabled` | **Enable Call Queue data collection** | `false` |
-| `features.ms_teams_issues_collection.enabled` | **Enable Issues data collection** | `false` |
+| `collection_config.features.calls_collection.enabled` | **Enable calls data collection** | `true` |
+| `collection_config.features.pstn_calls_collection.enabled` | **Enable PSTN calls data collection** | `false` |
+| `collection_config.features.direct_routing_calls_collection.enabled` | **Enable Direct Routing calls data collection** | `false` |
+| `collection_config.features.autoattendant_collection.enabled` | **Enable Auto Attendant data collection** | `false` |
+| `collection_config.features.callqueue_collection.enabled` | **Enable Call Queue data collection** | `false` |
+| `collection_config.features.issues_collection.enabled` | **Enable Issues data collection** | `false` |
 
 <Aside type="note">
 The `ms_teams_site_definition` feature (custom subnet/site mapping via CSV file) is not supported in the extension. Site data is managed as a **Dynatrace Lookup file** directly in Dynatrace, independently of the agent. If you were using a site definition CSV, migrate its content to a Lookup file. Contact Phenisys for guidance.
@@ -184,7 +191,7 @@ The `ms_teams_site_definition` feature (custom subnet/site mapping via CSV file)
 | YAML field | Extension UI field | Valid range |
 |---|---|---|
 | `collection_config.interval_collection_minutes` | **Interval (minutes)** | 1–60 |
-| `collection_config.microsoft_max_call_duration_hours` | **Max Call Duration (hours)** | 1–60 |
+| `collection_config.max_call_duration_hours` | **Max Call Duration (hours)** | 1–60 |
 
 ---
 
@@ -221,7 +228,7 @@ Agent logs (collection errors, Microsoft Graph API issues):
 /var/lib/dynatrace/remotepluginmodule/agent/runtime/extensions/python_venvs/{extension-name}/lib/{python-version}/site-packages/teams_observability_agent/agent/logs/
 ```
 
-Replace `{python-version}` with the Python version in use (e.g. `python3.10`).
+Replace `{python-version}` with the Python version in use (e.g. `python3.14`).
 
   </TabItem>
   <TabItem label="Windows">

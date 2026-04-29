@@ -207,12 +207,16 @@ The collector stores state in a local SQLite database (`state.db`). Use the `dat
 ```yaml
 database:
   outbox_sent_retention_days: 7
+  outbox_max_attempts: 12
+  outbox_max_log_age_hours: 168
   max_processed_objects_per_type: 100000
 ```
 
 | Key | Default | Description |
 | --- | --- | --- |
 | `outbox_sent_retention_days` | `7` | Days to keep sent outbox messages before purging |
+| `outbox_max_attempts` | `12` | Max export attempts per outbox message before dead-lettering |
+| `outbox_max_log_age_hours` | `168` | Drop stale logs before enqueue and auto-purge stale pending rows during export cycles (`null` disables this guard) |
 | `max_processed_objects_per_type` | `100000` | Max deduplication cache entries per object type |
 | `processed_objects_max_age_hours` | auto | Max age for cache entries (derived automatically if unset) |
 

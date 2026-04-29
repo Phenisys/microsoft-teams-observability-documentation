@@ -247,13 +247,16 @@ State cache is stale or inconsistent with the expected collection window.
 
 **Fix**
 1. Inspect current state.
-2. Reset state only when reprocessing is acceptable.
-3. Run one controlled cycle and verify export behavior.
-4. Return to normal service mode once validated.
+2. First purge stale pending outbox rows (dry-run, then execute) to avoid unnecessary full resets.
+3. Reset state only when reprocessing is acceptable.
+4. Run one controlled cycle and verify export behavior.
+5. Return to normal service mode once validated.
 
 **Verification command**
 ```bash
 ms-teams-agent state show
+ms-teams-agent state purge-stale --older-than 168 --dry-run
+ms-teams-agent state purge-stale --older-than 168
 ms-teams-agent state reset
 ms-teams-agent run --config ./config.yaml --ignore-state
 ```
