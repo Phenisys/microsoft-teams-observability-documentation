@@ -1,12 +1,12 @@
 ---
 title: Using the CLI
-description: Practical guide to common ms-teams-agent v2 commands for validation, runtime operations, service, and state.
+description: Practical guide to common ms-teams-agent Standalone commands for validation, runtime operations, service, and state.
 sidebar:
   label: CLI
   order: 4
 ---
 
-Practical guide to the most-used `ms-teams-agent` commands for v2 operations. For complete flags and subcommands, see [CLI Reference](../../reference/cli-reference/).
+Practical guide to the most-used `ms-teams-agent` commands for Standalone operations. For complete flags and subcommands, see [CLI Reference](../../reference/cli-reference/).
 
 ## Command Shape
 
@@ -115,7 +115,7 @@ ms-teams-agent state reset
 
 ### Temporary Migration Command
 
-Use this only during v1 to v2 migration:
+Use this only during v1 to Standalone migration:
 
 ```bash
 ms-teams-agent state migrate-v1 --source ./state-v1.json

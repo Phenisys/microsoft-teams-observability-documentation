@@ -1,6 +1,6 @@
 ---
 title: Migrate from v1
-description: Step-by-step guide to migrate from the v1 collector (legacy) to v2 — CLI commands, configuration keys, and state handling.
+description: Step-by-step guide to migrate from the v1 collector (legacy) to Standalone — CLI commands, configuration keys, and state handling.
 sidebar:
   label: Migrate from v1
   order: 5
@@ -8,11 +8,11 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-This guide covers migration from the v1 agent (`pheniScript_Teams.py` / standalone binary with global flags) to the current v2 collector (`ms_teams_observability` with sub-commands).
+This guide covers migration from the legacy v1 standalone agent (global flags) to the current Standalone collector (`ms_teams_observability` with sub-commands).
 
 ## Major Changes
 
-| Topic | v1 | v2 |
+| Topic | v1 | Standalone |
 |---|---|---|
 | CLI | Global flags (`--config`, `--ignore_state`, …) | Sub-commands (`run`, `validate`, `service`, `state`, `test-connection`) |
 | Configuration | Legacy keys (`microsoft_*`, `ms_teams_*` features) | Typed keys (`microsoft_authentication.graph`, short feature names) |
@@ -23,7 +23,7 @@ This guide covers migration from the v1 agent (`pheniScript_Teams.py` / standalo
 
 ## CLI Command Mapping
 
-| v1 | v2 |
+| v1 | Standalone |
 |---|---|
 | `ms-teams-agent --version` | `ms-teams-agent --version` |
 | `ms-teams-agent --config config.yaml` | `ms-teams-agent run --config config.yaml` |
@@ -41,7 +41,7 @@ This guide covers migration from the v1 agent (`pheniScript_Teams.py` / standalo
 
 ### Microsoft Authentication
 
-| v1 key | v2 key |
+| v1 key | Standalone key |
 |---|---|
 | `microsoft_authentication.microsoft_tenant_id` | `microsoft_authentication.graph.tenant_id` |
 | `microsoft_authentication.microsoft_client_id` | `microsoft_authentication.graph.client_id` |
@@ -56,7 +56,7 @@ This guide covers migration from the v1 agent (`pheniScript_Teams.py` / standalo
 
 ### Collection, License and Logs
 
-| v1 key | v2 key |
+| v1 key | Standalone key |
 |---|---|
 | `collection_config.microsoft_max_call_duration_hours` | `collection_config.max_call_duration_hours` |
 | `collection_config.logfile_log_level` | `collection_config.log_level` |
@@ -65,7 +65,7 @@ This guide covers migration from the v1 agent (`pheniScript_Teams.py` / standalo
 
 ### Features
 
-| v1 feature key | v2 feature key |
+| v1 feature key | Standalone feature key |
 |---|---|
 | `ms_teams_calls_collection` | `calls_collection` |
 | `ms_teams_issues_collection` | `issues_collection` |
@@ -75,7 +75,7 @@ This guide covers migration from the v1 agent (`pheniScript_Teams.py` / standalo
 | `ms_teams_callqueue_collection` | `callqueue_collection` |
 | `ms_teams_site_definition` | Removed (ignored) |
 
-## Minimal v2 Configuration
+## Minimal Standalone Configuration
 
 ```yaml
 microsoft_authentication:
@@ -116,12 +116,12 @@ collection_config:
 ```
 
 <Aside type="note">
-v2 accepts v1 legacy keys via an internal migrator, but this compatibility is transitional. Write v2 keys directly for new deployments.
+Standalone accepts v1 legacy keys via an internal migrator, but this compatibility is transitional. Write Standalone keys directly for new deployments.
 </Aside>
 
 ## State Migration
 
-v2 does not read the v1 JSON state (`state/state_<tenant>.json`) automatically at startup. You can still migrate v1 state manually with the temporary CLI command:
+Standalone does not read the v1 JSON state (`state/state_<tenant>.json`) automatically at startup. You can still migrate v1 state manually with the temporary CLI command:
 
 ```bash
 ms-teams-agent state migrate-v1 --source ./state-v1.json
@@ -144,7 +144,7 @@ ms-teams-agent run --config ./config.yaml
 ## Recommended Cutover Procedure
 
 1. Back up v1 config, license, state JSON, and any service scripts.
-2. Create a `config.yaml` in v2 format using the key mapping above.
+2. Create a `config.yaml` in Standalone format using the key mapping above.
 3. Validate the config:
    ```bash
    ms-teams-agent validate --config ./config.yaml
@@ -161,7 +161,7 @@ ms-teams-agent run --config ./config.yaml
 
 ## Linux Service Migration
 
-| v1 | v2 |
+| v1 | Standalone |
 |---|---|
 | `sudo ms-teams-agent --config <path> --enable_boot_start` | `sudo ms-teams-agent service enable-service --config <path>` |
 | `sudo ms-teams-agent --config <path> --disable_boot_start` | `sudo ms-teams-agent service disable-service` |

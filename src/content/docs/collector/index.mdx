@@ -1,6 +1,6 @@
 ---
 title: Collector
-description: User documentation for ms-teams-agent v2 and Dynatrace Extension deployment models, with v1 deprecated.
+description: User documentation for the ms-teams-agent Standalone and Dynatrace Extension deployment models, with v1 deprecated.
 sidebar:
   label: Overview
   order: 0
@@ -10,39 +10,39 @@ import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
 
 The **MS Teams Observability Collector** (`ms-teams-agent`) retrieves Microsoft Teams telemetry and sends it to configured backends.
 
-The collector is available in two active deployment variants: **v2 (current)** and a **Dynatrace Extension** that runs inside an ActiveGate. **v1 is deprecated**.
+The collector is available in two active deployment variants: **Standalone (current)** and a **Dynatrace Extension** that runs inside an ActiveGate. **v1 is deprecated**.
 
 <Aside type="caution">
-Use v2 for all new deployments. If you are still on v1, plan migration with <a href={`${import.meta.env.BASE_URL}collector/v2/migration/`}>Migrate from v1</a>.
+Use Standalone for all new deployments. If you are still on v1, plan migration with <a href={`${import.meta.env.BASE_URL}collector/standalone/migration/`}>Migrate from v1</a>.
 </Aside>
 
-## v2
+## Standalone
 
 <CardGrid>
   <LinkCard
     title="Overview"
-    description="Main v2 documentation entry point."
-    href={`${import.meta.env.BASE_URL}collector/v2/`}
+    description="Main Standalone documentation entry point."
+    href={`${import.meta.env.BASE_URL}collector/standalone/`}
   />
   <LinkCard
     title="Installation"
-    description="Install and start the v2 collector."
-    href={`${import.meta.env.BASE_URL}collector/v2/installation/`}
+    description="Install and start the Standalone collector."
+    href={`${import.meta.env.BASE_URL}collector/standalone/installation/`}
   />
   <LinkCard
     title="Configuration"
-    description="Set authentication, outputs, and feature flags for v2."
-    href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}
+    description="Set authentication, outputs, and feature flags for Standalone."
+    href={`${import.meta.env.BASE_URL}collector/standalone/configuration/`}
   />
   <LinkCard
     title="CLI"
     description="Run, validate, service, and state commands."
-    href={`${import.meta.env.BASE_URL}collector/v2/cli/`}
+    href={`${import.meta.env.BASE_URL}collector/standalone/cli/`}
   />
   <LinkCard
     title="Service Management"
-    description="Run v2 as a Linux systemd service."
-    href={`${import.meta.env.BASE_URL}collector/v2/service/`}
+    description="Run Standalone as a Linux systemd service."
+    href={`${import.meta.env.BASE_URL}collector/standalone/service/`}
   />
 </CardGrid>
 

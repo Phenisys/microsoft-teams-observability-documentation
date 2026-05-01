@@ -1,0 +1,73 @@
+---
+title: Upgrade Dynatrace Extension
+description: Minimal patch/minor upgrade procedure for the Dynatrace extension deployment.
+sidebar:
+  label: Upgrade
+  order: 3
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+This guide covers routine **patch/minor** upgrades of the Dynatrace extension package.
+
+<Aside type="note">
+This page is for extension version upgrades only. For standalone to extension transition, use [Migrate from Standalone](../migration/).
+</Aside>
+
+## Prerequisites
+
+- Compatible new extension ZIP for your ActiveGate OS
+- Dynatrace permissions to upload and edit extension configurations
+- ActiveGate group identified for rollout
+- Maintenance window long enough for package swap and verification
+
+## Capture Current Configuration
+
+Before upgrading:
+
+- Open current extension configuration in Dynatrace
+- Capture key settings (credentials source, enabled features, intervals, tenant/token fields)
+- Keep previous ZIP/package reference so rollback is fast
+
+## Upgrade Procedure
+
+<Steps>
+1. Download the new patch/minor extension package.
+2. Upload the new ZIP in Dynatrace.
+3. Apply/update configuration on the target ActiveGate group.
+4. Verify extension health and ingestion.
+</Steps>
+
+### 1) Download newer package
+
+Get the proper Linux/Windows package from the project release channel used by your team.
+
+### 2) Upload package
+
+In Dynatrace:
+
+1. Go to **Extensions -> Manage -> Upload custom extension**.
+2. Upload the newer ZIP.
+3. Confirm the extension is available in the extension list.
+
+### 3) Apply/update configuration
+
+- Open the extension configuration.
+- Re-check settings captured earlier.
+- Save configuration for the intended ActiveGate group.
+
+### 4) Health and log checks
+
+- Extension status shows **Running**.
+- Data resumes in Dynatrace Logs.
+- If needed, inspect ActiveGate extension logs.
+
+For baseline setup details and log paths, see [Installation](../installation/).
+
+## Quick Rollback
+
+If the upgraded package fails validation or runtime checks:
+
+1. Re-apply the previous known-good extension package.
+2. Re-attach the previous configuration values.
+3. Confirm status is **Running** and ingestion is restored.

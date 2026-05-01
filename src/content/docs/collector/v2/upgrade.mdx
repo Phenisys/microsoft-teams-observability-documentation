@@ -1,0 +1,104 @@
+---
+title: Upgrade Standalone
+description: Minimal patch/minor upgrade procedure for the standalone collector.
+sidebar:
+  label: Upgrade
+  order: 7
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+This guide covers routine **patch/minor** upgrades for the standalone collector.
+
+<Aside type="note">
+This page is for in-place Standalone upgrades only. For v1 to Standalone transition, use [Migrate from v1](../migration/).
+</Aside>
+
+## Prerequisites
+
+- New standalone package/binary compatible with your OS
+- Access to current collector host
+- Access to current `config.yaml`, license file, and collector state database
+- Maintenance window long enough for one restart
+
+## Backup Checklist
+
+Back up before any change:
+
+- `config.yaml`
+- license file referenced by `license.filepath`
+- `state.db` (and `state.db-shm` / `state.db-wal` if present)
+
+Example (Linux):
+
+```bash
+cp ./config.yaml ./backup/config.yaml.bak
+cp /etc/ms-teams-observability-agent/license.json ./backup/license.json.bak
+cp ./state.db* ./backup/
+```
+
+## Upgrade Procedure
+
+<Steps>
+1. Replace old binary/package with the new Standalone patch/minor version.
+2. Restart collector service/process.
+3. Validate configuration.
+4. Test connectivity.
+5. Confirm healthy operation.
+</Steps>
+
+### 1) Install new binary/package
+
+Replace the executable with the new patch/minor release from your standard distribution channel.
+
+### 2) Restart service or process
+
+<Tabs>
+  <TabItem label="Linux (systemd)">
+
+```bash
+sudo ms-teams-agent service restart --instance default
+sudo ms-teams-agent service status --instance default
+```
+
+  </TabItem>
+  <TabItem label="Windows">
+
+Restart the service or scheduled task that runs `ms-teams-agent`.
+
+```bat
+schtasks /End /TN "<your-ms-teams-agent-task>"
+schtasks /Run /TN "<your-ms-teams-agent-task>"
+```
+
+  </TabItem>
+</Tabs>
+
+### 3) Validate configuration
+
+```bash
+ms-teams-agent validate --config ./config.yaml
+```
+
+### 4) Test authentication and output connectivity
+
+```bash
+ms-teams-agent test-connection --config ./config.yaml
+```
+
+## Post-Upgrade Checks
+
+- Collector logs show regular successful cycles
+- `ms-teams-agent state show` returns expected state
+- Data arrives in your configured backend
+
+For operational checks and troubleshooting, see [Runbook](../runbook/) and [Installation](../installation/).
+
+## Quick Rollback
+
+If validation fails after upgrade:
+
+1. Stop the upgraded collector.
+2. Restore previous binary/package.
+3. Restore backed up `config.yaml`, license, and `state.db` if needed.
+4. Start collector again and re-check health.

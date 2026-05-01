@@ -13,6 +13,16 @@ export default defineConfig({
   site: "https://phenisys.github.io",
   base,
   redirects: {
+    "/collector/standalone/": "/collector/v2/",
+    "/collector/standalone/installation/": "/collector/v2/installation/",
+    "/collector/standalone/configuration/": "/collector/v2/configuration/",
+    "/collector/standalone/cli/": "/collector/v2/cli/",
+    "/collector/standalone/service/": "/collector/v2/service/",
+    "/collector/standalone/runbook/": "/collector/v2/runbook/",
+    "/collector/standalone/faq/": "/collector/v2/faq/",
+    "/collector/standalone/upgrade/": "/collector/v2/upgrade/",
+    "/collector/standalone/migration/": "/collector/v2/migration/",
+    "/collector/standalone/troubleshooting/": "/collector/troubleshooting/",
     "/collector/v2/troubleshooting/": "/collector/troubleshooting/",
     "/collector/v1/installation/": "/reference/archive/v1-deprecated/installation/",
     "/collector/v1/configuration/": "/reference/archive/v1-deprecated/configuration/",
@@ -75,7 +85,7 @@ export default defineConfig({
             { slug: "collector" },
             { slug: "collector/azure-permissions" },
             {
-              label: "v2",
+              label: "Standalone",
               collapsed: true,
               items: [
                 { slug: "collector/v2" },
@@ -85,6 +95,7 @@ export default defineConfig({
                 { slug: "collector/v2/service" },
                 { slug: "collector/v2/runbook" },
                 { slug: "collector/v2/faq" },
+                { slug: "collector/v2/upgrade" },
                 { slug: "collector/v2/migration" },
               ],
             },
@@ -94,6 +105,7 @@ export default defineConfig({
               items: [
                 { slug: "collector/extension" },
                 { slug: "collector/extension/installation" },
+                { slug: "collector/extension/upgrade" },
                 { slug: "collector/extension/migration" },
               ],
             },

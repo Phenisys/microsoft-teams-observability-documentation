@@ -14,7 +14,7 @@ import { Aside, LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 The collector ships in three deployment variants:
 
-| | Standalone v1 | Standalone v2 | Extension |
+| | Standalone v1 | Standalone | Extension |
 |---|---|---|---|
 | **Packaging** | Binary (`.exe` / `.bin`) | Binary (`.exe` / `.bin`) | Dynatrace EF2 extension (ZIP) |
 | **Configuration** | YAML file on disk | YAML file on disk | Dynatrace UI |
@@ -39,6 +39,11 @@ The Extension wraps the same agent code as the standalone binaries and covers th
     title="Installation"
     description="Upload the extension, configure it in the Dynatrace UI, and verify data collection."
     href={`${import.meta.env.BASE_URL}collector/extension/installation/`}
+  />
+  <LinkCard
+    title="Upgrade"
+    description="Routine patch/minor update procedure for the extension package."
+    href={`${import.meta.env.BASE_URL}collector/extension/upgrade/`}
   />
   <LinkCard
     title="Migrate from Standalone"

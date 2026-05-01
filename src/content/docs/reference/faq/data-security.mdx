@@ -18,7 +18,7 @@ No. The `CallRecords.Read.All` Graph API permission grants access to call metada
 
 ### Does the collector process personal data?
 
-Call records include participant identities such as UPN and display name, plus network-level data such as IP addresses, device platform, and subnet. This data is forwarded as-is to the configured backend and is subject to that platform's data residency, retention, and access policies. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> and <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a>.
+Call records include participant identities such as UPN and display name, plus network-level data such as IP addresses, device platform, and subnet. This data is forwarded as-is to the configured backend and is subject to that platform's data residency, retention, and access policies. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> and <a href={`${import.meta.env.BASE_URL}collector/standalone/configuration/`}>Configuration</a>.
 
 ### Can I scope data collection to specific users or groups?
 
@@ -66,7 +66,7 @@ Two authentication methods are supported:
 - **Client secret**: stored in `config.yaml` or the Dynatrace Credential Vault; config files must use restricted OS-level permissions and must not be committed to version control.
 - **Certificate (PEM, RSA only)**: recommended for production environments; it removes shared secrets and aligns with least-privilege security practices.
 
-See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a>, <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Collector Azure Permissions</a>, and <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
+See <a href={`${import.meta.env.BASE_URL}collector/standalone/configuration/`}>Configuration</a>, <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Collector Azure Permissions</a>, and <a href={`${import.meta.env.BASE_URL}collector/extension/installation/`}>Extension Installation</a>.
 
 ### What happens if I revoke the Azure app registration or credentials?
 
