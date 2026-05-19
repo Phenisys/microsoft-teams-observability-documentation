@@ -18,6 +18,7 @@ ms-teams-agent <command> [options]
 | --- | --- |
 | `run` | Start collection and export |
 | `validate` | Validate config and exit |
+| `migrate-config` | Migrate a legacy YAML config file to the current schema |
 | `test-connection` | Test Microsoft auth and backend connectivity |
 | `service` | Manage Linux systemd service |
 | `state` | Inspect, export, reset, or migrate state |
@@ -33,6 +34,28 @@ ms-teams-agent validate --config ./config.yaml
 # Validate config + test Microsoft Graph auth + test all exporters
 ms-teams-agent test-connection --config ./config.yaml
 ```
+
+## Config Migration Command
+
+Use this command to rewrite a legacy YAML config file in place using the current schema.
+
+```bash
+# Interactive mode (prompts for path and backup choice)
+ms-teams-agent migrate-config
+
+# Provide file path explicitly
+ms-teams-agent migrate-config --path ./config.yaml
+
+# Non-interactive mode for CI/automation (overwrite without backup)
+ms-teams-agent migrate-config --path ./config.yaml --no-backup
+```
+
+Options:
+
+- `--path`: path to the YAML config file to migrate.
+- `--backup`: write a `<path>.bak` backup before overwriting.
+- `--no-backup`: overwrite without writing a backup.
+- If `--path` and/or backup choice are omitted, the CLI prompts interactively.
 
 ## Running the Collector
 

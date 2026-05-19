@@ -180,8 +180,20 @@ The sites file is required for the Sites page to display data. Without it, the S
 |--------|-------------|
 | Choose CSV file | Opens file picker |
 | Upload / Replace Sites File | Uploads or replaces the file (enabled when validation passes) |
+| Use Default Site | Uploads a default one-row site file |
 | Download | Downloads the current file as `sites.csv` |
 | Delete | Deletes the current file (no confirmation) |
+
+### Use Default Site behavior
+
+The **Use Default Site** action writes the following default entry:
+
+```
+subnet,location,country,latitude,longitude
+0.0.0.0/0,Default,xx,0,0
+```
+
+If existing site data is already present, a confirmation modal is shown before replacement.
 
 ### CSV File Format
 

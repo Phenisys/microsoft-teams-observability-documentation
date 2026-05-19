@@ -14,9 +14,9 @@ This guide covers migration from the legacy v1 standalone agent (global flags) t
 
 | Topic | v1 | Standalone |
 |---|---|---|
-| CLI | Global flags (`--config`, `--ignore_state`, …) | Sub-commands (`run`, `validate`, `service`, `state`, `test-connection`) |
+| CLI | Global flags (`--config`, `--ignore_state`, …) | Sub-commands (`run`, `validate`, `migrate-config`, `service`, `state`, `test-connection`) |
 | Configuration | Legacy keys (`microsoft_*`, `ms_teams_*` features) | Typed keys (`microsoft_authentication.graph`, short feature names) |
-| Config migration | YAML rewritten on disk | In-memory only — file not modified |
+| Config migration | No dedicated migration command | Automatic migration at startup when legacy format is detected, with on-disk rewrite and `.bak` backup |
 | State | JSON per tenant (`state/state_<tenant>.json`) | SQLite (`state.db`) with deduplication + outbox |
 | Linux service | `--enable_boot_start` / `--disable_boot_start` | `service enable-service` / `service disable-service` |
 | `site_definition` feature | Supported | Removed (ignored) |
@@ -118,6 +118,21 @@ collection_config:
 <Aside type="note">
 Standalone accepts v1 legacy keys via an internal migrator, but this compatibility is transitional. Write Standalone keys directly for new deployments.
 </Aside>
+
+## Configuration Migration Behavior
+
+When the collector loads a legacy-format YAML config, Standalone automatically:
+
+1. migrates keys to the current schema,
+2. creates a backup file next to the original config (`<config>.bak`),
+3. rewrites the migrated YAML to disk.
+
+This auto-migration runs on startup when needed.
+
+## When to Use `migrate-config` vs Auto-Migration
+
+- Use `migrate-config` when you want to migrate and review config files before runtime (for example in CI or change-management workflows).
+- Rely on auto-migration when starting the collector normally and you are comfortable with startup-time migration.
 
 ## State Migration
 

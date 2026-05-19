@@ -39,7 +39,7 @@ An advanced filter input with type-ahead suggestions. Multiple conditions can be
 
 **Valid values for `health`:** `Good`, `Poor`, `Unclassified`
 
-**Valid values for `type`:** `peerToPeer`, `groupCall`
+**Valid values for `type`:** `peerToPeer`, `groupCall`, `user_out`, `ucap_in`, `conf_in`
 
 **String operators** (participant, id, location): `=`, `!=`, `in ()`, `not in ()`, `~` (contains), `starts with`, `ends with`
 
@@ -88,8 +88,8 @@ A sortable, paginated data table listing all calls matching the current filter.
 | Column | Sortable | Description |
 |--------|----------|-------------|
 | **Health** | Yes | Call quality status shown as a colored icon. Sort order: Good → Poor → Unknown |
-| **Type** | No | "Group Call" or "Peer To Peer" chip |
-| **ID** | No | Unique call identifier. Clickable link to [Call Overview](../../../backends/dynatrace/app/call-overview/) for calls with a recording |
+| **Type** | No | Call type chip (`Peer To Peer`, `Group Call`, `User Outbound`, `UCAP Inbound`, `Conference Inbound`) |
+| **ID** | No | Unique call identifier. Link to [Call Overview](../../../backends/dynatrace/app/call-overview/) only when details are available |
 | **Participants** | No | Participant names. Guest users summarized (e.g., "and 2 Guests") |
 | **Count** | Yes | Number of participants |
 | **Start** | No | Call start timestamp |
@@ -98,8 +98,17 @@ A sortable, paginated data table listing all calls matching the current filter.
 
 #### ID Column details
 
-- **Duration > 0** (recording available): ID is a clickable link to [Call Overview](../../../backends/dynatrace/app/call-overview/). The link includes a 10-minute padding before the start and after the end.
-- **Duration = 0** (no recording): ID is plain text. Hover shows: *"No call recording available"*.
+- **Details available + duration > 0**: ID is a clickable link to [Call Overview](../../../backends/dynatrace/app/call-overview/). The link includes a 10-minute padding before the start and after the end.
+- **Details available + duration = 0**: ID is disabled. Hover shows: *"No call recording available"*.
+- **Details unavailable (for PSTN calls)**: ID is disabled. Hover shows: *"Call details are not available for PSTN calls"*.
+
+#### Row actions details
+
+- **Open details** action follows the same rules as the ID column:
+  - available only when details are available and `duration > 0`,
+  - disabled with tooltip *"No call recording available"* when `duration = 0`,
+  - disabled with tooltip *"Call details are not available for PSTN calls"* when details are unavailable.
+- **Download call details** is disabled for PSTN calls with tooltip *"Download is not available for PSTN calls"*.
 
 #### Participants Column details
 

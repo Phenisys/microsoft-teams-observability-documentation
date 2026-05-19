@@ -26,6 +26,7 @@ ms-teams-agent <command> [options]
 | --- | --- |
 | `run` | Collect and export Teams call data. |
 | `validate` | Validate a YAML config file and exit. |
+| `migrate-config` | Rewrite a legacy YAML config file to the current schema. |
 | `test-connection` | Validate Microsoft Graph auth and exporter connectivity. |
 | `service` | Manage Linux `systemd` service instances. |
 | `state` | Inspect, export, reset, or migrate collector state. |
@@ -54,6 +55,23 @@ ms-teams-agent validate --config <FILE>
 | Option | Description |
 | --- | --- |
 | `--config` | Required. Path to YAML config file. |
+
+## `migrate-config`
+
+```bash
+ms-teams-agent migrate-config [options]
+```
+
+| Option | Description |
+| --- | --- |
+| `--path` | Optional. Path to YAML config file to migrate. If omitted, CLI prompts for it. |
+| `--backup` | Optional. Write a `<path>.bak` copy before overwrite. |
+| `--no-backup` | Optional. Overwrite without writing a backup. |
+
+Notes:
+
+- If `--path` is omitted, the command runs in interactive mode and asks for a path.
+- If neither `--backup` nor `--no-backup` is provided, the command asks interactively whether to create a backup.
 
 ## `test-connection`
 
@@ -164,6 +182,9 @@ ms-teams-agent test-connection --config ./config.yaml
 
 # Run collector in dry-run mode
 ms-teams-agent run --config ./config.yaml --dry-run
+
+# Migrate legacy config format (non-interactive CI mode)
+ms-teams-agent migrate-config --path ./config.yaml --no-backup
 
 # Enable service instance
 sudo ms-teams-agent service enable-service --config /etc/ms-teams-observability-agent/prod.yaml --instance prod

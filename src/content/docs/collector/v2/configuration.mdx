@@ -179,6 +179,64 @@ All feature flags default to `false`. Enable only what you need:
 <Aside type="note">
 `autoattendant_collection` and `callqueue_collection` require a `microsoft_authentication.vaac` section with dedicated credentials.
 </Aside>
+
+## Optional: Telemetry
+
+Use the `telemetry` section to control health telemetry sent to Phenisys.
+
+```yaml
+telemetry:
+  enabled: true
+  timeout_seconds: 10
+```
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `enabled` | `true` | Enable or disable telemetry requests entirely |
+| `timeout_seconds` | `10` | Fail-fast timeout in seconds for telemetry HTTP requests (minimum: `1`) |
+
+## Optional: Advanced Scheduler and Calls Controls
+
+Use the `advanced` section to tune throttling behavior and call processing throughput.
+
+```yaml
+advanced:
+  scheduler:
+    respect_persisted_backoff: true
+    backoff_buffer_seconds: 5
+  calls:
+    max_items_per_cycle: 300
+    throttle:
+      default_retry_after_seconds: 120
+      max_backoff_seconds: 1800
+      jitter_percent: 0.2
+      escalation_multiplier: 2.0
+      escalation_max_seconds: 3600
+    rate_limits:
+      list_per_second: 1.0
+      detail_per_second: 1.0
+```
+
+### Scheduler controls
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `advanced.scheduler.respect_persisted_backoff` | `true` | When `true`, the main loop honors persisted API backoff windows (recommended) |
+| `advanced.scheduler.backoff_buffer_seconds` | `5` | Extra safety margin added before resuming after backoff (`>= 0`) |
+
+### Calls controls
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `advanced.calls.max_items_per_cycle` | `300` | Maximum number of new call IDs processed per cycle (`>= 1`) |
+| `advanced.calls.throttle.default_retry_after_seconds` | `120` | Fallback Retry-After when Graph does not provide one (`>= 1`) |
+| `advanced.calls.throttle.max_backoff_seconds` | `1800` | Cap applied to per-throttle backoff (`>= 1`) |
+| `advanced.calls.throttle.jitter_percent` | `0.2` | Random jitter ratio added to backoff (`0.0` to `1.0`) |
+| `advanced.calls.throttle.escalation_multiplier` | `2.0` | Exponential multiplier for consecutive throttles (`>= 1.0`) |
+| `advanced.calls.throttle.escalation_max_seconds` | `3600` | Hard cap for escalated backoff (`>= 1`) |
+| `advanced.calls.rate_limits.list_per_second` | `1.0` | Local outbound rate limit for LIST requests (`> 0`) |
+| `advanced.calls.rate_limits.detail_per_second` | `1.0` | Local outbound rate limit for DETAIL requests (`> 0`) |
+
 ## Optional: Timestamp Format
 
 Configure how timestamps are formatted in exported records. Applies per output:
