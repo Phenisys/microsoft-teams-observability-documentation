@@ -30,12 +30,12 @@ output:
 
 ### Parameters
 
-| Parameter | Required | Description |
-|---|---|---|
-| `enabled` | Yes | Set to `true` to activate the Splunk output |
-| `splunk_hec_url` | Yes | Full URL of the Splunk HEC endpoint |
-| `splunk_hec_token` | Yes | HEC token created in Splunk |
-| `splunk_ssl_check` | No | Set to `false` to disable TLS verification (not recommended for production) |
+| Parameter | Required | Default | Description |
+| --- | --- | --- | --- |
+| `enabled` | Yes | — | Set to `true` to activate the Splunk output |
+| `splunk_hec_url` | Yes | — | Full URL of the Splunk HEC endpoint |
+| `splunk_hec_token` | Yes | — | HEC token created in Splunk |
+| `splunk_ssl_check` | No | `true` | Set to `false` to disable TLS verification (not recommended for production) |
 
 <Aside type="caution">
 `splunk_ssl_check: false` matches the baseline collector template. For production, prefer trusted TLS certificates and set this to `true`.
