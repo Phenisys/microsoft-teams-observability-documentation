@@ -42,6 +42,12 @@ const phenisysLinks: Array<{ label: string; href: string; icon: "external" | "rs
 
 	<Pagination />
 
+	<div class="version-banner">
+		Documentation for <strong>agent v2.6.x</strong>
+		<span class="version-sep">·</span>
+		Last tested with Collector <strong>v2.6.0</strong>
+	</div>
+
 	<div class="phenisys-footer">
 		<p>
 			Built by <a href="https://www.phenisys.com/" rel="noopener noreferrer">Phenisys</a>
@@ -85,6 +91,19 @@ const phenisysLinks: Array<{ label: string; href: string; icon: "external" | "rs
 
 		.meta > :global(p:only-child) {
 			margin-inline-start: auto;
+		}
+
+		.version-banner {
+			border-top: 1px solid var(--sl-color-gray-5);
+			padding-top: 0.9rem;
+			font-size: var(--sl-text-xs);
+			color: var(--sl-color-gray-3);
+			text-align: center;
+		}
+
+		.version-sep {
+			margin: 0 0.5rem;
+			opacity: 0.4;
 		}
 
 		.phenisys-footer {
