@@ -1,6 +1,6 @@
 ---
 title: Metrics Dictionary Guide
-description: User guide to the key MS Teams Observability event types and dashboard fields.
+description: Complete field reference for MS Teams Observability event types, metrics, and dashboard fields.
 sidebar:
   label: Metrics Dictionary
   order: 1
@@ -8,9 +8,9 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-This page helps users understand the main event types and metrics exposed in dashboards.
+This page is the canonical field reference for all event families exported by the collector. Use it to build queries, design dashboards, and troubleshoot data issues.
 
-## Event Families
+## Event Families Overview
 
 | Log source | Purpose | Typical use |
 | --- | --- | --- |
@@ -23,30 +23,117 @@ This page helps users understand the main event types and metrics exposed in das
 | `MSTeams_ServiceAnnouncement` | Microsoft incidents | Correlate degradations with official incidents |
 | `MSTeams_CollectionHealth` | Collector status | Verify ingestion health |
 
+## Field Reference by Event Family
+
+### MSTeams_CallRecords_CallMetadata
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `call.id` | string | `550e8400-e29b-41d4-a716-446655440000` | Unique call identifier | Calls, Call Overview |
+| `type` | string | `call` | Call type enum | Overview, Calls |
+| `callHealth` | string | `poor` | High-level call quality status (`good`/`poor`/`bad`) | Overview, Calls |
+| `startDateTime` | datetime | `2026-05-22T14:30:00Z` | Call start time | All dashboards |
+| `timestamp` | datetime | `2026-05-22T14:35:00Z` | Record ingestion timestamp | All dashboards |
+| `caller` | object | `{ "upn": "...", "displayName": "..." }` | Caller identity | Users |
+| `callee` | object | `{ "upn": "...", "displayName": "..." }` | Callee identity | Users |
+| `durationSeconds` | number | `320` | Call duration in seconds | Call Overview, Overview |
+| `mediaPaths` | array | `["audio", "video"]` | Media modalities used | Calls |
+
+### MSTeams_CallRecords_StreamDetails
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `call.id` | string | `550e8400-...` | Parent call identifier | Call Overview |
+| `mediaLabel` | string | `main-audio` | Stream media label | Call Overview |
+| `streamDirection` | string | `callerToCallee` | Directional flow (`callerToCallee`/`calleeToCaller`) | Stream analysis |
+| `streamHealth` | string | `good` | Stream-level quality | Stream analysis |
+| `averageRoundTripTimeMs` | number | `45.2` | Average RTT in milliseconds | Quality widgets |
+| `averageJitterMs` | number | `12.5` | Average jitter in milliseconds | Quality widgets |
+| `averagePacketLossRatePercent` | number | `1.8` | Average packet loss percentage | Quality widgets |
+| `averageVideoFrameLossPercentage` | number | `0.5` | Video frame loss percentage | Video quality |
+| `averageVideoFrameRate` | number | `29.97` | Video frame rate in fps | Video quality |
+| `startDateTime` | datetime | `2026-05-22T14:30:00Z` | Stream start time | Call Overview |
+
+### MSTeams_CallRecords_PSTN
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `call.id` | string | `...` | Unique call identifier | Calls |
+| `callerNumber` | string | `+1-555-0123` | Calling party phone number | PSTN |
+| `calleeNumber` | string | `+1-555-0456` | Called party phone number | PSTN |
+| `callDurationSeconds` | number | `180` | PSTN call duration | PSTN |
+| `startDateTime` | datetime | `...` | PSTN call start time | PSTN |
+
+### MSTeams_CallRecords_DirectRouting
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `call.id` | string | `...` | Unique call identifier | Direct Routing |
+| `sipResponseCode` | number | `200` | SIP response code | Direct Routing |
+| `startDateTime` | datetime | `...` | SIP call start time | Direct Routing |
+
+### MSTeams_CallRecords_AutoAttendant
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `call.id` | string | `...` | Unique call identifier | Auto Attendant |
+| `startDateTime` | datetime | `...` | Call start time | Auto Attendant |
+
+### MSTeams_CallRecords_CallQueue
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `call.id` | string | `...` | Unique call identifier | Call Queue |
+| `startDateTime` | datetime | `...` | Call start time | Call Queue |
+
+### MSTeams_ServiceAnnouncement
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `title` | string | `Teams - Call quality degraded` | Incident title | Issues |
+| `status` | string | `serviceDegradation` | Incident status enum | Issues |
+| `startDateTime` | datetime | `...` | Incident start time | Issues |
+| `lastUpdated` | datetime | `...` | Last update timestamp | Issues |
+
+### MSTeams_CollectionHealth
+
+| Field | Type | Example | Meaning | Used in dashboards |
+|---|---|---|---|---|
+| `collectionCycleId` | string | `...` | Unique cycle identifier | Collector health |
+| `cycleStartTime` | datetime | `...` | Collection cycle start | Collector health |
+| `cycleEndTime` | datetime | `...` | Collection cycle end | Collector health |
+| `recordCount` | number | `1500` | Number of records collected | Collector health |
+| `exportSuccess` | boolean | `true` | Export status summary | Collector health |
+
 ## Common Dashboard Dimensions
 
-- `call.id`
-- `type`
-- `callHealth`
-- `startDateTime`
-- `timestamp`
-- `mediaLabel`
-- `streamDirection`
-- `streamHealth`
-- caller/callee identity fields
+These dimensions are used across dashboards for filtering and grouping:
+
+| Dimension | Description | Applies to |
+|---|---|---|
+| `call.id` | Unique call identifier | All call-related dashboards |
+| `type` | Call type (`call`, `pstn`, `directRouting`, etc.) | Overview, Calls |
+| `callHealth` | Overall call quality (`good`/`poor`/`bad`) | Overview, Calls, Call Overview |
+| `startDateTime` | Event start time (used for time-based queries) | All dashboards |
+| `timestamp` | Record ingestion timestamp | All dashboards |
+| `mediaLabel` | Stream identifier (`main-audio`, `main-video`, etc.) | Call Overview, Stream analysis |
+| `streamDirection` | Directional flow (`callerToCallee`/`calleeToCaller`) | Stream analysis |
+| `streamHealth` | Stream quality level | Stream analysis |
 
 ## Common Quality Metrics
 
-- `averageRoundTripTimeMs`
-- `averageJitterMs`
-- `averagePacketLossRatePercent`
-- `averageVideoFrameLossPercentage`
-- `averageVideoFrameRate`
+| Metric | Source family | Description |
+|---|---|---|
+| `averageRoundTripTimeMs` | StreamDetails | Network latency between endpoints |
+| `averageJitterMs` | StreamDetails | Jitter (delay variation) in milliseconds |
+| `averagePacketLossRatePercent` | StreamDetails | Percentage of lost packets |
+| `averageVideoFrameLossPercentage` | StreamDetails | Video frame loss rate |
+| `averageVideoFrameRate` | StreamDetails | Video frames per second |
 
 ## Operational Tip
 
 If dashboard quality drops while `MSTeams_ServiceAnnouncement` shows an active incident, investigate Microsoft-side impact before changing local configuration.
 
 <Aside type="note">
-Legacy documentation may mention `MSGraphAPI_*` sources. Current naming uses `MSTeams_*`.
+Legacy documentation may mention `MSGraphAPI_*` sources. Current naming uses `MSTeams_*`. Fields listed above represent common columns exposed in dashboards; the full Graph API response includes additional fields available for custom queries.
 </Aside>
