@@ -13,7 +13,8 @@ export default defineConfig({
   site: "https://phenisys.github.io",
   base,
   redirects: {
-    "/collector/standalone/": "/collector/v2/",
+    "/collector/standalone/": "/collector/",
+    "/collector/v2/": "/collector/",
     "/collector/standalone/installation/": "/collector/v2/installation/",
     "/collector/standalone/configuration/": "/collector/v2/configuration/",
     "/collector/standalone/cli/": "/collector/v2/cli/",
@@ -86,7 +87,6 @@ export default defineConfig({
           label: "Operate",
           items: [
             { slug: "collector" },
-            { slug: "collector/v2" },
             { slug: "collector/v2/installation" },
             { slug: "collector/v2/configuration" },
             { slug: "collector/v2/runbook" },

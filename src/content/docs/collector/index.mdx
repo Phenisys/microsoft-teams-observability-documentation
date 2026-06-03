@@ -20,13 +20,13 @@ Use Standalone for all new deployments. If you are still on v1, plan migration w
 
 <CardGrid>
   <LinkCard
-    title="Overview"
-    description="Main Standalone documentation entry point."
-    href={`${import.meta.env.BASE_URL}collector/v2/`}
+    title="Azure Permissions"
+    description="Microsoft Graph app registration and required permissions."
+    href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}
   />
   <LinkCard
     title="Installation"
-    description="Install and start the Standalone collector."
+    description="Install, validate, and run the collector."
     href={`${import.meta.env.BASE_URL}collector/v2/installation/`}
   />
   <LinkCard
@@ -36,13 +36,23 @@ Use Standalone for all new deployments. If you are still on v1, plan migration w
   />
   <LinkCard
     title="CLI"
-    description="Run, validate, service, and state commands."
+    description="Command reference for run, validate, service, and state."
     href={`${import.meta.env.BASE_URL}collector/v2/cli/`}
   />
   <LinkCard
-    title="Service Management"
-    description="Run Standalone as a Linux systemd service."
+    title="Service"
+    description="Install and manage the collector service."
     href={`${import.meta.env.BASE_URL}collector/v2/service/`}
+  />
+  <LinkCard
+    title="Upgrade"
+    description="Routine patch or minor update procedure."
+    href={`${import.meta.env.BASE_URL}collector/v2/upgrade/`}
+  />
+  <LinkCard
+    title="Migrate from v1"
+    description="Migrate from legacy v1 CLI and configuration to Standalone."
+    href={`${import.meta.env.BASE_URL}collector/v2/migration/`}
   />
 </CardGrid>
 
