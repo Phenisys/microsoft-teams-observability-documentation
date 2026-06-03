@@ -23,6 +23,36 @@ import dynatraceDashboardSites from '../../assets/images/dynatrace-dashboard-sit
 
 MS Teams Observability is a collector + backend integration solution for Ops and IT teams: it pulls Microsoft Teams telemetry from Microsoft Graph and turns it into actionable dashboards and incident context in **Dynatrace, Splunk, or any OTLP-compatible backend**.
 
+## What Do You Want to Do?
+
+<CardGrid>
+  <LinkCard
+    title="I want to evaluate the product"
+    description="Try the Dynatrace app with built-in sample data. No collector or license required."
+    href={`${import.meta.env.BASE_URL}concepts/demo-vs-live/`}
+  />
+  <LinkCard
+    title="I want to deploy for Dynatrace"
+    description="Full setup: collector + Grail bucket + OpenPipeline + dashboards."
+    href={`${import.meta.env.BASE_URL}getting-started/`}
+  />
+  <LinkCard
+    title="I already use Splunk"
+    description="Deploy the collector with Splunk HEC ingestion and the Splunk app."
+    href={`${import.meta.env.BASE_URL}backends/splunk/`}
+  />
+  <LinkCard
+    title="I use Grafana, Datadog or another OTLP platform"
+    description="Configure the collector to export to any OTLP-compatible endpoint."
+    href={`${import.meta.env.BASE_URL}backends/otlp/`}
+  />
+  <LinkCard
+    title="I installed it but I see no data"
+    description="Diagnose and resolve missing data issues."
+    href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}
+  />
+</CardGrid>
+
 ## What You Get
 
 - **Faster Incident Triage**: correlate call degradations with Microsoft advisories and isolate impacted users or sites faster.
@@ -33,7 +63,7 @@ MS Teams Observability is a collector + backend integration solution for Ops and
 
 <Steps>
 1. Check <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a> (Azure app, permissions, and network access).
-2. Deploy the <a href={`${import.meta.env.BASE_URL}collector/standalone/installation/`}>Collector</a> and run your first collection cycle.
+2. Deploy the <a href={`${import.meta.env.BASE_URL}collector/v2/installation/`}>Collector</a> and run your first collection cycle.
 3. Connect your backend in <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> (Dynatrace, Splunk, or OTLP-compatible).
 4. Open dashboards and validate live quality and incident data.
 </Steps>

@@ -72,7 +72,7 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: "Getting Started",
+          label: "Start Here",
           items: [
             { slug: "getting-started" },
             { slug: "getting-started/prerequisites" },
@@ -80,23 +80,21 @@ export default defineConfig({
           ],
         },
         {
-          label: "Collector",
+          label: "Operate",
           items: [
             { slug: "collector" },
-            { slug: "collector/azure-permissions" },
+            { slug: "collector/v2" },
+            { slug: "collector/v2/installation" },
+            { slug: "collector/v2/configuration" },
+            { slug: "collector/v2/runbook" },
+            { slug: "collector/v2/upgrade" },
+            { slug: "collector/v2/migration" },
             {
-              label: "Standalone",
+              label: "Service & CLI",
               collapsed: true,
               items: [
-                { slug: "collector/v2" },
-                { slug: "collector/v2/installation" },
-                { slug: "collector/v2/configuration" },
-                { slug: "collector/v2/cli" },
                 { slug: "collector/v2/service" },
-                { slug: "collector/v2/runbook" },
-                { slug: "collector/v2/faq" },
-                { slug: "collector/v2/upgrade" },
-                { slug: "collector/v2/migration" },
+                { slug: "collector/v2/cli" },
               ],
             },
             {
@@ -185,6 +183,11 @@ export default defineConfig({
           collapsed: true,
           items: [
             { slug: "reference" },
+            { slug: "reference/cli-reference" },
+            { slug: "reference/metrics-dictionary" },
+            { slug: "collector/azure-permissions" },
+            { slug: "reference/license-estimation" },
+            { slug: "reference/sites-file" },
             {
               label: "FAQ",
               collapsed: true,
@@ -197,16 +200,19 @@ export default defineConfig({
                 { slug: "reference/faq/standalone" },
               ],
             },
-            { slug: "reference/cli-reference" },
-            { slug: "reference/metrics-dictionary" },
-            { slug: "reference/azure-permissions" },
-            { slug: "reference/license-estimation" },
-            { slug: "reference/sites-file" },
             {
               label: "Archive",
               collapsed: true,
               items: [{ slug: "reference/archive/v1-deprecated" }],
             },
+          ],
+        },
+        {
+          label: "Architecture & Concepts",
+          items: [
+            { slug: "concepts/data-flow" },
+            { slug: "reference/metrics-dictionary" },
+            { slug: "concepts/demo-vs-live" },
           ],
         },
       ],

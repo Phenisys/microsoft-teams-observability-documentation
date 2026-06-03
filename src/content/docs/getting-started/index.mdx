@@ -19,7 +19,7 @@ MS Teams Observability is a two-part solution: a **Collector** that pulls Teams 
   <LinkCard
     title="Install the Collector"
     description="Deploy the collector, validate configuration, and start your first collection cycle."
-    href={`${import.meta.env.BASE_URL}collector/standalone/installation/`}
+    href={`${import.meta.env.BASE_URL}collector/v2/installation/`}
   />
   <LinkCard
     title="Connect a Backend"
@@ -66,12 +66,14 @@ See <a href={`${import.meta.env.BASE_URL}reference/metrics-dictionary/`}>Metrics
 
 ## Deployment Modes
 
-The **Dynatrace application** supports two modes:
+The solution supports two modes. See <a href={`${import.meta.env.BASE_URL}concepts/demo-vs-live/`}>Demo vs Live Mode</a> for a detailed comparison.
+
+The **Dynatrace application** supports both modes:
 
 - **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
 - **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
 
-Demo and Live mode are specific to the Dynatrace application. Splunk and OTLP-compatible backends like Grafana Cloud and Datadog display data as soon as the collector exports records.
+Splunk and OTLP-compatible backends like Grafana Cloud and Datadog always operate in live mode and display data as soon as the collector exports records.
 
 ## Supported Backends
 
