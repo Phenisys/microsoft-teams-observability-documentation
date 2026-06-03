@@ -105,3 +105,13 @@ ms-teams-agent run --config ./config.yaml --dry-run
 2. Datadog: confirm logs arrive in Log Explorer and contain Teams event families.
 3. Dynatrace OTLP: confirm logs arrive in Logs/Grail with expected source fields.
 4. If data is not arriving, check collector logs and then follow [Collector Troubleshooting](../../../collector/troubleshooting/).
+
+✅ Success criteria:
+- Collector logs confirm OTLP export with no errors
+- Your OTLP platform shows logs from `service_name = "ms-teams-agent"`
+- Event families (`MSTeams_CallRecords_*`) are visible in the platform
+
+❌ If this fails:
+- Re-run `validate` and `test-connection`
+- Verify OTLP endpoint URL and authentication headers
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>

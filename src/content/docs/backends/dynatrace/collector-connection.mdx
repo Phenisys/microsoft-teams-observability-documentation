@@ -65,4 +65,11 @@ After a successful first collection cycle:
 2. Confirm records are arriving in the `ms_teams` bucket.
 3. Open the MS Teams Observability app — the Overview page should show live data.
 
-If data is not arriving, see <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Troubleshooting</a>.
+✅ Success criteria:
+- Collector logs show no Graph auth or export errors
+- Dynatrace Logs view contains `MSTeams_CallRecords_*` records
+- App Overview page displays real tenant data
+
+❌ If this fails:
+- <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>
+- Re-run `test-connection` to confirm Graph and Dynatrace connectivity

@@ -8,20 +8,14 @@ sidebar:
 
 import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Before You Start
+## Checklist Before You Start
 
-1. Configure Microsoft Graph access (see [Azure Permissions](../../azure-permissions/)).
-2. Download collector binary and template config.
-3. Obtain your license file (see [License](../../../getting-started/license/)).
-
-## Prerequisites
-
-- Host with outbound access to:
-  - `graph.microsoft.com`
-  - `login.microsoftonline.com`
-  - your backend endpoint (Dynatrace, Splunk, or OTel)
-- Microsoft tenant and app registration credentials
-- Valid license file (`license.filepath`)
+- [ ] Microsoft 365 tenant with Teams calling activity
+- [ ] Microsoft Entra app registration with Graph permissions (see [Azure Permissions](../../azure-permissions/))
+- [ ] Admin consent granted for `CallRecords.Read.All`, `Reports.Read.All`, `ServiceHealth.Read.All`
+- [ ] Collector host with outbound access to `graph.microsoft.com`, `login.microsoftonline.com`, and your backend endpoint
+- [ ] Valid license file (see [License](../../../getting-started/license/))
+- [ ] Download collector binary from the latest release
 
 ## Build Your Config
 
@@ -73,6 +67,14 @@ Full settings reference: [Configuration Reference](../configuration/)
    ms-teams-agent run --config ./config.yaml --dry-run
    ```
 </Steps>
+
+✅ Success criteria:
+- `validate` returns no error
+- `test-connection` confirms Graph authentication and backend connectivity
+- `dry-run` completes one full cycle without errors
+
+❌ If this fails:
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>
 
 ```mermaid
 flowchart TD
@@ -133,3 +135,12 @@ ms-teams-agent state show
 <Aside type="tip">
 If data still does not appear after one interval, follow [Runbook Troubleshooting](../runbook/#common-errors-and-fixes).
 </Aside>
+
+✅ Success criteria:
+- Collector logs show successful collection cycles
+- `ms-teams-agent state show` reports valid state
+- Backend receives at least one `MSTeams_*` record
+
+❌ If this fails:
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>
+- Verify backend configuration and network connectivity

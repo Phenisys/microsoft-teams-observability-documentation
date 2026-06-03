@@ -10,6 +10,14 @@ import { Steps, Aside } from '@astrojs/starlight/components';
 
 Use this guide to prepare Dynatrace so it can receive and process collector data.
 
+## Checklist Before You Start
+
+- [ ] Dynatrace SaaS tenant with Grail enabled
+- [ ] Permissions to create log buckets, OpenPipeline pipelines, and dynamic routes
+- [ ] Permissions to create Credential Vault entries and manage outbound hosts
+- [ ] API token with `logs.ingest` scope
+- [ ] Microsoft Entra app credentials (tenant ID, client ID, and secret or certificate)
+
 ## 1. Create a Logs Bucket
 
 Create a dedicated Grail bucket for MS Teams data.
