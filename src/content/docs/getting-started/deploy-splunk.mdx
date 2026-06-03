@@ -1,0 +1,129 @@
+---
+title: Deploy MS Teams Observability with Splunk
+description: Step-by-step guide to deploy the collector and connect it to Splunk via HEC.
+sidebar:
+  label: Deploy with Splunk
+  order: 2
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## Goal
+
+Deploy the MS Teams Observability collector and Splunk app to monitor Teams call quality and activity in Splunk.
+
+**Estimated time:** 30–45 minutes
+
+**What you will deploy:**
+- Microsoft Entra app registration for Graph API access
+- Collector binary on a Linux or Windows host
+- Splunk HEC input and dashboard app
+- Live Teams telemetry in Splunk
+
+## Before You Start
+
+- Microsoft 365 tenant with Teams calling activity
+- Entra ID permission to create an app registration
+- Admin consent for Graph application permissions
+- Collector host with outbound HTTPS access to `graph.microsoft.com` and your Splunk HEC endpoint
+- Splunk instance (Search Head) with admin access
+- License file for live mode (see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>)
+
+## Step 1 — Create Microsoft Entra App
+
+Follow the canonical guide: <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>.
+
+At the end, you must have:
+- `tenant_id`
+- `client_id`
+- `client_secret` or `client_certificate_path`
+
+## Step 2 — Install the Collector
+
+Follow <a href={`${import.meta.env.BASE_URL}collector/v2/installation/`}>Collector Installation</a> to download the binary and build your `config.yaml`.
+
+Your minimum config:
+
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>"
+
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+
+collection_config:
+  interval_collection_minutes: 10
+  features:
+    calls_collection:
+      enabled: true
+```
+
+Do not configure the `output` section yet — that comes after Splunk HEC setup.
+
+## Step 3 — Install Splunk App and Create HEC Input
+
+Follow <a href={`${import.meta.env.BASE_URL}backends/splunk/application/installation/`}>Splunk App Installation</a>:
+
+1. Install the **MS Teams Observability** app from Splunkbase
+2. Create an HEC token with default index `ms_teams`
+3. Save the HEC endpoint URL and token
+
+## Step 4 — Configure Collector Output
+
+Add the Splunk output to your `config.yaml`:
+
+```yaml
+output:
+  splunk:
+    enabled: true
+    splunk_hec_url: "https://<splunk-host>:8088/services/collector"
+    splunk_hec_token: "<hec-token>"
+```
+
+See <a href={`${import.meta.env.BASE_URL}backends/splunk/configuration/`}>Collector Connection</a> for all parameters.
+
+## Step 5 — Validate
+
+<Steps>
+1. Validate file structure and business rules:
+
+   ```bash
+   ms-teams-agent validate --config ./config.yaml
+   ```
+
+2. Test Graph auth and Splunk connectivity:
+
+   ```bash
+   ms-teams-agent test-connection --config ./config.yaml
+   ```
+
+3. Run one dry cycle:
+
+   ```bash
+   ms-teams-agent run --config ./config.yaml --dry-run
+   ```
+</Steps>
+
+✅ Success criteria:
+- `validate` returns no error
+- `test-connection` confirms Graph authentication and Splunk HEC connectivity
+- `dry-run` completes one cycle without errors
+
+❌ If this fails:
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>
+- <a href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}>Splunk Troubleshooting</a>
+
+## Step 6 — Verify Data
+
+1. Run a collector cycle: `ms-teams-agent run --config ./config.yaml --ignore-state`
+2. In Splunk, search: `index=ms_teams | head 10`
+3. Confirm events with expected source values (`MSTeams_CallRecords_CallMetadata`, etc.)
+4. Open the MS Teams Observability Splunk app and verify dashboards
+
+## Next Steps
+
+- Explore <a href={`${import.meta.env.BASE_URL}backends/splunk/application/pages/`}>App Pages</a> for available dashboards
+- Configure <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>service mode</a> for production persistence

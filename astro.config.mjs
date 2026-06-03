@@ -75,6 +75,9 @@ export default defineConfig({
           label: "Start Here",
           items: [
             { slug: "getting-started" },
+            { slug: "getting-started/deploy-dynatrace" },
+            { slug: "getting-started/deploy-splunk" },
+            { slug: "getting-started/deploy-otlp" },
             { slug: "getting-started/prerequisites" },
             { slug: "getting-started/license" },
           ],

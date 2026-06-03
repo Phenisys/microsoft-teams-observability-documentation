@@ -1,0 +1,180 @@
+---
+title: Deploy MS Teams Observability with OTLP
+description: Step-by-step guide to deploy the collector and export Teams telemetry to any OTLP-compatible backend.
+sidebar:
+  label: Deploy with OTLP
+  order: 3
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Goal
+
+Deploy the MS Teams Observability collector and export Teams telemetry to an OTLP-compatible backend such as **Grafana Cloud**, **Datadog**, or any OTLP logs endpoint.
+
+**Estimated time:** 30–40 minutes
+
+**What you will deploy:**
+- Microsoft Entra app registration for Graph API access
+- Collector binary on a Linux or Windows host
+- OTLP output to your chosen backend
+- Live Teams telemetry in your OTLP platform
+
+## Before You Start
+
+- Microsoft 365 tenant with Teams calling activity
+- Entra ID permission to create an app registration
+- Admin consent for Graph application permissions
+- Collector host with outbound HTTPS access to `graph.microsoft.com` and your OTLP endpoint
+- An OTLP-compatible backend with a reachable logs endpoint and credentials
+- License file for live mode (see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>)
+
+## Step 1 — Create Microsoft Entra App
+
+Follow the canonical guide: <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>.
+
+At the end, you must have:
+- `tenant_id`
+- `client_id`
+- `client_secret` or `client_certificate_path`
+
+## Step 2 — Install the Collector
+
+Follow <a href={`${import.meta.env.BASE_URL}collector/v2/installation/`}>Collector Installation</a> to download the binary and build your `config.yaml`.
+
+Your minimum config:
+
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>"
+
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+
+collection_config:
+  interval_collection_minutes: 10
+  features:
+    calls_collection:
+      enabled: true
+```
+
+Do not configure the `output` section yet — that comes after you choose your OTLP backend.
+
+## Step 3 — Configure OTLP Output
+
+Add the OTLP output to your `config.yaml`. Choose your backend:
+
+<Tabs>
+  <TabItem label="Grafana Cloud">
+
+```yaml
+output:
+  otel:
+    - name: "grafana"
+      enabled: true
+      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        Authorization: "Basic <credentials>"
+```
+
+See <a href={`${import.meta.env.BASE_URL}backends/otlp/grafana/`}>OTLP to Grafana</a> for detailed setup.
+
+  </TabItem>
+  <TabItem label="Datadog">
+
+```yaml
+output:
+  otel:
+    - name: "datadog"
+      enabled: true
+      endpoint: "https://otlp.datadoghq.com/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        DD-API-KEY: "<api-key>"
+```
+
+See <a href={`${import.meta.env.BASE_URL}backends/otlp/datadog/`}>OTLP to Datadog</a> for detailed setup.
+
+  </TabItem>
+  <TabItem label="Dynatrace (OTLP)">
+
+```yaml
+output:
+  otel:
+    - name: "dynatrace"
+      enabled: true
+      endpoint: "https://{your-tenant}.live.dynatrace.com/api/v2/otlp/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        Authorization: "Api-token <token>"
+```
+
+  </TabItem>
+  <TabItem label="Generic OTLP">
+
+```yaml
+output:
+  otel:
+    - name: "my-backend"
+      enabled: true
+      endpoint: "https://your-otlp-endpoint/v1/logs"
+      service_name: "ms-teams-agent"
+      deployment_environment: "prod"
+      headers:
+        Authorization: "Bearer <token>"
+```
+
+  </TabItem>
+</Tabs>
+
+See <a href={`${import.meta.env.BASE_URL}backends/otlp/configuration/`}>OTLP Collector Connection</a> for all parameters.
+
+## Step 4 — Validate
+
+<Steps>
+1. Validate file structure and business rules:
+
+   ```bash
+   ms-teams-agent validate --config ./config.yaml
+   ```
+
+2. Test Graph auth and OTLP connectivity:
+
+   ```bash
+   ms-teams-agent test-connection --config ./config.yaml
+   ```
+
+3. Run one dry cycle:
+
+   ```bash
+   ms-teams-agent run --config ./config.yaml --dry-run
+   ```
+</Steps>
+
+✅ Success criteria:
+- `validate` returns no error
+- `test-connection` confirms Graph authentication and OTLP endpoint connectivity
+- `dry-run` completes one cycle without errors
+
+❌ If this fails:
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>
+
+## Step 5 — Verify Data
+
+1. Run a collector cycle: `ms-teams-agent run --config ./config.yaml --ignore-state`
+2. In your OTLP platform, confirm logs are visible:
+   - **Grafana**: filter logs by `service_name = "ms-teams-agent"`
+   - **Datadog**: check Log Explorer for Teams event families
+   - **Dynatrace (OTLP)**: confirm logs arrive with expected source fields
+
+## Next Steps
+
+- Configure <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>service mode</a> for production persistence
+- Customize OTLP headers and metadata in the <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration Reference</a>

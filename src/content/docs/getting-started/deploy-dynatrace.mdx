@@ -1,0 +1,143 @@
+---
+title: Deploy MS Teams Observability with Dynatrace
+description: Step-by-step guide to deploy the collector and connect it to Dynatrace for production monitoring.
+sidebar:
+  label: Deploy with Dynatrace
+  order: 1
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## Goal
+
+Deploy the MS Teams Observability collector and Dynatrace app to monitor real Teams call quality, user activity, and site performance.
+
+**Estimated time:** 45–60 minutes
+
+**What you will deploy:**
+- Microsoft Entra app registration for Graph API access
+- Collector binary on a Linux or Windows host
+- Dynatrace Grail bucket, OpenPipeline, and routing
+- Dynatrace app with live data
+
+## Before You Start
+
+- Microsoft 365 tenant with Teams calling activity
+- Entra ID permission to create an app registration
+- Admin consent for Graph application permissions
+- Collector host with outbound HTTPS access to `graph.microsoft.com` and your Dynatrace tenant
+- Dynatrace SaaS tenant with Grail enabled
+- License file for live mode (see <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>)
+
+## Step 1 — Create Microsoft Entra App
+
+Follow the canonical guide: <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>.
+
+At the end, you must have:
+- `tenant_id`
+- `client_id`
+- `client_secret` or `client_certificate_path`
+
+<Aside type="tip">
+Save these values — they are needed in the collector config and in the Dynatrace Credential Vault.
+</Aside>
+
+## Step 2 — Install the Collector
+
+Follow <a href={`${import.meta.env.BASE_URL}collector/v2/installation/`}>Collector Installation</a> to download the binary and build your `config.yaml`.
+
+Your minimum config:
+
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>"
+
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+
+collection_config:
+  interval_collection_minutes: 10
+  features:
+    calls_collection:
+      enabled: true
+```
+
+Do not configure the `output` section yet — that comes after Dynatrace setup.
+
+## Step 3 — Configure Dynatrace Backend
+
+Follow <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> to:
+
+1. Create a Grail bucket named `ms_teams`
+2. Create an OpenPipeline with processing, metric extraction, and storage assignment steps
+3. Create a dynamic route for `MSTeams_*` records
+4. Allow outbound hosts: `graph.microsoft.com`, `login.microsoftonline.com`
+5. Store Microsoft credentials in Credential Vault
+
+<Aside type="caution">
+The Grail bucket, pipeline, and route must be created <strong>before</strong> the collector sends data or the records will be dropped.
+</Aside>
+
+## Step 4 — Configure Collector Output
+
+Add the Dynatrace output to your `config.yaml`:
+
+```yaml
+output:
+  dynatrace:
+    enabled: true
+    dynatrace_tenant_id: "your-tenant-id"
+    dynatrace_api_token: "your-logs-ingest-token"
+```
+
+See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/collector-connection/`}>Collector Connection</a> for all parameters.
+
+## Step 5 — Validate
+
+<Steps>
+1. Validate file structure and business rules:
+
+   ```bash
+   ms-teams-agent validate --config ./config.yaml
+   ```
+
+2. Test Graph auth and Dynatrace connectivity:
+
+   ```bash
+   ms-teams-agent test-connection --config ./config.yaml
+   ```
+
+3. Run one dry cycle:
+
+   ```bash
+   ms-teams-agent run --config ./config.yaml --dry-run
+   ```
+</Steps>
+
+✅ Success criteria:
+- `validate` returns no error
+- `test-connection` confirms Graph authentication and Dynatrace connectivity
+- `dry-run` completes one cycle without errors
+
+❌ If this fails:
+- <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a>
+- <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace Troubleshooting</a>
+
+## Step 6 — Install Dynatrace App
+
+Follow <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/installation/`}>App Installation</a> to install from Hub or ZIP upload. Activate live mode by configuring tenant ID, credential vault reference, and license in the app settings.
+
+## Step 7 — Verify Data
+
+1. In Dynatrace, open **Logs** and filter by `log.source = "MSTeams_CallRecords_CallMetadata"`
+2. Confirm records are arriving in the `ms_teams` bucket
+3. Open the MS Teams Observability app — the Overview page should show real tenant data
+
+## Next Steps
+
+- Explore <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/home/`}>App Pages</a> for calls, sites, users, and issues
+- Upload a <a href={`${import.meta.env.BASE_URL}reference/sites-file/`}>sites file</a> for site-level dashboards
+- Configure <a href={`${import.meta.env.BASE_URL}collector/v2/service/`}>service mode</a> for production persistence
