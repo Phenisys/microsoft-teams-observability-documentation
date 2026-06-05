@@ -1,0 +1,136 @@
+{
+  "version": 2,
+  "last_run": "2026-06-03T16:00:00+02:00",
+  "last_branch": "doc-maintenance/2026-06-03",
+  "last_pr_url": "https://github.com/Phenisys/microsoft-teams-observability-documentation/pull/2",
+  "repos": {
+    "collector": {
+      "last_sha": "b5856223e25114cbdd86777025f6a9bf2f68878f",
+      "path": "collector"
+    },
+    "dynatrace-app": {
+      "last_sha": "f265489f0a26e6a9bf12241fbc91b355dce894de",
+      "path": "dynatrace-app"
+    },
+    "dynatrace-extension": {
+      "last_sha": "ba80738c731305ae03450379177fb03b91431a4f",
+      "path": "dynatrace/dynatrace-extension-teams-observability-agent"
+    },
+    "docs": {
+      "last_sha": "e1c4adff81bc8ca8a675de1b7d82c2b2889cf448",
+      "path": "docs"
+    }
+  },
+  "files_analyzed": [
+    "src/content/docs/collector/v2/configuration.mdx",
+    "src/content/docs/collector/v2/installation.mdx",
+    "src/content/docs/collector/v2/upgrade.mdx",
+    "src/content/docs/collector/v2/migration.mdx",
+    "src/content/docs/collector/v2/cli.md",
+    "src/content/docs/collector/index.mdx",
+    "src/content/docs/reference/cli-reference.mdx",
+    "src/content/docs/reference/metrics-dictionary.mdx",
+    "src/content/docs/getting-started/prerequisites.mdx",
+    "src/content/docs/backends/dynatrace/configuration.mdx",
+    "src/content/docs/backends/dynatrace/collector-connection.mdx",
+    "src/content/docs/backends/dynatrace/dashboards.mdx",
+    "src/content/docs/backends/dynatrace/app/configuration.mdx",
+    "src/content/docs/backends/dynatrace/app/installation.mdx",
+    "src/content/docs/backends/otlp/configuration.mdx",
+    "src/content/docs/backends/splunk/configuration.mdx"
+  ],
+  "known_findings": [
+    {
+      "id": "H1",
+      "severity": "HIGH",
+      "file": "collector/v2/configuration.mdx",
+      "title": "telemetry.enabled default wrong",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "H2",
+      "severity": "HIGH",
+      "file": "collector/v2/configuration.mdx",
+      "title": "detail_per_second default code inconsistency",
+      "status": "needs_human_review",
+      "note": "Pydantic model=20.0, schema.json=1.0. Doc follows schema (1.0). Needs code-side resolution."
+    },
+    {
+      "id": "H3",
+      "severity": "HIGH",
+      "file": "collector/v2/configuration.mdx",
+      "title": "max_call_duration_hours required field missing",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "H4",
+      "severity": "HIGH",
+      "file": "collector/v2/installation.mdx",
+      "title": "Dynatrace config keys wrong (api_url/api_token)",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "M2",
+      "severity": "MEDIUM",
+      "file": "collector/v2/configuration.mdx",
+      "title": "OTel service_name default in examples",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "M5",
+      "severity": "MEDIUM",
+      "file": "collector/v2/installation.mdx",
+      "title": "max_call_duration_hours missing in install example",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "M7",
+      "severity": "MEDIUM",
+      "file": "reference/metrics-dictionary.mdx",
+      "title": "MSTeams_RemoteCollectionHealth missing",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "L2",
+      "severity": "LOW",
+      "file": "backends/dynatrace/dashboards.mdx",
+      "title": "Broken anchor link #optional-sitescsv-mapping",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    },
+    {
+      "id": "L3",
+      "severity": "LOW",
+      "file": "backends/splunk/configuration.mdx",
+      "title": "splunk_ssl_check default not shown in table",
+      "status": "fixed",
+      "fixed_in_sha": "a54ffc5de16907a8981055737ff4ecd3079b7d3f"
+    }
+  ],
+  "open_items": [
+    {
+      "id": "HR-1",
+      "title": "detail_per_second default code inconsistency",
+      "status": "pending",
+      "depends_on": "code-fix"
+    },
+    {
+      "id": "HR-2",
+      "title": "Section VAAC complète avec exemples",
+      "status": "pending",
+      "depends_on": "human-write"
+    },
+    {
+      "id": "HR-3",
+      "title": "client_assertion_type dans migration table",
+      "status": "pending",
+      "depends_on": "human-review"
+    }
+  ]
+}

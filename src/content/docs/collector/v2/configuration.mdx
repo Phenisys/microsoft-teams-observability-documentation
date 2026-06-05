@@ -151,6 +151,7 @@ For OTel outputs, `headers` must be provided and non-empty for each enabled entr
 ```yaml
 collection_config:
   interval_collection_minutes: 10
+  max_call_duration_hours: 5
   log_level: "INFO"
   features:
     calls_collection:
@@ -162,6 +163,8 @@ collection_config:
 <Aside type="tip">
 `interval_collection_minutes` should balance freshness and processing capacity. A range between `2` and `10` minutes works well for most tenants, with `5` minutes as a practical sweet spot. For high call volume tenants, prefer higher intervals to let the agent finish processing cleanly and avoid backlog.
 </Aside>
+
+`max_call_duration_hours` sets the maximum call duration in hours (1–60). Calls exceeding this threshold are considered stale and skipped. This is a required field.
 
 ### Feature flags
 
@@ -186,13 +189,13 @@ Use the `telemetry` section to control health telemetry sent to Phenisys.
 
 ```yaml
 telemetry:
-  enabled: true
+  enabled: false
   timeout_seconds: 10
 ```
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `enabled` | `true` | Enable or disable telemetry requests entirely |
+| `enabled` | `false` | Enable or disable telemetry requests entirely |
 | `timeout_seconds` | `10` | Fail-fast timeout in seconds for telemetry HTTP requests (minimum: `1`) |
 
 ## Optional: Advanced Scheduler and Calls Controls
@@ -202,10 +205,10 @@ Use the `advanced` section to tune throttling behavior and call processing throu
 ```yaml
 advanced:
   scheduler:
-    respect_persisted_backoff: true
+    respect_persisted_backoff: false
     backoff_buffer_seconds: 5
   calls:
-    max_items_per_cycle: 300
+    max_items_per_cycle: null    # No cap by default
     throttle:
       default_retry_after_seconds: 120
       max_backoff_seconds: 1800
@@ -214,28 +217,28 @@ advanced:
       escalation_max_seconds: 3600
     rate_limits:
       list_per_second: 1.0
-      detail_per_second: 1.0
+      detail_per_second: 20.0
 ```
 
 ### Scheduler controls
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `advanced.scheduler.respect_persisted_backoff` | `true` | When `true`, the main loop honors persisted API backoff windows (recommended) |
+| `advanced.scheduler.respect_persisted_backoff` | `false` | When `true`, the main loop honors persisted API backoff windows |
 | `advanced.scheduler.backoff_buffer_seconds` | `5` | Extra safety margin added before resuming after backoff (`>= 0`) |
 
 ### Calls controls
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `advanced.calls.max_items_per_cycle` | `300` | Maximum number of new call IDs processed per cycle (`>= 1`) |
+| `advanced.calls.max_items_per_cycle` | `null` | Maximum number of new call IDs processed per cycle (`>= 1`). `null` means no cap (default). |
 | `advanced.calls.throttle.default_retry_after_seconds` | `120` | Fallback Retry-After when Graph does not provide one (`>= 1`) |
 | `advanced.calls.throttle.max_backoff_seconds` | `1800` | Cap applied to per-throttle backoff (`>= 1`) |
 | `advanced.calls.throttle.jitter_percent` | `0.2` | Random jitter ratio added to backoff (`0.0` to `1.0`) |
 | `advanced.calls.throttle.escalation_multiplier` | `2.0` | Exponential multiplier for consecutive throttles (`>= 1.0`) |
 | `advanced.calls.throttle.escalation_max_seconds` | `3600` | Hard cap for escalated backoff (`>= 1`) |
 | `advanced.calls.rate_limits.list_per_second` | `1.0` | Local outbound rate limit for LIST requests (`> 0`) |
-| `advanced.calls.rate_limits.detail_per_second` | `1.0` | Local outbound rate limit for DETAIL requests (`> 0`) |
+| `advanced.calls.rate_limits.detail_per_second` | `20.0` | Local outbound rate limit for DETAIL requests (`> 0`) |
 
 ## Optional: Timestamp Format
 

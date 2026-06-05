@@ -34,11 +34,12 @@ license:
 output:
   dynatrace:
     enabled: true
-    api_url: "https://<env>.live.dynatrace.com"
-    api_token: "dt0c01..."
+    dynatrace_tenant_id: "<env>"
+    dynatrace_api_token: "dt0c01..."
 
 collection_config:
   interval_collection_minutes: 10
+  max_call_duration_hours: 5
   features:
     calls_collection:
       enabled: true
