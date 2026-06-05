@@ -101,7 +101,7 @@ output:
     - name: "grafana"
       enabled: true
       endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
-      service_name: "msteams-callrecords"
+      service_name: "ms-teams-agent"
       deployment_environment: "test"
       headers:
         Authorization: "Basic your-token"
@@ -114,7 +114,7 @@ output:
     - name: "datadog"
       enabled: true
       endpoint: "https://otlp.datadoghq.com/v1/logs"
-      service_name: "msteams-callrecords"
+      service_name: "ms-teams-agent"
       deployment_environment: "test"
       headers:
         DD-API-KEY: "your-api-key"
@@ -127,7 +127,7 @@ output:
     - name: "custom-otel"
       enabled: true
       endpoint: "https://your-otel-endpoint/v1/logs"
-      service_name: "msteams-callrecords"
+      service_name: "ms-teams-agent"
       deployment_environment: "test"
       headers:
         Authorization: "Bearer your-token"
@@ -205,10 +205,10 @@ Use the `advanced` section to tune throttling behavior and call processing throu
 ```yaml
 advanced:
   scheduler:
-    respect_persisted_backoff: true
+    respect_persisted_backoff: false
     backoff_buffer_seconds: 5
   calls:
-    max_items_per_cycle: 300
+    max_items_per_cycle: null    # No cap by default
     throttle:
       default_retry_after_seconds: 120
       max_backoff_seconds: 1800
@@ -217,28 +217,28 @@ advanced:
       escalation_max_seconds: 3600
     rate_limits:
       list_per_second: 1.0
-      detail_per_second: 1.0
+      detail_per_second: 20.0
 ```
 
 ### Scheduler controls
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `advanced.scheduler.respect_persisted_backoff` | `true` | When `true`, the main loop honors persisted API backoff windows (recommended) |
+| `advanced.scheduler.respect_persisted_backoff` | `false` | When `true`, the main loop honors persisted API backoff windows |
 | `advanced.scheduler.backoff_buffer_seconds` | `5` | Extra safety margin added before resuming after backoff (`>= 0`) |
 
 ### Calls controls
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `advanced.calls.max_items_per_cycle` | `300` | Maximum number of new call IDs processed per cycle (`>= 1`) |
+| `advanced.calls.max_items_per_cycle` | `null` | Maximum number of new call IDs processed per cycle (`>= 1`). `null` means no cap (default). |
 | `advanced.calls.throttle.default_retry_after_seconds` | `120` | Fallback Retry-After when Graph does not provide one (`>= 1`) |
 | `advanced.calls.throttle.max_backoff_seconds` | `1800` | Cap applied to per-throttle backoff (`>= 1`) |
 | `advanced.calls.throttle.jitter_percent` | `0.2` | Random jitter ratio added to backoff (`0.0` to `1.0`) |
 | `advanced.calls.throttle.escalation_multiplier` | `2.0` | Exponential multiplier for consecutive throttles (`>= 1.0`) |
 | `advanced.calls.throttle.escalation_max_seconds` | `3600` | Hard cap for escalated backoff (`>= 1`) |
 | `advanced.calls.rate_limits.list_per_second` | `1.0` | Local outbound rate limit for LIST requests (`> 0`) |
-| `advanced.calls.rate_limits.detail_per_second` | `1.0` | Local outbound rate limit for DETAIL requests (`> 0`) |
+| `advanced.calls.rate_limits.detail_per_second` | `20.0` | Local outbound rate limit for DETAIL requests (`> 0`) |
 
 ## Optional: Timestamp Format
 

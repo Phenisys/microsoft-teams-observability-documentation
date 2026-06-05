@@ -201,14 +201,14 @@ Enable **Show Advanced options** in the extension UI to configure the following 
 |---|---|---|---|
 | `advanced.scheduler.respect_persisted_backoff` | **Advanced - Scheduler: Respect persisted backoff** | `true` | boolean |
 | `advanced.scheduler.backoff_buffer_seconds` | **Advanced - Scheduler: Backoff buffer (seconds)** | `5` | 0–3600 |
-| `advanced.calls.max_items_per_cycle` | **Advanced - Calls: Max items per cycle** | `300` | 1–10000 |
+| `advanced.calls.max_items_per_cycle` | **Advanced - Calls: Max items per cycle** | `No default (null)` | 1–10000 |
 | `advanced.calls.throttle.default_retry_after_seconds` | **Advanced - Calls throttle: Default Retry-After (seconds)** | `120` | 1–3600 |
 | `advanced.calls.throttle.max_backoff_seconds` | **Advanced - Calls throttle: Max backoff (seconds)** | `1800` | 1–86400 |
 | `advanced.calls.throttle.jitter_percent` | **Advanced - Calls throttle: Jitter (0.0-1.0)** | `0.2` | 0.0–1.0 |
 | `advanced.calls.throttle.escalation_multiplier` | **Advanced - Calls throttle: Escalation multiplier** | `2.0` | 1.0–10.0 |
 | `advanced.calls.throttle.escalation_max_seconds` | **Advanced - Calls throttle: Escalation max (seconds)** | `3600` | 1–86400 |
 | `advanced.calls.rate_limits.list_per_second` | **Advanced - Calls rate limits: LIST requests per second** | `1.0` | 0.01–100.0 |
-| `advanced.calls.rate_limits.detail_per_second` | **Advanced - Calls rate limits: DETAIL requests per second** | `1.0` | 0.01–100.0 |
+| `advanced.calls.rate_limits.detail_per_second` | **Advanced - Calls rate limits: DETAIL requests per second** | `20.0` | 0.01–100.0 |
 | `telemetry.timeout_seconds` | **Advanced - Telemetry: Timeout (seconds)** | `10` | 1–3600 |
 
 ---
