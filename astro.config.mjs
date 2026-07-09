@@ -5,6 +5,11 @@ import { defineConfig } from "astro/config";
 import mermaid from "astro-mermaid";
 import { loadEnv } from "vite";
 
+import linuxIcon from "./src/assets/logos/linux.svg?raw";
+import windowsIcon from "./src/assets/logos/windows.svg?raw";
+
+const icon = (raw) => ({ html: raw });
+
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 const base = env.PUBLIC_BASE_PATH ?? "/";
 
@@ -97,8 +102,8 @@ export default defineConfig({
               label: "Service",
               collapsed: true,
               items: [
-                { slug: "collector/v2/service" },
-                { slug: "collector/v2/service-windows" },
+                { slug: "collector/v2/service", icon: icon(linuxIcon) },
+                { slug: "collector/v2/service-windows", icon: icon(windowsIcon) },
               ],
             },
             { slug: "collector/v2/cli" },
