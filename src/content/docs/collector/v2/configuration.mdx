@@ -51,6 +51,19 @@ microsoft_authentication:
     cloud_deployment: "global"
 ```
   </TabItem>
+  <TabItem label="VAAC">
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "your-tenant-id"
+    client_id: "your-client-id"
+    client_secret: "your-secret"
+    grant_type: "client_credentials"
+  vaac:
+    username: "your-vaac-username"
+    password: "your-vaac-password"
+```
+  </TabItem>
 </Tabs>
 
 <Aside type="note">
@@ -181,6 +194,68 @@ All feature flags default to `false`. Enable only what you need:
 
 <Aside type="note">
 `autoattendant_collection` and `callqueue_collection` require a `microsoft_authentication.vaac` section with dedicated credentials.
+</Aside>
+
+## VAAC (Auto Attendant & Call Queue)
+
+The Voice Applications Analytics Collector (VAAC) is a Microsoft service that provides historical call data for Teams Auto Attendants and Call Queues. It is the data source for the `autoattendant_collection` and `callqueue_collection` features.
+
+### What VAAC provides
+
+VAAC gives access to calls processed by Teams Phone Agents, Auto Attendants, and Call Queues that are **not** available through the standard Microsoft Graph `callRecords` API. This includes:
+
+- **Auto Attendant analytics**: caller paths, menu navigation (DTMF/voice), directory search usage, call transfers, termination reasons
+- **Call Queue analytics**: wait times, abandon rates, agent answer rates, overflow/timeout handling, agent opt-in counts
+- **Agent Timeline**: per-agent call duration, answered calls by date/hour, average handling time
+
+### Prerequisites
+
+1. **VAAC credentials**: A dedicated service account with access to the VAAC Power BI data source. These are the same credentials used in the [official Microsoft VAAC Power BI template](https://learn.microsoft.com/en-us/microsoftteams/aa-cq-report-historical).
+
+2. **Permissions**: The account must be either:
+   - Set up as an [Authorized User](https://learn.microsoft.com/en-us/microsoftteams/aa-cq-plan-authorized-users) for the target Auto Attendants and Call Queues, or
+   - Assigned a [CQD access role](https://learn.microsoft.com/en-us/microsoftteams/turning-on-and-using-call-quality-dashboard#assign-admin-roles-for-access-to-cqd) with **View Reports** and **View EUII fields** enabled
+
+3. **Cloud deployment**: The collector supports the same cloud deployments as the VAAC service:
+   - Global (includes GCC tenants)
+   - Government Community Cloud High (GCCH)
+   - Department of Defence (DoD)
+
+### Configuration
+
+Add the `vaac` block under `microsoft_authentication` with your VAAC service account credentials:
+
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "your-tenant-id"
+    client_id: "your-client-id"
+    client_secret: "your-secret"
+  vaac:
+    username: "your-vaac-username"
+    password: "your-vaac-password"
+```
+
+| Key | Required | Description |
+| --- | --- | --- |
+| `vaac.username` | Yes (for AA/CQ) | VAAC service account username |
+| `vaac.password` | Yes (for AA/CQ) | VAAC service account password |
+
+Then enable the features in `collection_config.features`:
+
+```yaml
+collection_config:
+  features:
+    autoattendant_collection:
+      enabled: true
+    callqueue_collection:
+      enabled: true
+```
+
+<Aside type="tip">
+VAAC data typically becomes available within 30 minutes of call completion, though it can take several hours in some cases. The collector polls VAAC on the configured `interval_collection_minutes`.
+
+For detailed field definitions and report interpretation, see the [Microsoft VAAC documentation](https://learn.microsoft.com/en-us/microsoftteams/aa-cq-report-historical).
 </Aside>
 
 ## Optional: Telemetry
