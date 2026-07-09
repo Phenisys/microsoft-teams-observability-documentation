@@ -93,8 +93,14 @@ export default defineConfig({
             { slug: "collector/v2/runbook" },
             { slug: "collector/v2/upgrade" },
             { slug: "collector/v2/migration" },
-            { slug: "collector/v2/service" },
-            { slug: "collector/v2/service-windows" },
+            {
+              label: "Service",
+              collapsed: true,
+              items: [
+                { slug: "collector/v2/service" },
+                { slug: "collector/v2/service-windows" },
+              ],
+            },
             { slug: "collector/v2/cli" },
             {
               label: "Extension",
