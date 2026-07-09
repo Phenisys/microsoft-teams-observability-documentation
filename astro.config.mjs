@@ -5,10 +5,8 @@ import { defineConfig } from "astro/config";
 import mermaid from "astro-mermaid";
 import { loadEnv } from "vite";
 
-import linuxIcon from "./src/assets/logos/linux.svg?raw";
-import windowsIcon from "./src/assets/logos/windows.svg?raw";
-
-const icon = (raw) => ({ html: raw });
+const linuxIcon = { html: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="16"><circle cx="128" cy="72" r="48"/><path d="M48 200c8-24 32-40 80-40s72 16 80 40"/><path d="M128 160v40M96 180l-32 40M160 180l32 40"/></g></svg>' };
+const windowsIcon = { html: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><rect x="24" y="40" width="96" height="96" fill="currentColor"/><rect x="136" y="40" width="96" height="96" fill="currentColor" opacity=".7"/><rect x="24" y="152" width="96" height="64" fill="currentColor" opacity=".7"/><rect x="136" y="152" width="96" height="64" fill="currentColor"/></svg>' };
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 const base = env.PUBLIC_BASE_PATH ?? "/";
@@ -102,8 +100,8 @@ export default defineConfig({
               label: "Service",
               collapsed: true,
               items: [
-                { slug: "collector/v2/service", icon: icon(linuxIcon) },
-                { slug: "collector/v2/service-windows", icon: icon(windowsIcon) },
+                { slug: "collector/v2/service", icon: linuxIcon },
+                { slug: "collector/v2/service-windows", icon: windowsIcon },
               ],
             },
             { slug: "collector/v2/cli" },
