@@ -101,8 +101,8 @@ output:
     - name: "grafana"
       enabled: true
       endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
-      service_name: "ms-teams-agent"
-      deployment_environment: "test"
+      service_name: "msteams-callrecords"
+      deployment_environment: "production"
       headers:
         Authorization: "Basic your-token"
 ```
@@ -114,10 +114,10 @@ output:
     - name: "datadog"
       enabled: true
       endpoint: "https://otlp.datadoghq.com/v1/logs"
-      service_name: "ms-teams-agent"
-      deployment_environment: "test"
+      service_name: "msteams-callrecords"
+      deployment_environment: "production"
       headers:
-        DD-API-KEY: "your-api-key"
+        DD-API-KEY: ***
 ```
   </TabItem>
   <TabItem label="Other OTEL">
@@ -127,8 +127,8 @@ output:
     - name: "custom-otel"
       enabled: true
       endpoint: "https://your-otel-endpoint/v1/logs"
-      service_name: "ms-teams-agent"
-      deployment_environment: "test"
+      service_name: "msteams-callrecords"
+      deployment_environment: "production"
       headers:
         Authorization: "Bearer your-token"
 ```
@@ -208,16 +208,17 @@ advanced:
     respect_persisted_backoff: false
     backoff_buffer_seconds: 5
   calls:
-    max_items_per_cycle: null    # No cap by default
     throttle:
       default_retry_after_seconds: 120
       max_backoff_seconds: 1800
+      in_cycle_max_retries: 2
+      in_cycle_retry_max_wait_seconds: 30
       jitter_percent: 0.2
       escalation_multiplier: 2.0
       escalation_max_seconds: 3600
     rate_limits:
-      list_per_second: 1.0
-      detail_per_second: 20.0
+      list_per_second: 2
+      detail_per_second: 75
 ```
 
 ### Scheduler controls
@@ -231,14 +232,54 @@ advanced:
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `advanced.calls.max_items_per_cycle` | `null` | Maximum number of new call IDs processed per cycle (`>= 1`). `null` means no cap (default). |
 | `advanced.calls.throttle.default_retry_after_seconds` | `120` | Fallback Retry-After when Graph does not provide one (`>= 1`) |
 | `advanced.calls.throttle.max_backoff_seconds` | `1800` | Cap applied to per-throttle backoff (`>= 1`) |
+| `advanced.calls.throttle.in_cycle_max_retries` | `2` | Maximum short retries within a single collection cycle (`>= 0`). `0` disables in-cycle retries |
+| `advanced.calls.throttle.in_cycle_retry_max_wait_seconds` | `30` | Maximum wait time per in-cycle retry before escalating to persisted backoff (`>= 1`) |
 | `advanced.calls.throttle.jitter_percent` | `0.2` | Random jitter ratio added to backoff (`0.0` to `1.0`) |
 | `advanced.calls.throttle.escalation_multiplier` | `2.0` | Exponential multiplier for consecutive throttles (`>= 1.0`) |
 | `advanced.calls.throttle.escalation_max_seconds` | `3600` | Hard cap for escalated backoff (`>= 1`) |
-| `advanced.calls.rate_limits.list_per_second` | `1.0` | Local outbound rate limit for LIST requests (`> 0`) |
-| `advanced.calls.rate_limits.detail_per_second` | `20.0` | Local outbound rate limit for DETAIL requests (`> 0`) |
+| `advanced.calls.rate_limits.list_per_second` | `2` | Local outbound rate limit for LIST requests (`> 0`). Also applies to PSTN and Direct Routing list endpoints |
+| `advanced.calls.rate_limits.detail_per_second` | `75` | Local outbound rate limit for DETAIL requests (`> 0`) |
+
+## Optional: License Settings
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+  expiration_warning_days: 14
+```
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `filepath` | *(required)* | Path to the license file |
+| `expiration_warning_days` | `14` | Days before license expiration to start emitting warnings |
+
+## Optional: Log Format
+
+Control the format of collector application logs (not exported data):
+
+```yaml
+collection_config:
+  log_format: "text"  # Options: "text" (default) or "json"
+```
+
+## Optional: Console Output Settings
+
+When using the console exporter, fine-tune its behavior:
+
+```yaml
+output:
+  console:
+    enabled: true
+    pretty_print: true
+    max_logs_display: 10
+```
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `output.console.pretty_print` | `true` | Pretty-print JSON records to the console |
+| `output.console.max_logs_display` | `10` | Maximum number of log records to display per export batch |
 
 ## Optional: Timestamp Format
 
@@ -261,28 +302,6 @@ output:
 | `iso8601` | `2026-01-01T10:20:30.50Z` |
 | `rfc3339` | `2026-01-01T10:20:30.50Z` |
 
-## Optional: Database Retention
-
-The collector stores state in a local SQLite database (`state.db`). Use the `database` section to control its growth:
-
-```yaml
-database:
-  outbox_sent_retention_days: 7
-  outbox_max_attempts: 12
-  outbox_max_log_age_hours: 168
-  max_processed_objects_per_type: 100000
-```
-
-| Key | Default | Description |
-| --- | --- | --- |
-| `outbox_sent_retention_days` | `7` | Days to keep sent outbox messages before purging |
-| `outbox_max_attempts` | `12` | Max export attempts per outbox message before dead-lettering |
-| `outbox_max_log_age_hours` | `168` | Drop stale logs before enqueue and auto-purge stale pending rows during export cycles (`null` disables this guard) |
-| `max_processed_objects_per_type` | `100000` | Max deduplication cache entries per object type |
-| `processed_objects_max_age_hours` | auto | Max age for cache entries (derived automatically if unset) |
-
-Omitting the `database` section keeps all defaults.
-
 ## Optional: Quality Thresholds
 
 Override default call quality classification thresholds:
@@ -291,9 +310,42 @@ Override default call quality classification thresholds:
 advanced:
   quality_thresholds:
     audio:
+      min_packet_utilization: 500
       max_rtt_ms: 500
       max_jitter_ms: 30
+      max_packet_loss_rate: 0.10
+    video:
+      max_frame_loss_pct: 50.0
+      min_frame_rate_fps: 7.0
+      max_post_fec_loss_rate: 0.15
+    sharing:
+      max_frame_loss_pct: 50.0
+      min_frame_rate_fps: 1.0
 ```
+
+### Audio quality thresholds
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `min_packet_utilization` | `500` | Below this value, the stream is classified as Unclassified |
+| `max_rtt_ms` | `500` | Maximum acceptable round-trip time in milliseconds |
+| `max_jitter_ms` | `30` | Maximum acceptable jitter in milliseconds |
+| `max_packet_loss_rate` | `0.10` | Maximum acceptable packet loss rate (10%) |
+
+### Video quality thresholds
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `max_frame_loss_pct` | `50.0` | Maximum acceptable video frame loss percentage |
+| `min_frame_rate_fps` | `7.0` | Minimum acceptable video frame rate in fps |
+| `max_post_fec_loss_rate` | `0.15` | Maximum acceptable post-FEC loss rate (15%) |
+
+### Sharing quality thresholds
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `max_frame_loss_pct` | `50.0` | Maximum acceptable sharing frame loss percentage |
+| `min_frame_rate_fps` | `1.0` | Minimum acceptable sharing frame rate in fps |
 
 Quality thresholds are configurable, but it is recommended to keep the default values unless you have a validated operational reason to tune them.
 

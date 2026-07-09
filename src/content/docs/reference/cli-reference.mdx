@@ -123,7 +123,7 @@ Actions:
 - `show`: display current state entries.
 - `reset`: clear all state (timestamps and dedup cache).
 - `export`: export state as JSON.
-- `purge-stale`: move stale pending outbox messages to dead-letter.
+- `vacuum`: reclaim free space in the state database (SQLite VACUUM).
 - `migrate-v1`: import legacy v1 JSON state into v2 SQLite state.
 
 Common option:
@@ -146,18 +146,6 @@ ms-teams-agent state export [options]
 | `--since` | Include types processed on/after ISO-8601 datetime. |
 | `--until` | Include types processed on/before ISO-8601 datetime. |
 | `--limit` | Max objects per type, most recent first. Effective only with `--include-objects`. |
-
-### `state purge-stale`
-
-```bash
-ms-teams-agent state purge-stale --older-than <HOURS> [options]
-```
-
-| Option | Description |
-| --- | --- |
-| `--older-than` | Required. Positive number of hours used as the stale threshold. |
-| `--category` | Optional. Limit to `logs` or `errors` (default: both). |
-| `--dry-run` | Optional. Show how many rows would be purged without modifying the DB. |
 
 ### `state migrate-v1`
 
@@ -192,9 +180,6 @@ sudo ms-teams-agent service enable-service --config /etc/ms-teams-observability-
 # Export detailed state snapshot
 ms-teams-agent state export --include-objects --type calls_collection --since 2026-03-28 --output ./state.json
 
-# Dry-run stale pending outbox cleanup (7 days)
-ms-teams-agent state purge-stale --older-than 168 --dry-run
-
-# Purge stale pending error rows only
-ms-teams-agent state purge-stale --older-than 72 --category errors
+# Reclaim free space in the state database
+ms-teams-agent state vacuum
 ```

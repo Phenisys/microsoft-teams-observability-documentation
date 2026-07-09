@@ -17,7 +17,7 @@ This guide covers migration from the legacy v1 standalone agent (global flags) t
 | CLI | Global flags (`--config`, `--ignore_state`, …) | Sub-commands (`run`, `validate`, `migrate-config`, `service`, `state`, `test-connection`) |
 | Configuration | Legacy keys (`microsoft_*`, `ms_teams_*` features) | Typed keys (`microsoft_authentication.graph`, short feature names) |
 | Config migration | No dedicated migration command | Automatic migration at startup when legacy format is detected, with on-disk rewrite and `.bak` backup |
-| State | JSON per tenant (`state/state_<tenant>.json`) | SQLite (`state.db`) with deduplication + outbox |
+| State | JSON per tenant (`state/state_<tenant>.json`) | SQLite (`state.db`) with deduplication |
 | Linux service | `--enable_boot_start` / `--disable_boot_start` | `service enable-service` / `service disable-service` |
 | `site_definition` feature | Supported | Removed (ignored) |
 

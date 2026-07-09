@@ -78,6 +78,7 @@ export default defineConfig({
             { slug: "getting-started" },
             { slug: "getting-started/deploy-dynatrace" },
             { slug: "getting-started/deploy-splunk" },
+            { slug: "getting-started/deploy-grafana" },
             { slug: "getting-started/deploy-otlp" },
             { slug: "getting-started/prerequisites" },
             { slug: "getting-started/license" },
@@ -167,6 +168,37 @@ export default defineConfig({
                   ],
                 },
                 { slug: "backends/splunk/troubleshooting" },
+              ],
+            },
+            {
+              label: "Grafana",
+              collapsed: true,
+              items: [
+                { slug: "backends/grafana" },
+                {
+                  label: "Application",
+                  items: [
+                    { slug: "backends/grafana/app" },
+                    { slug: "backends/grafana/app/installation" },
+                    {
+                      label: "Pages",
+                      items: [
+                        { slug: "backends/grafana/app/home" },
+                        { slug: "backends/grafana/app/calls" },
+                        { slug: "backends/grafana/app/call-overview" },
+                        { slug: "backends/grafana/app/users" },
+                        { slug: "backends/grafana/app/sites" },
+                        { slug: "backends/grafana/app/issues" },
+                        { slug: "backends/grafana/app/configuration" },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  label: "OTLP → Grafana Cloud",
+                  collapsed: true,
+                  items: [{ slug: "backends/otlp/grafana" }],
+                },
               ],
             },
             {

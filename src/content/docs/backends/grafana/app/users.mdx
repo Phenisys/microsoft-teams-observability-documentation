@@ -1,0 +1,47 @@
+---
+title: Application — Users
+description: Per-user analytics — call counts, quality breakdown, devices, and network details for each Teams user.
+sidebar:
+  label: Users
+  order: 5
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The Users page provides per-user analytics for every MS Teams user who made or received calls.
+
+## User List
+
+Each user row displays:
+
+| Column | Description |
+| --- | --- |
+| **User** | Display name and UPN (clickable — navigates to filtered Calls view) |
+| **Total Calls** | Number of calls in the selected time range |
+| **Good / Poor / Unclassified** | Quality breakdown |
+| **Average Duration** | Mean call duration |
+| **Platforms** | Platforms used (Windows, Mac, iOS, Android, Web) |
+| **Devices** | Endpoint devices used |
+| **Last Seen** | Most recent call timestamp |
+
+## User Detail
+
+Clicking a user opens a detail panel with:
+
+- **Recent Calls**: List of the user's most recent calls with health and duration
+- **Quality Trends**: Call quality over time for this user
+- **Network Details**: IPs, subnets, and connection types used
+- **Devices & Versions**: Hardware and Teams client versions
+
+## Filters
+
+| Filter | Description |
+| --- | --- |
+| **Time Range** | Grafana time range picker |
+| **Search** | Filter by user name or UPN |
+| **Quality** | Filter by users with mostly Good/Poor calls |
+| **Activity** | Filter by minimum call count |
+
+<Aside type="tip">
+Click a user's name to see their recent calls, then click any Call ID to drill into the Call Overview.
+</Aside>

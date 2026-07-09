@@ -1,0 +1,44 @@
+---
+title: Application — Home
+description: The Home page provides a cockpit overview of your MS Teams environment — call volume, quality, user activity, and platform distribution.
+sidebar:
+  label: Home
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The Home page is the landing page of the MS Teams Observability app. It presents a high-level summary of your Teams calling activity over the selected time range.
+
+## KPIs
+
+The top section displays key performance indicators:
+
+| KPI | Description |
+| --- | --- |
+| **Total Calls** | Number of calls in the selected time range |
+| **Healthy Calls %** | Percentage of calls classified as Good |
+| **Active Users** | Number of unique users who made or received calls |
+| **Platform Distribution** | Breakdown by platform (Windows, Mac, iOS, Android, Web, Teams Phone) |
+
+## Charts
+
+### Call Health Over Time
+
+A time-series chart showing call volume split by health classification (Good / Poor / Unclassified). Use this to spot quality degradation trends.
+
+### Platform Usage
+
+A pie or bar chart showing the distribution of calls by participant platform. Helps identify which clients are most used in your organization.
+
+### Quality Trends
+
+Aggregated quality metrics over time: average RTT, jitter, and packet loss. Helps detect network degradation before users report it.
+
+## How It Works
+
+The Home page queries the Loki datasource using LogQL queries that aggregate `MSTeams_CallRecords_CallMetadata` and `MSTeams_CallRecords_StreamDetails` logs. All queries are scoped to the selected time range.
+
+<Aside type="tip">
+For a quick health check, look at the **Healthy Calls %** KPI. If it drops below 90%, drill into the Calls or Sites pages to isolate the issue.
+</Aside>

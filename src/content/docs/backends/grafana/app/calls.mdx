@@ -1,0 +1,43 @@
+---
+title: Application — Calls
+description: Searchable and filterable list of all recorded MS Teams calls with health indicators, participants, and duration.
+sidebar:
+  label: Calls
+  order: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The Calls page displays a searchable, filterable list of every call recorded by the collector. Each row represents a single call with its metadata, participants, quality classification, and duration.
+
+## Columns
+
+| Column | Description |
+| --- | --- |
+| **Call ID** | Unique call identifier (clickable — navigates to Call Overview) |
+| **Start Time** | When the call started |
+| **Type** | Call type: P2P, conference, PSTN |
+| **Participants** | List of participant names |
+| **Duration** | Call duration in minutes and seconds |
+| **Health** | Overall call health (Good / Poor / Unclassified) |
+
+## Filters
+
+Use the filter bar to narrow results:
+
+| Filter | Description |
+| --- | --- |
+| **Time Range** | Grafana time range picker (top-right) |
+| **Participant** | Filter by participant name or UPN |
+| **Call Type** | Filter by P2P, conference, or PSTN |
+| **Health** | Filter by Good, Poor, or Unclassified calls |
+| **Duration** | Filter by minimum or maximum call duration |
+| **Site** | Filter by geographic site (requires sites file) |
+
+## Export
+
+Calls can be exported to CSV for offline analysis. Click the export button to download the current filtered view.
+
+<Aside type="tip">
+Click any **Call ID** to open the Call Overview page with full call details, participant breakdown, and stream-level metrics.
+</Aside>

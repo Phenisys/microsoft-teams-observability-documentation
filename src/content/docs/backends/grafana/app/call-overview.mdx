@@ -1,0 +1,97 @@
+---
+title: Application — Call Overview
+description: Full analysis of a single call — participants, network topology, stream metrics, QoE evidence, and optional GeoIP map.
+sidebar:
+  label: Call Overview
+  order: 4
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The Call Overview page provides a deep-dive analysis of a single MS Teams call. It is accessed by clicking a Call ID from the Calls or Users pages.
+
+## Layout
+
+The page is organized into a progressive disclosure layout:
+
+### 1. Verdict
+
+A quick summary of the call quality:
+
+- **Overall Health**: Good, Poor, or Unclassified
+- **Call Type**: P2P, conference, or PSTN
+- **Duration**: Total call duration
+- **Participants**: Number of participants
+
+### 2. Evidence
+
+Network-level evidence collected during the call:
+
+- **Transport Distribution**: UDP vs TCP usage across all streams
+- **Relay Usage**: Whether Microsoft Teams relays were used
+- **Public Egress**: External IP addresses and ASNs observed
+- **Shared IP Patterns**: Detection of participants behind the same NAT
+
+### 3. Participants
+
+Per-participant health matrix:
+
+| Column | Description |
+| --- | --- |
+| **Participant** | Display name and UPN |
+| **Role** | Caller or Callee |
+| **Connection** | Connection type (direct, relay, etc.) |
+| **Protocol** | UDP or TCP |
+| **Egress IP / ASN** | Public egress IP and autonomous system |
+| **Relay Region** | Microsoft Teams relay region if used |
+| **Streams** | Number of media streams |
+| **Endpoint** | Device and platform signals |
+
+### 4. Streams
+
+Per-stream metrics for each media stream:
+
+| Metric | Description |
+| --- | --- |
+| **Media Type** | Audio, Video, Screen Sharing, etc. |
+| **Direction** | callerToCallee or calleeToCaller |
+| **Health** | Stream-level quality classification |
+| **RTT** | Average round-trip time (ms) |
+| **Jitter** | Average jitter (ms) |
+| **Packet Loss** | Average packet loss rate (%) |
+| **Frame Rate** | Video/sharing frame rate (fps) |
+| **Codec** | Audio/video codec used |
+
+### 5. Network
+
+Network topology details:
+
+- Participant IPs (caller and callee)
+- Subnet information (requires Subnet Location datasource)
+- Relay IPs and regions
+- NAT / shared-IP detection
+
+### 6. Endpoint
+
+Endpoint device and client information:
+
+- Device type and model
+- Operating system
+- Teams client version
+- Audio input/output devices
+
+### 7. Advanced
+
+Additional details:
+
+- Raw JSON view of the complete call record
+- Stream segment data
+- Call setup and teardown timestamps
+
+## GeoIP Map
+
+When the Subnet Location datasource is enabled and the GeoIP toggle is active in Configuration, the Call Overview shows a geographic map with participant locations.
+
+<Aside type="caution">
+The GeoIP map sends participant IP addresses to ip-api.com for geolocation. Disable this feature in Configuration if your organization's privacy policy requires it.
+</Aside>

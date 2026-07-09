@@ -1,0 +1,63 @@
+---
+title: Application — Configuration
+description: Central settings hub for the MS Teams Observability Grafana app — datasources, GeoIP toggle, license, timezone, and display preferences.
+sidebar:
+  label: Configuration
+  order: 8
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+> **Path:** `/configuration`
+
+The Configuration page is the central settings hub for the MS Teams Observability Grafana app.
+
+## Datasource Configuration
+
+### MS Teams Observability Datasource
+
+The primary datasource pointing to your Loki instance:
+
+| Setting | Description |
+| --- | --- |
+| **Loki URL** | Base URL of your Loki instance |
+| **Tenant ID** | Grafana Cloud tenant ID (when using Grafana Cloud Loki) |
+| **Auth** | Basic auth credentials or API token |
+| **Service Name** | OTel `service_name` used by the collector (default: `msteams-callrecords`) |
+| **Timeout** | Query timeout in seconds |
+
+Use the **Save & test** button to verify connectivity.
+
+### Subnet Location Datasource
+
+Optional datasource for GeoIP enrichment on the Call Overview map:
+
+| Setting | Description |
+| --- | --- |
+| **Enabled** | Toggle to enable/disable GeoIP lookups |
+| **API Endpoint** | ip-api.com endpoint (default) |
+
+<Aside type="caution">
+When enabled, participant IP addresses are sent to ip-api.com for geolocation. This constitutes third-party data egress. Disable this toggle if your privacy policy requires it.
+</Aside>
+
+## License
+
+Enter your Phenisys license key to activate live mode. Without a license, the app operates in demo mode with mock data.
+
+| Setting | Description |
+| --- | --- |
+| **License Key** | Your Phenisys license key |
+| **Status** | Active / Expired / Missing |
+
+## Display Preferences
+
+| Setting | Description |
+| --- | --- |
+| **Timezone** | Timezone for displaying timestamps |
+| **Date Format** | Date display format |
+| **Refresh Interval** | Auto-refresh interval for dashboards |
+
+<Aside type="tip">
+The Grafana app requires a valid Phenisys license for live mode. See [License](../../../getting-started/license/) for details on obtaining and managing your license.
+</Aside>

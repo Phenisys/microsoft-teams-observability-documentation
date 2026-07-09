@@ -1,0 +1,122 @@
+---
+title: Deploy MS Teams Observability with Grafana
+description: Step-by-step guide to deploy the collector, install the Grafana plugin, and connect to Loki for production monitoring.
+sidebar:
+  label: Deploy with Grafana
+  order: 3
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+## Goal
+
+Deploy the MS Teams Observability collector and Grafana plugin app to monitor real Teams call quality, user activity, and site performance.
+
+**Estimated time:** 30–45 minutes
+
+**What you will deploy:**
+- Microsoft Entra app registration for Graph API access
+- Collector binary on a Linux or Windows host
+- Grafana plugin app from the Plugin Catalog
+- Loki datasource (self-hosted or Grafana Cloud)
+
+## Before You Start
+
+- Microsoft 365 tenant with Teams calling activity
+- Entra ID permission to create an app registration
+- Admin consent for Graph application permissions
+- Collector host with outbound HTTPS access to `graph.microsoft.com`
+- Grafana ≥ 12.3.0
+- A Loki datasource (self-hosted or Grafana Cloud Logs)
+- License file for live mode (see [License](../license/))
+
+## Step 1 — Create Microsoft Entra App
+
+Follow the canonical guide: [Azure Permissions](../../collector/azure-permissions/).
+
+At the end, you must have:
+- `tenant_id`
+- `client_id`
+- `client_secret` or `client_certificate_path`
+
+## Step 2 — Install the Collector
+
+Follow [Collector Installation](../../collector/v2/installation/) to download the binary and build your `config.yaml`.
+
+Your minimum config with Grafana OTLP output:
+
+```yaml
+microsoft_authentication:
+  graph:
+    tenant_id: "<tenant-id>"
+    client_id: "<client-id>"
+    client_secret: "<secret>"
+
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+
+output:
+  otel:
+    - name: "grafana"
+      enabled: true
+      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
+      service_name: "msteams-callrecords"
+      deployment_environment: "production"
+      headers:
+        Authorization: "Basic <base64-credentials>"
+
+collection_config:
+  interval_collection_minutes: 10
+  max_call_duration_hours: 5
+  features:
+    calls_collection:
+      enabled: true
+```
+
+See [OTLP to Grafana Cloud](../../backends/otlp/grafana/) for endpoint details.
+
+## Step 3 — Install the Grafana Plugin
+
+Follow [Plugin Installation](../../backends/grafana/app/installation/) to install the MS Teams Observability plugin from the Grafana Plugin Catalog.
+
+## Step 4 — Configure the Datasource
+
+1. Go to **Connections → Data Sources → MS Teams Observability Datasource**
+2. Enter your Loki URL, tenant ID, and credentials
+3. Set **Service Name** to `msteams-callrecords`
+4. Click **Save & test**
+
+## Step 5 — Validate
+
+<Steps>
+1. Validate collector config:
+
+   ```bash
+   ms-teams-agent validate --config ./config.yaml
+   ```
+
+2. Test Graph auth and OTLP connectivity:
+
+   ```bash
+   ms-teams-agent test-connection --config ./config.yaml
+   ```
+
+3. Run one dry cycle:
+
+   ```bash
+   ms-teams-agent run --config ./config.yaml --dry-run
+   ```
+</Steps>
+
+## Step 6 — Verify Data
+
+1. In Grafana, open **Apps → Microsoft Teams Observability**
+2. The Home page should show real tenant data
+3. Navigate to Calls to see individual call records
+4. Check Call Overview for stream-level quality details
+
+## Next Steps
+
+- Explore [App Pages](../../backends/grafana/app/) for calls, sites, users, and issues
+- Upload a [sites file](../../reference/sites-file/) for site-level dashboards
+- Configure [service mode](../../collector/v2/service/) for production persistence

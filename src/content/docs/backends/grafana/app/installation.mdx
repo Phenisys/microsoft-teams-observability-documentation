@@ -1,0 +1,81 @@
+---
+title: Plugin Installation
+description: Install the MS Teams Observability Grafana plugin from the Plugin Catalog or via ZIP upload, and configure the datasources.
+sidebar:
+  label: Installation
+  order: 1
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The MS Teams Observability plugin is published on the **Grafana Plugin Catalog**. The plugin ID is `phenisys-msteamsobservability-app`.
+
+**Requirements:**
+- Grafana ≥ 12.3.0
+- A Loki datasource (self-hosted or Grafana Cloud) receiving MS Teams logs
+- For GeoIP features (Call Map): the optional Subnet Location datasource
+
+## Install from Plugin Catalog
+
+<Steps>
+1. In your Grafana instance, go to **Administration → Plugins and data → Plugins**.
+2. Search for **"Microsoft Teams Observability"**.
+3. Click **Install**.
+4. After installation, the app appears in the sidebar under **Apps → Microsoft Teams Observability**.
+</Steps>
+
+## Install via ZIP Upload
+
+<Steps>
+1. Download the plugin ZIP from the [releases page](https://github.com/Phenisys/teams-observability-grafana-app/releases) or [Grafana Plugin Catalog](https://grafana.com/grafana/plugins/phenisys-msteamsobservability-app/).
+2. In Grafana, go to **Administration → Plugins and data → Plugins → Install plugin**.
+3. Drag-and-drop the ZIP file or click **Upload**.
+4. Restart Grafana if prompted.
+</Steps>
+
+## Configure the Datasources
+
+After installation, two datasources are registered:
+
+### MS Teams Observability Datasource
+
+This is the primary datasource. It connects to your Loki instance to query MS Teams logs.
+
+| Field | Description |
+| --- | --- |
+| **Loki URL** | The base URL of your Loki instance (e.g., `https://logs-prod-xxx.grafana.net`) |
+| **Tenant ID** | Grafana Cloud tenant ID (required for Grafana Cloud Loki) |
+| **Authentication** | Basic auth credentials or API token |
+| **Service Name** | The OTel `service_name` used by the collector (default: `msteams-callrecords`) |
+| **Timeout** | Query timeout in seconds |
+
+<Steps>
+1. Go to **Connections → Data Sources → MS Teams Observability Datasource**.
+2. Fill in the connection details from the table above.
+3. Click **Save & test**.
+</Steps>
+
+### Subnet Location Datasource (Optional)
+
+This datasource powers the GeoIP enrichment on the Call Map. It maps IP addresses to geographic locations using ip-api.com.
+
+<Steps>
+1. Go to **Connections → Data Sources → Subnet Location Datasource**.
+2. Enable the datasource if you want GeoIP features on the Call Overview map.
+3. The datasource uses the public ip-api.com service (free tier, no API key required).
+</Steps>
+
+<Aside type="caution">
+Enabling this datasource sends participant IP addresses to ip-api.com for geolocation. See the Configuration page for the explicit enable/disable toggle.
+</Aside>
+
+## Verify Installation
+
+1. Open **Apps → Microsoft Teams Observability** in the sidebar.
+2. The Home page should load with your Loki data (or show demo data if no collector is configured).
+3. Check that calls appear on the Calls page.
+4. If using GeoIP: verify the Call Overview map shows participant locations.
+
+<Aside type="tip">
+If no data appears, verify your collector is running and sending logs to the same Loki instance. See [Collector Installation](../../../collector/v2/installation/) and [OTLP to Grafana Cloud](../../../backends/otlp/grafana/).
+</Aside>

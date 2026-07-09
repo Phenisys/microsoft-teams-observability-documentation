@@ -1,0 +1,52 @@
+---
+title: Application — Sites
+description: Call quality and network performance aggregated by geographic location, with NPA compliance tracking and quality distribution charts.
+sidebar:
+  label: Sites
+  order: 6
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The Sites page aggregates call quality by geographic location using your sites file.
+
+## KPI Summary
+
+| KPI | Description |
+| --- | --- |
+| **Total Sites** | Number of sites in your configuration |
+| **NPA Compliance** | Percentage of sites meeting quality thresholds |
+| **Call Quality** | Overall good call percentage across all sites |
+| **Latency** | Average RTT across sites |
+| **Packet Loss** | Average packet loss across sites |
+| **Sites at Risk** | Number of sites with poor quality trends |
+
+## NPA Compliance Breakdown
+
+Each site is classified as compliant or non-compliant based on quality thresholds. The compliance panel shows:
+
+- Sites meeting all quality thresholds (compliant)
+- Sites with quality degradation (non-compliant)
+- Sites with insufficient data (unclassified)
+
+## Call Quality Distribution
+
+Charts showing quality distribution per site:
+
+- Good / Poor / Unclassified split
+- RTT distribution
+- Jitter distribution
+- Packet loss trends
+
+## Site Detail
+
+Click a site to see:
+
+- All calls originating from that site
+- Per-stream quality metrics
+- Network topology (subnets, ASNs)
+- Quality trends over time
+
+<Aside type="tip">
+Sites are defined in your sites CSV file (see [Sites File Reference](../../../reference/sites-file/)). Ensure the file is up to date for accurate site-level analytics.
+</Aside>

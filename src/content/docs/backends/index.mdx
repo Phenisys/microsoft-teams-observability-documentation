@@ -13,9 +13,10 @@ The collector exports Teams telemetry to one or more **backends**: **Dynatrace, 
 ## Supported Backends
 
 | Backend | Type | Application included |
-|---|---|---|
+|---|---|---|---|
 | **Dynatrace** | SaaS observability platform | Yes — Grail storage + dedicated dashboards app |
 | **Splunk** | SIEM / analytics platform | Yes — Splunk app with HEC ingestion |
+| **Grafana** | Observability platform | Yes — Grafana plugin app with native dashboards |
 | **OTel / OTLP** | OpenTelemetry logs endpoint | No native app — forwards to any OTLP-compatible receiver |
 | **Console** | Standard output | No — for local testing and debugging |
 
@@ -29,6 +30,11 @@ The collector exports Teams telemetry to one or more **backends**: **Dynatrace, 
     title="Splunk"
     description="HEC-based ingestion with a dedicated Splunk app and dashboards."
     href={`${import.meta.env.BASE_URL}backends/splunk/`}
+  />
+  <LinkCard
+    title="Grafana"
+    description="Native Grafana plugin app with operational dashboards for calls, users, sites, and issues."
+    href={`${import.meta.env.BASE_URL}backends/grafana/`}
   />
   <LinkCard
     title="OTel / OTLP"

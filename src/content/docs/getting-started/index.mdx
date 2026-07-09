@@ -23,7 +23,7 @@ MS Teams Observability is a two-part solution: a **Collector** that pulls Teams 
   />
   <LinkCard
     title="Connect a Backend"
-    description="Choose Dynatrace, Splunk, or OTLP-compatible platforms like Grafana Cloud and Datadog."
+    description="Choose Dynatrace, Splunk, Grafana, or OTLP-compatible platforms like Datadog."
     href={`${import.meta.env.BASE_URL}backends/`}
   />
   <LinkCard
@@ -78,10 +78,11 @@ Splunk and OTLP-compatible backends like Grafana Cloud and Datadog always operat
 ## Supported Backends
 
 | Backend | Application included | Notes |
-|---|---|---|
+|---|---|---|---|
 | **Dynatrace** | Yes — Grail + dedicated app | Full-featured integration with dashboards |
 | **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
-| **OTLP-compatible backend** | No native app | Use with Grafana Cloud, Datadog, or another OTLP receiver |
+| **Grafana** | Yes — Grafana plugin app | Published on Plugin Catalog, Loki-based |
+| **OTLP-compatible backend** | No native app | Use with Datadog or another OTLP receiver |
 
 <Aside type="note">
 Each backend requires its own setup. See <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> for integration guides.

@@ -30,7 +30,7 @@ output:
     - name: "grafana"
       enabled: true
       endpoint: "https://otlp-gateway.grafana.net/otlp/v1/logs"
-      service_name: "ms-teams-agent"
+      service_name: "msteams-callrecords"
       deployment_environment: "prod"
       headers:
         Authorization: "Basic <base64-credentials>"
@@ -53,7 +53,7 @@ curl -i "https://otlp-gateway.grafana.net/otlp/v1/logs" \
   -H "Authorization: Basic <base64-credentials>"
 ```
 
-Then verify in Grafana Explore that records from `service_name=ms-teams-agent` are visible.
+Then verify in Grafana Explore that records from `service_name=msteams-callrecords` are visible.
 
 <Aside type="tip">
 Create a starter dashboard panel filtered on `MSTeams_CallRecords_CallMetadata` and `MSTeams_CollectionHealth` to confirm both business and operational events arrive.

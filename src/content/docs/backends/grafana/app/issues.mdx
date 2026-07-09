@@ -1,0 +1,44 @@
+---
+title: Application — Issues
+description: Active and resolved Microsoft service health incidents and advisories for your Teams tenant.
+sidebar:
+  label: Issues
+  order: 7
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The Issues page displays Microsoft 365 service health incidents that may impact your Teams environment. Data comes from the `MSTeams_ServiceAnnouncement` log source collected by the agent.
+
+## Incident List
+
+Each incident row shows:
+
+| Column | Description |
+| --- | --- |
+| **Title** | Incident title from Microsoft |
+| **Status** | Incident status (serviceDegradation, investigating, restoring, resolved, etc.) |
+| **Classification** | Advisory or Incident |
+| **Start Time** | When the incident was first reported |
+| **Last Updated** | Most recent update timestamp |
+
+## Incident Detail
+
+Clicking an incident expands a detail panel with:
+
+- Full incident description
+- Current status and history
+- Affected services
+- Timeline of updates
+
+## Correlation
+
+Use this page to correlate call quality degradation with known Microsoft incidents:
+
+1. Notice a quality drop on the Home or Sites page
+2. Check the Issues page for active incidents in the same timeframe
+3. If a matching incident exists, the degradation is likely Microsoft-side — no local configuration change needed
+
+<Aside type="note">
+If dashboard quality drops while `MSTeams_ServiceAnnouncement` shows an active incident, investigate Microsoft-side impact before changing local configuration.
+</Aside>
