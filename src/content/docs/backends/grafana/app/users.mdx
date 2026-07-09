@@ -1,6 +1,6 @@
 ---
 title: Application — Users
-description: Per-user analytics — call counts, quality breakdown, devices, and network details for each Teams user.
+description: Per-user analytics — call counts, quality breakdown, devices, network details, and recent calls for each Teams user.
 sidebar:
   label: Users
   order: 5
@@ -8,40 +8,38 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Users page provides per-user analytics for every MS Teams user who made or received calls.
+The Users page provides per-user analytics for every MS Teams user who made or received calls. The default time range is 7 days.
 
-## User List
+## Filter Bar
 
-Each user row displays:
+Chip-based filters (key/operator/value) synced to the URL, allowing complex queries like "platform = windows AND callHealth = poor".
 
-| Column | Description |
-| --- | --- |
-| **User** | Display name and UPN (clickable — navigates to filtered Calls view) |
-| **Total Calls** | Number of calls in the selected time range |
-| **Good / Poor / Unclassified** | Quality breakdown |
-| **Average Duration** | Mean call duration |
-| **Platforms** | Platforms used (Windows, Mac, iOS, Android, Web) |
-| **Devices** | Endpoint devices used |
-| **Last Seen** | Most recent call timestamp |
+## Users Table
 
-## User Detail
+Each row represents a user with grouped data:
 
-Clicking a user opens a detail panel with:
+### Identity
+- Display name, email, AAD object ID
 
-- **Recent Calls**: List of the user's most recent calls with health and duration
-- **Quality Trends**: Call quality over time for this user
-- **Network Details**: IPs, subnets, and connection types used
-- **Devices & Versions**: Hardware and Teams client versions
+### Network
+- IPs, subnets, protocols used, connection types, protocol statistics
 
-## Filters
+### Calls
+- Total, Good, Poor, Unclassified counts
+- Average, minimum, and maximum call duration
 
-| Filter | Description |
-| --- | --- |
-| **Time Range** | Grafana time range picker |
-| **Search** | Filter by user name or UPN |
-| **Quality** | Filter by users with mostly Good/Poor calls |
-| **Activity** | Filter by minimum call count |
+### Devices
+- Platforms used (Windows, macOS, iOS, Android, Web)
+- Host devices, input/output audio devices
+- Teams products and client versions
+
+### Recent Calls
+- Last 5 calls with Call ID, health, and duration
+- Each Call ID links to the Call Overview (with time range preserved, fixed in v1.2.0)
+
+### Last Seen
+- Timestamp of the user's most recent call
 
 <Aside type="tip">
-Click a user's name to see their recent calls, then click any Call ID to drill into the Call Overview.
+Click a Call ID in the Recent Calls column to drill into the Call Overview. The time range from the Users page is preserved in the navigation.
 </Aside>

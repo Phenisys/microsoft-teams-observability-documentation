@@ -8,89 +8,82 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Call Overview page provides a deep-dive analysis of a single MS Teams call. It is accessed by clicking a Call ID from the Calls or Users pages.
+The Call Overview page provides a deep-dive analysis of a single MS Teams call. It is accessed by clicking a Call ID from the Calls or Users pages. The URL preserves the original time range (`from`/`to`) so navigation back is seamless.
 
-## Layout
+The page is organized into a progressive disclosure layout with 7 sections:
 
-The page is organized into a progressive disclosure layout:
+## 1. Verdict (Header)
 
-### 1. Verdict
+A quick summary bar showing:
+- Call ID, start/end time, duration, organizer, call type, participant count
+- Overall verdict with KPI row (Good / Poor / Unclassified)
 
-A quick summary of the call quality:
+## 2. Evidence
 
-- **Overall Health**: Good, Poor, or Unclassified
-- **Call Type**: P2P, conference, or PSTN
-- **Duration**: Total call duration
-- **Participants**: Number of participants
-
-### 2. Evidence
-
-Network-level evidence collected during the call:
-
-- **Transport Distribution**: UDP vs TCP usage across all streams
-- **Relay Usage**: Whether Microsoft Teams relays were used
-- **Public Egress**: External IP addresses and ASNs observed
-- **Shared IP Patterns**: Detection of participants behind the same NAT
-
-### 3. Participants
-
-Per-participant health matrix:
+A filterable table classifying each stream by quality:
 
 | Column | Description |
 | --- | --- |
-| **Participant** | Display name and UPN |
-| **Role** | Caller or Callee |
-| **Connection** | Connection type (direct, relay, etc.) |
-| **Protocol** | UDP or TCP |
-| **Egress IP / ASN** | Public egress IP and autonomous system |
-| **Relay Region** | Microsoft Teams relay region if used |
-| **Streams** | Number of media streams |
-| **Endpoint** | Device and platform signals |
+| **Stream** | Media type and participant |
+| **Metric** | Quality metric tested (RTT, jitter, packet loss, etc.) |
+| **Value** | Measured value |
+| **Threshold** | Quality threshold for this metric |
+| **Evidence** | Whether the metric passed or failed |
+| **Severity** | Impact level of the failure |
 
-### 4. Streams
+Filter by participant to focus on specific users.
 
-Per-stream metrics for each media stream:
+## 3. Participants
 
-| Metric | Description |
+The Call Map panel (40% width) shows participant geographic locations when GeoIP is enabled, alongside a Call Details panel (60%) with metadata and timeline.
+
+## 4. Streams
+
+A comprehensive streams table with per-stream metrics:
+
+| Column | Description |
 | --- | --- |
-| **Media Type** | Audio, Video, Screen Sharing, etc. |
+| **Participant** | User display name |
+| **Media** | Audio, Video, or Screen Sharing |
 | **Direction** | callerToCallee or calleeToCaller |
-| **Health** | Stream-level quality classification |
+| **IP** | Participant IP address |
+| **Subnet** | Subnet classification |
+| **Protocol** | UDP or TCP |
 | **RTT** | Average round-trip time (ms) |
 | **Jitter** | Average jitter (ms) |
 | **Packet Loss** | Average packet loss rate (%) |
-| **Frame Rate** | Video/sharing frame rate (fps) |
 | **Codec** | Audio/video codec used |
+| **Platform** | OS platform |
+| **Device** | Endpoint device |
 
-### 5. Network
+Also includes a **Call Timeline** chart showing stream overlaps over the call duration.
 
-Network topology details:
+## 5. Network
 
-- Participant IPs (caller and callee)
-- Subnet information (requires Subnet Location datasource)
-- Relay IPs and regions
-- NAT / shared-IP detection
+Three panels for network diagnostics:
 
-### 6. Endpoint
+| Panel | Description |
+| --- | --- |
+| **IP Insights** | IP distribution by ASN, shared IP patterns, public egress detection |
+| **Network Path** | Relay usage analysis, transport distribution (UDP vs TCP) |
+| **IP Inventory** | Complete inventory of all IP addresses observed |
 
-Endpoint device and client information:
+## 6. Endpoint
 
-- Device type and model
-- Operating system
-- Teams client version
-- Audio input/output devices
+**Device Participants Matrix**: per-participant breakdown of platform, host device, audio input/output devices, signal/noise levels, CPU, and Teams client version.
 
-### 7. Advanced
+**Bot Details Panel**: appears conditionally when bots participated in the call.
 
-Additional details:
+## 7. Advanced
 
-- Raw JSON view of the complete call record
-- Stream segment data
-- Call setup and teardown timestamps
+Additional panels available via the scene framework:
+- **AI Analysis Panel** — optional root cause analysis
+- **Quality Timeseries Panel** — quality metrics over time
+- **Root Cause Panel** — identified degradation causes
 
 ## GeoIP Map
 
-When the Subnet Location datasource is enabled and the GeoIP toggle is active in Configuration, the Call Overview shows a geographic map with participant locations.
+When the Subnet Location datasource is enabled, the Call Overview's Call Map shows participant locations on a geographic map.
 
 <Aside type="caution">
 The GeoIP map sends participant IP addresses to ip-api.com for geolocation. Disable this feature in Configuration if your organization's privacy policy requires it.

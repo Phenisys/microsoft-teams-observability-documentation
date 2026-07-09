@@ -8,37 +8,38 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Home page is the landing page of the MS Teams Observability app. It presents a high-level summary of your Teams calling activity over the selected time range.
+The Home page is the landing page of the MS Teams Observability app. It presents a high-level summary of your Teams calling activity over the last 7 days.
 
-## KPIs
+## KPI Cards
 
-The top section displays key performance indicators:
+The top section displays 5 key performance indicators:
 
 | KPI | Description |
 | --- | --- |
-| **Total Calls** | Number of calls in the selected time range |
-| **Healthy Calls %** | Percentage of calls classified as Good |
-| **Active Users** | Number of unique users who made or received calls |
-| **Platform Distribution** | Breakdown by platform (Windows, Mac, iOS, Android, Web, Teams Phone) |
+| **Total Calls** | Number of calls in the time range, with a 7-day sparkline |
+| **Good Call Rate** | Percentage of calls classified as Good, with color thresholds (green/red) |
+| **Poor Calls** | Count of calls with quality degradation |
+| **Unclassified** | Count of calls without sufficient quality data |
+| **Unique Callers** | Number of distinct users, with a 7-day sparkline |
 
 ## Charts
 
-### Call Health Over Time
+### Call Health Trend
 
-A time-series chart showing call volume split by health classification (Good / Poor / Unclassified). Use this to spot quality degradation trends.
+A stacked bar chart showing daily call volume split by health classification (Good / Poor / Unclassified). Use this to spot quality degradation trends over the selected week.
 
-### Platform Usage
+### Health Distribution
 
-A pie or bar chart showing the distribution of calls by participant platform. Helps identify which clients are most used in your organization.
+A donut chart showing the proportion of Good, Poor, and Unclassified calls in the current time range.
 
-### Quality Trends
+### Platform Distribution
 
-Aggregated quality metrics over time: average RTT, jitter, and packet loss. Helps detect network degradation before users report it.
+A pie chart showing call distribution by participant platform (Windows, macOS, iOS, Android, Web). Helps identify which clients are most used in your organization.
 
 ## How It Works
 
-The Home page queries the Loki datasource using LogQL queries that aggregate `MSTeams_CallRecords_CallMetadata` and `MSTeams_CallRecords_StreamDetails` logs. All queries are scoped to the selected time range.
+The Home page queries the Loki datasource using LogQL queries that aggregate `MSTeams_CallRecords_CallMetadata` and `MSTeams_CallRecords_StreamDetails` logs. All queries are scoped to the 7-day time range.
 
 <Aside type="tip">
-For a quick health check, look at the **Healthy Calls %** KPI. If it drops below 90%, drill into the Calls or Sites pages to isolate the issue.
+For a quick health check, look at the **Good Call Rate** KPI. If it drops below 90%, drill into the Calls or Sites pages to isolate the issue.
 </Aside>
