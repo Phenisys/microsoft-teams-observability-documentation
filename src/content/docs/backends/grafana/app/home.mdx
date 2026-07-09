@@ -1,6 +1,6 @@
 ---
 title: Application — Home
-description: The Home page provides a cockpit overview of your MS Teams environment — call volume, quality, user activity, and platform distribution.
+description: Cockpit overview of your MS Teams environment — KPI cards for call volume, healthy-calls rate, and caller count, plus quality and platform charts.
 sidebar:
   label: Home
   order: 2
@@ -8,38 +8,34 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Home page is the landing page of the MS Teams Observability app. It presents a high-level summary of your Teams calling activity over the last 7 days.
+The Home page is the landing tab. It presents a high-level summary of your Teams calling activity.
+
+**Default time range:** Last 7 days (adjustable via the Grafana time picker).
 
 ## KPI Cards
 
-The top section displays 5 key performance indicators:
+Three key performance indicators at the top:
 
 | KPI | Description |
 | --- | --- |
-| **Total Calls** | Number of calls in the time range, with a 7-day sparkline |
-| **Good Call Rate** | Percentage of calls classified as Good, with color thresholds (green/red) |
-| **Poor Calls** | Count of calls with quality degradation |
-| **Unclassified** | Count of calls without sufficient quality data |
-| **Unique Callers** | Number of distinct users, with a 7-day sparkline |
+| **Total Calls** | Number of calls in the selected time range |
+| **Healthy Calls %** | Percentage of calls classified as Good |
+| **Unique Callers** | Number of distinct users who made or received calls |
 
 ## Charts
 
-### Call Health Trend
+### Call Health Distribution
 
-A stacked bar chart showing daily call volume split by health classification (Good / Poor / Unclassified). Use this to spot quality degradation trends over the selected week.
-
-### Health Distribution
-
-A donut chart showing the proportion of Good, Poor, and Unclassified calls in the current time range.
+A chart showing the proportion of Good, Poor, and Unclassified calls. Use this to spot quality degradation at a glance.
 
 ### Platform Distribution
 
-A pie chart showing call distribution by participant platform (Windows, macOS, iOS, Android, Web). Helps identify which clients are most used in your organization.
+A pie or bar chart showing calls by participant platform (Windows, macOS, iOS, Android, Web).
 
 ## How It Works
 
-The Home page queries the Loki datasource using LogQL queries that aggregate `MSTeams_CallRecords_CallMetadata` and `MSTeams_CallRecords_StreamDetails` logs. All queries are scoped to the 7-day time range.
+The Home page queries the Loki datasource using the configured data provider. All metrics are recomputed when the time range changes.
 
 <Aside type="tip">
-For a quick health check, look at the **Good Call Rate** KPI. If it drops below 90%, drill into the Calls or Sites pages to isolate the issue.
+For a quick health check, look at the **Healthy Calls %** KPI. If it drops significantly, drill into Calls or Sites to isolate the issue.
 </Aside>

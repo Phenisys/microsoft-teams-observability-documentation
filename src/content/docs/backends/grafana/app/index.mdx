@@ -1,6 +1,6 @@
 ---
 title: Application — Overview
-description: User guide for the MS Teams Observability Grafana application — pages covering call quality, site analysis, user activity, and configuration.
+description: User guide for the MS Teams Observability Grafana app — 6 tabs covering call quality, site analysis, user activity, and status.
 sidebar:
   label: Overview
   order: 0
@@ -8,11 +8,26 @@ sidebar:
 
 import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
 
-The MS Teams Observability application is installed in your Grafana environment and provides operational visibility into your Microsoft Teams estate. It queries the same Loki logs exported by the collector.
+The MS Teams Observability app is installed in your Grafana environment and provides operational visibility into your Microsoft Teams estate. It queries Loki logs exported by the collector.
 
 **Version:** 1.2.0 | **Developed by:** Phenisys | **Platform:** Grafana Plugin
 
-The application has seven pages accessible from the sidebar navigation:
+## Navigation
+
+The app has **6 tabs** in the top navigation bar:
+
+| Tab | Route | Description |
+|-----|-------|-------------|
+| **Home** | `/home` | Cockpit overview: KPIs, call health, platform distribution |
+| **Sites** | `/sites` | Quality by location: geomap, NPA compliance, analytics |
+| **Calls** | `/calls` | Filterable call list — click a call to drill into Call Overview |
+| **Users** | `/users` | Per-user analytics: calls, devices, network, recent calls |
+| **Issues** | `/issues` | Microsoft 365 service health incidents |
+| **Status** | `/configuration` | License, feature status, outgoing connection tests |
+
+<Aside type="note">
+The **Call Overview** is not a separate tab — it opens as a drilldown when you click a Call ID on the Calls or Users pages. The breadcrumb navigation returns you to the list.
+</Aside>
 
 <CardGrid>
   <LinkCard
@@ -22,81 +37,60 @@ The application has seven pages accessible from the sidebar navigation:
   />
   <LinkCard
     title="Home"
-    description="Overview dashboard with call volume, quality percentage, user count, and platform distribution."
+    description="KPI cards (call count, healthy-calls %, caller count) and quality charts."
     href={`${import.meta.env.BASE_URL}backends/grafana/app/home/`}
   />
   <LinkCard
-    title="Calls"
-    description="Searchable and filterable list of all recorded MS Teams calls with health indicators."
-    href={`${import.meta.env.BASE_URL}backends/grafana/app/calls/`}
-  />
-  <LinkCard
-    title="Call Overview"
-    description="Full analysis of a single call — participants, network topology, stream metrics, and QoE evidence."
-    href={`${import.meta.env.BASE_URL}backends/grafana/app/call-overview/`}
-  />
-  <LinkCard
-    title="Users"
-    description="Per-user analytics: call counts, quality breakdown, devices, and network details."
-    href={`${import.meta.env.BASE_URL}backends/grafana/app/users/`}
-  />
-  <LinkCard
     title="Sites"
-    description="Call quality and network performance aggregated by geographic location and subnet."
+    description="Geomap, NPA compliance, analytics charts, and site inventory."
     href={`${import.meta.env.BASE_URL}backends/grafana/app/sites/`}
   />
   <LinkCard
+    title="Calls"
+    description="Key/op/value filter bar, sortable table, drilldown to Call Overview."
+    href={`${import.meta.env.BASE_URL}backends/grafana/app/calls/`}
+  />
+  <LinkCard
+    title="Users"
+    description="Per-user table: identity, network, call stats, devices, recent calls."
+    href={`${import.meta.env.BASE_URL}backends/grafana/app/users/`}
+  />
+  <LinkCard
     title="Issues"
-    description="Active and resolved Microsoft service health incidents for your tenant."
+    description="Active and resolved Microsoft 365 service health incidents."
     href={`${import.meta.env.BASE_URL}backends/grafana/app/issues/`}
   />
   <LinkCard
-    title="Configuration"
-    description="All application settings — datasources, GeoIP toggle, license, and display preferences."
-    href={`${import.meta.env.BASE_URL}backends/grafana/app/configuration/`}
+    title="Status"
+    description="License panel, feature status table, and outgoing connection tests."
+    href={`${import.meta.env.BASE_URL}backends/grafana/app/status/`}
+  />
+  <LinkCard
+    title="Provisioning"
+    description="Grafana AppConfig: Microsoft Graph, datasource, GeoIP toggle, subnet mappings."
+    href={`${import.meta.env.BASE_URL}backends/grafana/app/provisioning/`}
   />
 </CardGrid>
 
 ---
-
-## Time Range Selector
-
-Available on Calls, Users, Sites, and Issues pages. Uses Grafana's built-in time range picker. The selected range is persisted in the URL and applied to all LogQL queries on the page.
 
 ## Health Indicators
 
 | Status | Visual | Meaning |
 |--------|--------|---------|
 | Good | Green | Call met quality thresholds |
-| Poor | Orange/Red | Call had quality degradation |
+| Poor | Red | Call had quality degradation |
 | Unclassified | Grey | No quality data available |
 
-## Demo Mode
+## Demo vs Live Mode
 
-The application supports a **Demo Mode** that generates mock data for evaluation without a real collector. Demo Mode can be enabled from the Configuration page.
+The app supports two modes via the datasource configuration:
+
+- **Demo Mode** — uses built-in sample data (JSON fixtures in `src/data/`). No collector or Loki required.
+- **Live Mode** — queries a real Loki datasource with data from the collector. Requires a valid license.
+
+Toggle between modes in the provisioning page: **Administration → Plugins → MS Teams Observability → Configuration**.
 
 <Aside type="note">
 Live Mode requires a valid Phenisys license. See [License](../../../getting-started/license/) for how to obtain it.
 </Aside>
-
----
-
-## Common UI Patterns
-
-### Navigation
-
-All pages are accessible from the Grafana sidebar under **Apps → Microsoft Teams Observability**. Sub-pages (Calls, Sites, Users, Issues, Configuration) appear in the app's own navigation.
-
-### Call Overview Drill-Down
-
-Clicking a call ID on the Calls or Users page navigates to the Call Overview page with the full call analysis, including:
-
-- **Verdict**: Overall call quality assessment
-- **Evidence**: Network transport distribution, relay usage, public egress patterns
-- **Participants**: Per-user health matrix with connection type, protocol, and endpoint signals
-- **Streams**: Per-stream metrics (RTT, jitter, packet loss, frame rate)
-- **Network**: IPs, ASNs, relay regions, shared IP detection
-
-### GeoIP Map (Call Overview)
-
-When the Subnet Location datasource is enabled, the Call Overview displays a geographic map of participants. The GeoIP feature can be explicitly toggled in Configuration for privacy compliance.

@@ -1,56 +1,60 @@
 ---
 title: Application — Sites
-description: Call quality and network performance aggregated by geographic location, with NPA compliance tracking, quality distribution charts, and site inventory.
+description: Call quality by geographic location — geomap, NPA compliance donut, KPIs, at-risk table, analytics charts, and site inventory.
 sidebar:
   label: Sites
-  order: 6
+  order: 4
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Sites page aggregates call quality by geographic location using your sites file. The default time range is 2 hours.
+The Sites tab aggregates call quality by geographic location using your subnets CSV mapping.
 
-## KPI Summary
+**Default time range:** Last 2 hours.
 
-The header displays 6 key metrics with color thresholds:
+## Filter Bar
+
+A chip-based filter bar allows narrowing results by site properties. An **"Include unmapped subnets"** toggle includes calls from IPs not yet assigned to any site.
+
+## Dashboard
+
+### Header KPIs
+
+Six summary cards with color thresholds:
 
 | KPI | Description |
 | --- | --- |
 | **Total Sites** | Number of sites in your configuration |
 | **NPA Compliance** | Percentage of sites meeting quality thresholds |
-| **Call Quality** | Overall good call percentage across all sites |
-| **Avg Latency** | Average RTT (ms) across sites |
-| **Packet Loss** | Average packet loss (%) across sites |
-| **Sites at Risk** | Number of sites with poor quality trends (color-coded: good/warning/bad) |
+| **Call Quality** | Overall good call percentage |
+| **Avg Latency** | Average RTT across sites (ms) |
+| **Packet Loss** | Average packet loss across sites (%) |
+| **Sites at Risk** | Count of sites with poor quality trends (color-coded good/warning/bad) |
 
-## Geographic Overview
+### Geographic Overview
 
-- **Sites Map**: A geomap panel showing site locations.
-- **NPA Compliance Donut**: Breakdown of sites as Compliant, Uncompliant, or Undetermined based on quality thresholds.
+- **Sites Map**: geomap panel with site locations
+- **NPA Compliance Donut**: Compliant / Uncompliant / Undetermined breakdown
 
-## Sites Requiring Attention
+### Sites Requiring Attention
 
-A table listing sites that need investigation: NPA-uncompliant sites or sites with more than 5% poor streams.
+Table of sites needing investigation: NPA-uncompliant or more than 5% poor streams.
 
-## Analytics
+### Analytics
 
-Four charts provide deeper analysis:
+Four charts:
 
 | Chart | Description |
 | --- | --- |
-| **Call Count by Site** | Horizontal bar chart (top 8 sites) |
-| **Call Quality Distribution** | Donut chart of Good / Poor / Unclassified |
-| **Call Quality by Site** | Stacked bar chart (top 10 sites) |
-| **Root Causes** | Pie chart of quality degradation causes |
+| Call Count by Site | Horizontal bar (top 8) |
+| Call Quality Distribution | Donut chart |
+| Call Quality by Site | Stacked bar (top 10) |
+| Root Causes | Pie chart |
 
-## Site Inventory
+### Site Inventory
 
-A full table of all sites with: location, call count, quality metrics (RTT, packet loss), and NPA compliance status.
-
-## Filters
-
-A chip-based filter bar with an **"Include unmapped subnets"** toggle to show calls from IPs not yet assigned to any site.
+Full table: location, call count, quality metrics, NPA status.
 
 <Aside type="tip">
-Sites are defined in your sites CSV file (see [Sites File Reference](../../../reference/sites-file/)). Ensure the file is up to date for accurate site-level analytics.
+Sites are defined in your subnet location CSV uploaded in [Provisioning](../provisioning/). Keep it up to date for accurate analytics.
 </Aside>

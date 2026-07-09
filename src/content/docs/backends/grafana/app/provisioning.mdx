@@ -1,0 +1,57 @@
+---
+title: Application — Provisioning
+description: Grafana provisioning settings for the MS Teams Observability app — Microsoft Graph, datasource, domains, IPAM, subnet mappings, and GeoIP toggle.
+sidebar:
+  label: Provisioning
+  order: 9
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+> **Path:** Administration → Plugins → MS Teams Observability → Configuration
+
+The provisioning page exposes 6 configuration sections. Each section saves independently without page reload, and changes are synchronized live across the app.
+
+## Microsoft Graph
+
+Configure the Microsoft Graph API connection for live call data retrieval:
+
+- Tenant ID
+- Client ID
+- Client secret (stored securely, masked in UI)
+
+## Data Source
+
+| Setting | Description |
+| --- | --- |
+| **Demo Mode** | Toggle between demo data (built-in fixtures) and live mode (Loki queries) |
+| **Loki Datasource UID** | The Grafana UID of the Loki datasource to query |
+
+## Domain Filter
+
+Comma-separated list of email domains to include in the Sites view. Only users with matching domains appear in site-level analytics. Useful for filtering internal users from external guests.
+
+## IPAM
+
+An optional link template for your IP Address Management solution. When configured, IP addresses in the Network Diagnostics panels become clickable links.
+
+## Subnet Location
+
+Upload a CSV mapping of subnets to geographic locations. The format is:
+
+```
+subnet,location,latitude,longitude
+10.0.0.0/24,Paris Office,48.8566,2.3522
+```
+
+Supports full CRUD: add, edit, delete mappings. An **"Unsaved changes"** indicator appears when mappings are modified before saving.
+
+## GeoIP Toggle
+
+| Setting | Description |
+| --- | --- |
+| **Enable GeoIP** | Toggle to enable or disable IP geolocation via ip-api.com |
+
+<Aside type="caution">
+When GeoIP is enabled, participant IP addresses are sent to ip-api.com for geolocation. This constitutes third-party data egress. Document this in your privacy policy and disable the toggle if your organization requires it.
+</Aside>

@@ -1,6 +1,6 @@
 ---
 title: Application — Calls
-description: Searchable and filterable list of all recorded MS Teams calls with health indicators, participants, and duration.
+description: Filterable list of all MS Teams calls with chip-based filters, sortable columns, and drilldown to Call Overview.
 sidebar:
   label: Calls
   order: 3
@@ -8,36 +8,53 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Calls page displays a searchable, filterable list of every call recorded by the collector. Each row represents a single call with its metadata, participants, quality classification, and duration.
+The Calls tab displays a filterable, sortable list of every call recorded by the collector.
 
-## Columns
+**Default time range:** Last 6 hours.
+
+## Filter Bar
+
+Advanced chip-based filters using the key/operator/value pattern:
+
+- **Key**: call property (type, health, participant, duration, etc.)
+- **Operator**: comparison operator (equals, contains, greater than, etc.)
+- **Value**: filter value
+
+Multiple filters can be combined. A **"Show empty calls"** checkbox includes calls with missing metadata.
+
+Filters are URL-synced (`?filter=...&showEmptyCalls=...`) for bookmarkable queries.
+
+An **Update** button applies changes — the table refreshes automatically.
+
+## Calls Table
 
 | Column | Description |
 | --- | --- |
-| **Call ID** | Unique call identifier (clickable — navigates to Call Overview) |
-| **Start Time** | When the call started |
-| **Type** | Call type: P2P, conference, PSTN |
-| **Participants** | List of participant names |
-| **Duration** | Call duration in minutes and seconds |
-| **Health** | Overall call health (Good / Poor / Unclassified) |
+| **Call ID** | Unique identifier (click to open Call Overview) |
+| **Start / End** | Call timestamps |
+| **Duration** | Call duration |
+| **Organizer** | UPN or display name |
+| **Type** | P2P or Group |
+| **Participants** | Participant count |
+| **Health** | Good, Poor, or Unclassified |
+| **Media** | Audio, video, screen sharing used |
+| **Client** | Teams client versions |
+| **Endpoints** | Device types |
+| **Root Cause** | Quality degradation cause (if poor) |
 
-## Filters
+## Call Overview Drilldown
 
-Use the filter bar to narrow results:
+Clicking any Call ID opens the Call Overview as a drilldown page (not a separate tab). The breadcrumb shows **Calls → Call `{id}`** for easy navigation back to the list.
 
-| Filter | Description |
-| --- | --- |
-| **Time Range** | Grafana time range picker (top-right) |
-| **Participant** | Filter by participant name or UPN |
-| **Call Type** | Filter by P2P, conference, or PSTN |
-| **Health** | Filter by Good, Poor, or Unclassified calls |
-| **Duration** | Filter by minimum or maximum call duration |
-| **Site** | Filter by geographic site (requires sites file) |
-
-## Export
-
-Calls can be exported to CSV for offline analysis. Click the export button to download the current filtered view.
+The Call Overview provides:
+- **Verdict header**: call ID, timestamps, duration, organizer, participant count, quality KPI
+- **Call Map**: geographic view of participants (GeoIP optional)
+- **Evidence panel**: stream quality classification table with metric/value/threshold
+- **Streams table**: per-stream metrics (RTT, jitter, packet loss, codec)
+- **Call Timeline**: stream overlap visualization
+- **Network diagnostics**: IP insights, ASN distribution, shared IP patterns, relay usage
+- **Endpoint matrix**: per-participant platform, device, audio signals, CPU, client version
 
 <Aside type="tip">
-Click any **Call ID** to open the Call Overview page with full call details, participant breakdown, and stream-level metrics.
+The time range from the Calls list is preserved when navigating to Call Overview and back. The URL carries `from`/`to` and `parentFrom`/`parentTo` parameters.
 </Aside>

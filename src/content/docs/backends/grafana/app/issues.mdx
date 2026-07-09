@@ -1,6 +1,6 @@
 ---
 title: Application — Issues
-description: Active and resolved Microsoft service health incidents and advisories for your Teams tenant.
+description: Active and resolved Microsoft 365 service health incidents for your Teams tenant, with expandable cards showing scope and update timeline.
 sidebar:
   label: Issues
   order: 7
@@ -8,37 +8,35 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-The Issues page displays Microsoft 365 service health incidents that may impact your Teams environment. Data comes from the `MSTeams_ServiceAnnouncement` log source collected by the agent.
+The Issues tab displays Microsoft 365 service health incidents that may impact your Teams environment. Data comes from the `MSTeams_ServiceAnnouncement` log source.
 
-## Incident List
+**Default time range:** Last 7 days.
 
-Each incident row shows:
+## Current Issues
 
-| Column | Description |
+Active incidents shown as expandable cards:
+
+| Detail | Description |
 | --- | --- |
-| **Title** | Incident title from Microsoft |
-| **Status** | Incident status (serviceDegradation, investigating, restoring, resolved, etc.) |
-| **Classification** | Advisory or Incident |
-| **Start Time** | When the incident was first reported |
-| **Last Updated** | Most recent update timestamp |
+| **ID** | Microsoft incident ID (e.g., EX1234567) |
+| **Affected Service** | Feature or service impacted |
+| **Severity** | Incident, Advisory, or Other |
+| **Classification** | e.g., "Service degradation" |
+| **Start Date** | When the incident was first reported |
+| **Details** | Full description with scope, timeline of Microsoft updates (Markdown rendering) |
 
-## Incident Detail
+## Closed Issues
 
-Clicking an incident expands a detail panel with:
-
-- Full incident description
-- Current status and history
-- Affected services
-- Timeline of updates
+Resolved incidents in the selected time range, same format as current issues, with resolution date.
 
 ## Correlation
 
-Use this page to correlate call quality degradation with known Microsoft incidents:
+Use this tab to correlate call quality drops with known Microsoft incidents:
 
-1. Notice a quality drop on the Home or Sites page
-2. Check the Issues page for active incidents in the same timeframe
-3. If a matching incident exists, the degradation is likely Microsoft-side — no local configuration change needed
+1. Notice a quality drop on Home or Sites
+2. Check Issues for active incidents in the same timeframe
+3. If a matching incident exists → Microsoft-side issue, no configuration change needed
 
 <Aside type="note">
-If dashboard quality drops while `MSTeams_ServiceAnnouncement` shows an active incident, investigate Microsoft-side impact before changing local configuration.
+If dashboard quality drops while an active incident is shown, investigate the Microsoft-side impact before changing local configuration.
 </Aside>

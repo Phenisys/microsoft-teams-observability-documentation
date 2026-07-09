@@ -1,0 +1,62 @@
+---
+title: Application — Status
+description: License status, feature monitoring, and outgoing connection tests for the MS Teams Observability Grafana app.
+sidebar:
+  label: Status
+  order: 8
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+> **Tab label:** Status — `/configuration`
+
+The Status tab is the operational hub for license monitoring, feature health, and connectivity testing. It has no time picker — this is a status page, not a data page.
+
+## Layout
+
+Two rows, top to bottom:
+
+**Row 1 (50/50 split):**
+- License panel
+- Feature Status panel
+
+**Row 2 (full width):**
+- Outgoing Connections panel
+
+## License Panel
+
+Displays your license status:
+
+| Detail | Description |
+| --- | --- |
+| **License Status** | Active, Expired, or Missing |
+| **Tenant ID** | Masked by default (click to reveal) |
+| **Expiration** | License expiry date |
+| **Features** | List of enabled collectors |
+
+## Feature Status Panel
+
+An interactive table showing the operational status of each collector:
+
+| Column | Description |
+| --- | --- |
+| **Feature** | Collector name |
+| **Status** | Active, Disabled, or Error |
+| **Details** | Error message or last collection timestamp |
+
+## Outgoing Connections Panel
+
+Tests connectivity to 4 external endpoints. Each endpoint has an individual **Ping** button:
+
+| Endpoint | URL | Purpose |
+| --- | --- | --- |
+| Microsoft Login | `login.microsoftonline.com` | OAuth2 token acquisition |
+| Microsoft Graph | `graph.microsoft.com` | Teams call records API |
+| GeoMap API | `ip-api.com` | IP geolocation for Call Map |
+| GitHub API | `api.github.com` | Release version checks |
+
+Each test shows the connection status, HTTP response code, and latency.
+
+<Aside type="tip">
+The Grafana app requires a valid Phenisys license for live mode. See [License](../../../getting-started/license/) for details.
+</Aside>
