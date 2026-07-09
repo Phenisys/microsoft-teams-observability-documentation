@@ -20,8 +20,10 @@ hero:
 
 import { CardGrid, LinkCard, Steps, Aside } from '@astrojs/starlight/components';
 import dynatraceDashboardSites from '../../assets/images/dynatrace-dashboard-sites.png';
+import grafanaAppHomePage from '../../assets/images/grafana-app-home-page.png';
+import splunkDashboardOverviewPage from '../../assets/images/splunk-dashboard-overview-page.png';
 
-MS Teams Observability is a collector + backend integration solution for Ops and IT teams: it pulls Microsoft Teams telemetry from Microsoft Graph and turns it into actionable dashboards and incident context in **Dynatrace, Splunk, or any OTLP-compatible backend**.
+MS Teams Observability is a collector + backend integration solution for Ops and IT teams: it pulls Microsoft Teams telemetry from Microsoft Graph and turns it into actionable dashboards and incident context in **Dynatrace, Splunk, Grafana, or any generic OTLP-compatible backend**.
 
 ## What Do You Want to Do?
 
@@ -42,8 +44,13 @@ MS Teams Observability is a collector + backend integration solution for Ops and
     href={`${import.meta.env.BASE_URL}backends/splunk/`}
   />
   <LinkCard
-    title="I use Grafana, Datadog or another OTLP platform"
-    description="Configure the collector to export to any OTLP-compatible endpoint."
+    title="I use Grafana"
+    description="Install the Grafana plugin app and connect it to your Loki datasource."
+    href={`${import.meta.env.BASE_URL}backends/grafana/`}
+  />
+  <LinkCard
+    title="I use Datadog or another OTLP platform"
+    description="Configure the collector to export to a generic OTLP-compatible endpoint."
     href={`${import.meta.env.BASE_URL}backends/otlp/`}
   />
   <LinkCard
@@ -57,7 +64,7 @@ MS Teams Observability is a collector + backend integration solution for Ops and
 
 - **Faster Incident Triage**: correlate call degradations with Microsoft advisories and isolate impacted users or sites faster.
 - **End-to-End Call Quality Visibility**: track call quality from summary to stream-level metrics across users, devices, and networks.
-- **Multi-Backend Ready**: collect once and route telemetry to Dynatrace, Splunk, or any OTLP-compatible backend based on your operating model.
+- **Multi-Backend Ready**: collect once and route telemetry to Dynatrace, Splunk, Grafana, or a generic OTLP-compatible backend based on your operating model.
 
 ## Start in 15 Minutes
 
@@ -79,9 +86,11 @@ flowchart LR
     A[Microsoft Graph API] --> B[MS Teams Observability Collector]
     B --> C[Dynatrace Backend]
     B --> D[Splunk Backend]
-    B --> G[OTLP-compatible Backend]
-    C --> E[Dashboards and App Pages]
-    D --> F[Dashboards and Searches]
+    B --> E[Grafana Backend]
+    B --> G[Generic OTLP-compatible Backend]
+    C --> I[Dynatrace Dashboards and App Pages]
+    D --> F[Splunk Dashboards and Searches]
+    E --> J[Grafana Plugin App]
     G --> H[Your OTLP Platform]
 ```
 
@@ -89,7 +98,7 @@ One collector ingests Teams telemetry once and forwards it to your operational b
 
 1. **Authenticate and collect**: the collector uses your Azure app registration to call Microsoft Graph on a schedule.
 2. **Normalize and enrich**: records are transformed into consistent event families and enriched with context used for operations and troubleshooting.
-3. **Export to one or more backends**: the same collection cycle can send data to Dynatrace, Splunk, OTLP-compatible platforms, or any combination.
+3. **Export to one or more backends**: the same collection cycle can send data to Dynatrace, Splunk, Grafana, generic OTLP-compatible platforms, or any combination.
 4. **Operate from dashboards and app pages**: teams investigate degraded calls, impacted users/sites, and Microsoft advisories from a single workflow.
 
 Typical telemetry available after ingestion includes:
@@ -112,8 +121,13 @@ Typical telemetry available after ingestion includes:
     href={`${import.meta.env.BASE_URL}backends/splunk/`}
   />
   <LinkCard
+    title="Grafana"
+    description="Native Grafana plugin app with Loki-based dashboards for calls, users, sites, and incidents."
+    href={`${import.meta.env.BASE_URL}backends/grafana/`}
+  />
+  <LinkCard
     title="OTel / OTLP"
-    description="Send logs to any OTLP-compatible platform (for example Grafana, Datadog, or Dynatrace OTLP endpoint)."
+    description="Send logs to a generic OTLP-compatible platform such as Datadog or a custom OpenTelemetry collector."
     href={`${import.meta.env.BASE_URL}backends/otlp/`}
   />
 </CardGrid>
@@ -123,6 +137,16 @@ Typical telemetry available after ingestion includes:
 <figure>
   <img src={dynatraceDashboardSites.src} alt="Dynatrace sites dashboard with call quality and site performance indicators" />
   <figcaption>Example operational view: site and quality monitoring in Dynatrace.</figcaption>
+</figure>
+
+<figure>
+  <img src={grafanaAppHomePage.src} alt="Grafana MS Teams Observability home dashboard" />
+  <figcaption>Grafana plugin app: tenant-level call health and platform distribution.</figcaption>
+</figure>
+
+<figure>
+  <img src={splunkDashboardOverviewPage.src} alt="Splunk MS Teams Observability overview dashboard" />
+  <figcaption>Splunk application: overview dashboard for first-level monitoring.</figcaption>
 </figure>
 
 ## Documentation by Task
@@ -147,6 +171,11 @@ Typical telemetry available after ingestion includes:
     title="Splunk Operations"
     description="Application installation, dashboard pages, HEC connection, and troubleshooting."
     href={`${import.meta.env.BASE_URL}backends/splunk/`}
+  />
+  <LinkCard
+    title="Grafana Operations"
+    description="Plugin installation, app pages, datasource setup, and status checks."
+    href={`${import.meta.env.BASE_URL}backends/grafana/`}
   />
 </CardGrid>
 

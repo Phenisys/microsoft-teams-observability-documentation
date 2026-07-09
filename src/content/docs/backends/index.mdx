@@ -8,16 +8,16 @@ sidebar:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-The collector exports Teams telemetry to one or more **backends**: **Dynatrace, Splunk, or any OTLP-compatible backend**. Each backend integration covers both the receiving side (platform configuration) and the collector output configuration.
+The collector exports Teams telemetry to one or more **backends**: **Dynatrace**, **Splunk**, the **Grafana plugin app**, or a generic **OTLP-compatible endpoint**. Each integration covers the receiving side and the collector output configuration.
 
 ## Supported Backends
 
 | Backend | Type | Application included |
-|---|---|---|---|
+|---|---|---|
 | **Dynatrace** | SaaS observability platform | Yes — Grail storage + dedicated dashboards app |
 | **Splunk** | SIEM / analytics platform | Yes — Splunk app with HEC ingestion |
 | **Grafana** | Observability platform | Yes — Grafana plugin app with native dashboards |
-| **OTel / OTLP** | OpenTelemetry logs endpoint | No native app — forwards to any OTLP-compatible receiver |
+| **OTel / OTLP** | OpenTelemetry logs endpoint | No native app — forwards to Datadog, vendor gateways, or custom collectors |
 | **Console** | Standard output | No — for local testing and debugging |
 
 <CardGrid>
@@ -38,7 +38,7 @@ The collector exports Teams telemetry to one or more **backends**: **Dynatrace, 
   />
   <LinkCard
     title="OTel / OTLP"
-    description="Export to any OpenTelemetry-compatible logs endpoint, including Grafana, Datadog, or Dynatrace OTLP ingestion."
+    description="Export to a generic OpenTelemetry-compatible logs endpoint such as Datadog, a vendor gateway, or a custom collector."
     href={`${import.meta.env.BASE_URL}backends/otlp/`}
   />
 </CardGrid>

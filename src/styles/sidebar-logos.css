@@ -1,0 +1,101 @@
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo]) > summary .group-label,
+#starlight__sidebar a[data-sidebar-logo="linux"],
+#starlight__sidebar a[data-sidebar-logo="windows"] {
+  display: flex;
+  align-items: center;
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo]) > summary .group-label,
+#starlight__sidebar a[data-sidebar-logo="linux"] > span:first-child,
+#starlight__sidebar a[data-sidebar-logo="windows"] > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo]) > summary .group-label::before,
+#starlight__sidebar a[data-sidebar-logo="linux"] > span:first-child::before,
+#starlight__sidebar a[data-sidebar-logo="windows"] > span:first-child::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  background-image: var(--sidebar-logo);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo="dynatrace"]) > summary .group-label {
+  --sidebar-logo: url("../assets/logos/dynatrace.svg");
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo="grafana"]) > summary .group-label {
+  --sidebar-logo: url("../assets/logos/grafana.svg");
+}
+
+#starlight__sidebar a[data-sidebar-logo="linux"] {
+  --sidebar-logo: url("../assets/logos/linux.svg");
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo="opentelemetry"]) > summary .group-label {
+  --sidebar-logo: url("../assets/logos/opentelemetry.svg");
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo="splunk"]) > summary .group-label {
+  --sidebar-logo: url("../assets/logos/splunk.svg");
+}
+
+#starlight__sidebar details:has(> ul > li > a[data-sidebar-logo="splunk"]) > summary .group-label::before {
+  filter: invert(1);
+}
+
+#starlight__sidebar a[data-sidebar-logo="windows"] {
+  --sidebar-logo: url("../assets/logos/windows.svg");
+}
+
+#starlight__sidebar a[data-sidebar-link-logo] {
+  display: flex;
+  align-items: center;
+}
+
+#starlight__sidebar a[data-sidebar-link-logo] > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+#starlight__sidebar a[data-sidebar-link-logo] > span:first-child::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  background-image: var(--sidebar-logo);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+#starlight__sidebar a[data-sidebar-link-logo="dynatrace"] {
+  --sidebar-logo: url("../assets/logos/dynatrace.svg");
+}
+
+#starlight__sidebar a[data-sidebar-link-logo="grafana"] {
+  --sidebar-logo: url("../assets/logos/grafana.svg");
+}
+
+#starlight__sidebar a[data-sidebar-link-logo="opentelemetry"] {
+  --sidebar-logo: url("../assets/logos/opentelemetry.svg");
+}
+
+#starlight__sidebar a[data-sidebar-link-logo="splunk"] {
+  --sidebar-logo: url("../assets/logos/splunk.svg");
+}
+
+#starlight__sidebar a[data-sidebar-link-logo="splunk"] > span:first-child::before {
+  filter: invert(1);
+}
+
+#starlight__sidebar a[data-sidebar-link-logo="teams"] {
+  --sidebar-logo: url("../assets/logos/teams.svg");
+}

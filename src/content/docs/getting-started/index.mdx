@@ -8,7 +8,7 @@ sidebar:
 
 import { Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualize that data in Dynatrace, Splunk, or any OTLP-compatible backend like **Grafana** or **Datadog**.
+MS Teams Observability is a two-part solution: a **Collector** that pulls Teams telemetry from Microsoft Graph, and **backend integrations** that store and visualize that data in Dynatrace, Splunk, the Grafana plugin app, or a generic OTLP-compatible backend such as Datadog.
 
 <CardGrid>
   <LinkCard
@@ -40,7 +40,8 @@ graph LR
     A["Microsoft Teams \(Graph API\)"] -->|polling| B["ms-teams-agent \(Collector\)"]
     B --> C["Dynatrace \(Grail + App\)"]
     B --> D["Splunk \(HEC + App\)"]
-    B --> G["OTLP-compatible Backend"]
+    B --> E["Grafana \(Plugin App\)"]
+    B --> G["Generic OTLP-compatible Backend"]
 ```
 
 1. The **Collector** authenticates to Microsoft Graph using an Azure app registration and polls Teams telemetry on a configurable interval.
@@ -73,7 +74,7 @@ The **Dynatrace application** supports both modes:
 - **Demo mode** — uses built-in sample data. No collector required. Useful for evaluation and demonstration.
 - **Live mode** — uses real tenant data collected by the collector. Requires a valid license. See <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>.
 
-Splunk and OTLP-compatible backends like Grafana Cloud and Datadog always operate in live mode and display data as soon as the collector exports records.
+Grafana, Splunk, and generic OTLP-compatible backends always operate in live mode and display data as soon as the collector exports records.
 
 ## Supported Backends
 
@@ -82,7 +83,7 @@ Splunk and OTLP-compatible backends like Grafana Cloud and Datadog always operat
 | **Dynatrace** | Yes — Grail + dedicated app | Full-featured integration with dashboards |
 | **Splunk** | Yes — Splunk app | HEC-based ingestion with dedicated app |
 | **Grafana** | Yes — Grafana plugin app | Published on Plugin Catalog, Loki-based |
-| **OTLP-compatible backend** | No native app | Use with Datadog or another OTLP receiver |
+| **OTLP-compatible backend** | No native app | Use with Datadog, vendor OTLP gateways, or a custom receiver |
 
 <Aside type="note">
 Each backend requires its own setup. See <a href={`${import.meta.env.BASE_URL}backends/`}>Backends</a> for integration guides.

@@ -1,6 +1,6 @@
 ---
 title: Deploy MS Teams Observability with OTLP
-description: Step-by-step guide to deploy the collector and export Teams telemetry to any OTLP-compatible backend.
+description: Step-by-step guide to deploy the collector and export Teams telemetry to a generic OTLP-compatible backend.
 sidebar:
   label: Deploy with OTLP
   order: 3
@@ -10,7 +10,7 @@ import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Goal
 
-Deploy the MS Teams Observability collector and export Teams telemetry to an OTLP-compatible backend such as **Grafana Cloud**, **Datadog**, or any OTLP logs endpoint.
+Deploy the MS Teams Observability collector and export Teams telemetry to a generic OTLP-compatible backend such as **Datadog**, a vendor gateway, or any custom OTLP logs endpoint.
 
 **Estimated time:** 30–40 minutes
 
@@ -68,23 +68,6 @@ Do not configure the `output` section yet — that comes after you choose your O
 Add the OTLP output to your `config.yaml`. Choose your backend:
 
 <Tabs>
-  <TabItem label="Grafana Cloud">
-
-```yaml
-output:
-  otel:
-    - name: "grafana"
-      enabled: true
-      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
-      service_name: "ms-teams-agent"
-      deployment_environment: "prod"
-      headers:
-        Authorization: "Basic <credentials>"
-```
-
-See <a href={`${import.meta.env.BASE_URL}backends/otlp/grafana/`}>OTLP to Grafana</a> for detailed setup.
-
-  </TabItem>
   <TabItem label="Datadog">
 
 ```yaml
@@ -170,7 +153,6 @@ See <a href={`${import.meta.env.BASE_URL}backends/otlp/configuration/`}>OTLP Col
 
 1. Run a collector cycle: `ms-teams-agent run --config ./config.yaml --ignore-state`
 2. In your OTLP platform, confirm logs are visible:
-   - **Grafana**: filter logs by `service_name = "ms-teams-agent"`
    - **Datadog**: check Log Explorer for Teams event families
    - **Dynatrace (OTLP)**: confirm logs arrive with expected source fields
 

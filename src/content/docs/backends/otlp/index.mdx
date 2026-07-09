@@ -1,6 +1,6 @@
 ---
 title: OTel / OTLP — Overview
-description: Export MS Teams telemetry to OTLP-compatible backends including Grafana Cloud, Datadog, and other OpenTelemetry platforms.
+description: Export MS Teams telemetry to generic OTLP-compatible backends such as Datadog, vendor gateways, or custom OpenTelemetry collectors.
 sidebar:
   label: Overview
   order: 0
@@ -8,7 +8,9 @@ sidebar:
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-The collector supports exporting to any **OTLP-compatible endpoint** (OpenTelemetry Protocol). For example, ship data to **Grafana Cloud** for logs analytics or **Datadog** for unified monitoring, while keeping the same collector workflow.
+The collector supports exporting to any **OTLP-compatible endpoint** (OpenTelemetry Protocol). Use this path for generic OTLP receivers such as **Datadog**, vendor gateways, or a custom OpenTelemetry Collector.
+
+If you want the dedicated Grafana application experience, use the separate [Grafana integration](../grafana/) instead. The Grafana app has its own plugin, datasource configuration, and dashboard pages.
 
 ## What Is Exported
 
@@ -24,7 +26,7 @@ All standard MS Teams event families are exported as OTLP log records:
 ## Use Cases
 
 - Forward Teams telemetry into your existing OpenTelemetry pipeline.
-- Route to Grafana Cloud or Datadog when your organization standardizes on OTLP ingestion.
+- Route to Datadog or another OTLP endpoint when your organization standardizes on OpenTelemetry ingestion.
 - Keep Dynatrace or Splunk as primary backends while sending a second stream to OTLP for cross-platform analytics.
 
 <CardGrid>
@@ -32,11 +34,6 @@ All standard MS Teams event families are exported as OTLP log records:
     title="Configure OTLP Output"
     description="Set up endpoint, headers, and validation commands in collector config.yaml."
     href={`${import.meta.env.BASE_URL}backends/otlp/configuration/`}
-  />
-  <LinkCard
-    title="Grafana Cloud Setup"
-    description="Use OTLP gateway, token headers, and starter queries for Teams telemetry."
-    href={`${import.meta.env.BASE_URL}backends/otlp/grafana/`}
   />
   <LinkCard
     title="Datadog Setup"

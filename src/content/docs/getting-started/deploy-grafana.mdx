@@ -7,10 +7,16 @@ sidebar:
 ---
 
 import { Steps, Aside } from '@astrojs/starlight/components';
+import grafanaAppHomePage from '../../../assets/images/grafana-app-home-page.png';
 
 ## Goal
 
 Deploy the MS Teams Observability collector and Grafana plugin app to monitor real Teams call quality, user activity, and site performance.
+
+<figure>
+  <img src={grafanaAppHomePage.src} alt="Grafana MS Teams Observability home dashboard" />
+  <figcaption>The Grafana plugin home dashboard after data starts flowing.</figcaption>
+</figure>
 
 **Estimated time:** 30–45 minutes
 
@@ -26,7 +32,7 @@ Deploy the MS Teams Observability collector and Grafana plugin app to monitor re
 - Entra ID permission to create an app registration
 - Admin consent for Graph application permissions
 - Collector host with outbound HTTPS access to `graph.microsoft.com`
-- Grafana ≥ 12.3.0
+- Supported Grafana instance
 - A Loki datasource (self-hosted or Grafana Cloud Logs)
 - License file for live mode (see [License](../license/))
 
@@ -73,7 +79,7 @@ collection_config:
       enabled: true
 ```
 
-See [OTLP to Grafana Cloud](../../backends/otlp/grafana/) for endpoint details.
+Use the Grafana Cloud Logs OTLP endpoint and credentials from your Grafana Cloud stack details.
 
 ## Step 3 — Install the Grafana Plugin
 

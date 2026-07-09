@@ -198,7 +198,7 @@ Output is disabled, export credentials are invalid, or cycle timing has not elap
 
 **Fix**
 1. Confirm at least one output backend is enabled.
-2. Run `test-connection` to validate backend reachability, credentials, and OTLP headers (for example Grafana Cloud or Datadog).
+2. Run `test-connection` to validate backend reachability, credentials, and OTLP headers (for example Datadog or your OTLP receiver).
 3. Run one cycle without previous state to observe fresh export.
 4. Wait at least one `interval_collection_minutes` cycle.
 5. If using `--dry-run`, remove it for live export.

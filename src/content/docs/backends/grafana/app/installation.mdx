@@ -1,6 +1,6 @@
 ---
 title: Plugin Installation
-description: Install the MS Teams Observability Grafana plugin from the Plugin Catalog or via ZIP upload, and configure the datasources.
+description: Install the MS Teams Observability Grafana plugin from the Grafana Plugin Catalog and configure the datasources.
 sidebar:
   label: Installation
   order: 1
@@ -11,7 +11,7 @@ import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 The MS Teams Observability plugin is published on the **Grafana Plugin Catalog**. The plugin ID is `phenisys-msteamsobservability-app`.
 
 **Requirements:**
-- Grafana ≥ 12.3.0
+- Supported Grafana instance
 - A Loki datasource (self-hosted or Grafana Cloud) receiving MS Teams logs
 - For GeoIP features (Call Map): the optional Subnet Location datasource
 
@@ -24,14 +24,9 @@ The MS Teams Observability plugin is published on the **Grafana Plugin Catalog**
 4. After installation, the app appears in the sidebar under **Apps → Microsoft Teams Observability**.
 </Steps>
 
-## Install via ZIP Upload
+## Plugin Catalog Link
 
-<Steps>
-1. Download the plugin ZIP from the [releases page](https://github.com/Phenisys/teams-observability-grafana-app/releases) or [Grafana Plugin Catalog](https://grafana.com/grafana/plugins/phenisys-msteamsobservability-app/).
-2. In Grafana, go to **Administration → Plugins and data → Plugins → Install plugin**.
-3. Drag-and-drop the ZIP file or click **Upload**.
-4. Restart Grafana if prompted.
-</Steps>
+Use the official plugin listing: [phenisys-msteamsobservability-app](https://grafana.com/grafana/plugins/phenisys-msteamsobservability-app/).
 
 ## Configure the Datasources
 
@@ -77,5 +72,5 @@ Enabling this datasource sends participant IP addresses to ip-api.com for geoloc
 4. If using GeoIP: verify the Call Overview map shows participant locations.
 
 <Aside type="tip">
-If no data appears, verify your collector is running and sending logs to the same Loki instance. See [Collector Installation](../../../collector/v2/installation/) and [OTLP to Grafana Cloud](../../../backends/otlp/grafana/).
+If no data appears, verify your collector is running and sending logs to the same Loki instance. See [Collector Installation](../../../collector/v2/installation/) and [Deploy with Grafana](../../../getting-started/deploy-grafana/).
 </Aside>

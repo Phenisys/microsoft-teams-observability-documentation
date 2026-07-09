@@ -7,10 +7,16 @@ sidebar:
 ---
 
 import { Aside } from '@astrojs/starlight/components';
+import grafanaAppIssuesPage from '../../../../../assets/images/grafana-app-issues-page.png';
 
 The Issues tab displays Microsoft 365 service health incidents that may impact your Teams environment. Data comes from the `MSTeams_ServiceAnnouncement` log source.
 
 **Default time range:** Last 7 days.
+
+<figure>
+  <img src={grafanaAppIssuesPage.src} alt="Grafana app issues page" />
+  <figcaption>Issues page showing active and closed Microsoft 365 service incidents.</figcaption>
+</figure>
 
 ## Current Issues
 

@@ -7,12 +7,26 @@ sidebar:
 ---
 
 import { LinkCard, CardGrid, Aside } from '@astrojs/starlight/components';
+import grafanaAppHomePage from '../../../../assets/images/grafana-app-home-page.png';
+import grafanaAppCallsPage from '../../../../assets/images/grafana-app-calls-page.png';
 
 The Grafana integration provides a native Grafana plugin application for MS Teams Observability, published on the Grafana Plugin Catalog. It covers:
 
 - **Plugin App**: A dedicated application with operational dashboards for call quality, user activity, site performance, and Microsoft incident correlation.
 - **Datasources**: Loki-based datasource for Teams telemetry, plus an optional Subnet Location datasource for GeoIP enrichment.
 - **Bundled Dashboards**: Ready-to-use dashboards for call analysis and user activity.
+
+## Preview
+
+<figure>
+  <img src={grafanaAppHomePage.src} alt="Grafana MS Teams Observability home dashboard" />
+  <figcaption>Home dashboard with tenant-level call health and platform distribution.</figcaption>
+</figure>
+
+<figure>
+  <img src={grafanaAppCallsPage.src} alt="Grafana MS Teams Observability calls list" />
+  <figcaption>Calls page with filters, health status, and drilldown entry points.</figcaption>
+</figure>
 
 ## Architecture
 
@@ -28,12 +42,12 @@ graph TD
 <CardGrid>
   <LinkCard
     title="1) Prerequisites"
-    description="Grafana ≥ 12.3.0, a Loki datasource, and a collector sending MS Teams logs."
+    description="A supported Grafana instance, a Loki datasource, and a collector sending MS Teams logs."
     href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}
   />
   <LinkCard
     title="2) Install the Plugin"
-    description="Install the MS Teams Observability plugin from the Grafana Plugin Catalog or via ZIP upload."
+    description="Install the MS Teams Observability plugin from the Grafana Plugin Catalog."
     href={`${import.meta.env.BASE_URL}backends/grafana/app/installation/`}
   />
   <LinkCard
@@ -44,7 +58,7 @@ graph TD
   <LinkCard
     title="4) Connect the Collector"
     description="Configure the collector OTLP output to send logs to your Loki instance or Grafana Cloud."
-    href={`${import.meta.env.BASE_URL}backends/otlp/grafana/`}
+    href={`${import.meta.env.BASE_URL}getting-started/deploy-grafana/`}
   />
   <LinkCard
     title="5) Use the Application"

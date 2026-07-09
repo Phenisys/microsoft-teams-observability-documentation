@@ -7,8 +7,14 @@ sidebar:
 ---
 
 import { Aside } from '@astrojs/starlight/components';
+import grafanaAppUsersPage from '../../../../../assets/images/grafana-app-users-page.png';
 
 The Users page provides per-user analytics for every MS Teams user who made or received calls. The default time range is 7 days.
+
+<figure>
+  <img src={grafanaAppUsersPage.src} alt="Grafana app users page" />
+  <figcaption>Users page with identity, network, device, and recent call details.</figcaption>
+</figure>
 
 ## Filter Bar
 
@@ -35,7 +41,7 @@ Each row represents a user with grouped data:
 
 ### Recent Calls
 - Last 5 calls with Call ID, health, and duration
-- Each Call ID links to the Call Overview (with time range preserved, fixed in v1.2.0)
+- Each Call ID links to the Call Overview with the time range preserved.
 
 ### Last Seen
 - Timestamp of the user's most recent call

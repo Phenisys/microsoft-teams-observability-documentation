@@ -5,9 +5,6 @@ import { defineConfig } from "astro/config";
 import mermaid from "astro-mermaid";
 import { loadEnv } from "vite";
 
-const linuxIcon = { html: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="16"><circle cx="128" cy="72" r="48"/><path d="M48 200c8-24 32-40 80-40s72 16 80 40"/><path d="M128 160v40M96 180l-32 40M160 180l32 40"/></g></svg>' };
-const windowsIcon = { html: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><rect x="24" y="40" width="96" height="96" fill="currentColor"/><rect x="136" y="40" width="96" height="96" fill="currentColor" opacity=".7"/><rect x="24" y="152" width="96" height="64" fill="currentColor" opacity=".7"/><rect x="136" y="152" width="96" height="64" fill="currentColor"/></svg>' };
-
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 const base = env.PUBLIC_BASE_PATH ?? "/";
 
@@ -33,13 +30,19 @@ export default defineConfig({
     "/collector/v1/lookup-file/": "/reference/archive/v1-deprecated/lookup-file/",
     "/collector/v1/cli/": "/reference/archive/v1-deprecated/cli/",
     "/collector/v1/service/": "/reference/archive/v1-deprecated/service/",
+    "/backends/otlp/grafana/": "/getting-started/deploy-grafana/",
   },
   integrations: [
     mermaid(),
     starlight({
       title: "MS Teams Observability",
+      logo: {
+        src: "./src/assets/logos/teams.svg",
+        alt: "MS Teams Observability",
+      },
       favicon: "/favicon.ico",
       lastUpdated: true,
+      customCss: ["./src/styles/sidebar-logos.css"],
       components: {
         Footer: "./src/components/Footer.astro",
       },
@@ -78,11 +81,11 @@ export default defineConfig({
         {
           label: "Start Here",
           items: [
-            { slug: "getting-started" },
-            { slug: "getting-started/deploy-dynatrace" },
-            { slug: "getting-started/deploy-splunk" },
-            { slug: "getting-started/deploy-grafana" },
-            { slug: "getting-started/deploy-otlp" },
+            { slug: "getting-started", attrs: { "data-sidebar-link-logo": "teams" } },
+            { slug: "getting-started/deploy-dynatrace", attrs: { "data-sidebar-link-logo": "dynatrace" } },
+            { slug: "getting-started/deploy-splunk", attrs: { "data-sidebar-link-logo": "splunk" } },
+            { slug: "getting-started/deploy-grafana", attrs: { "data-sidebar-link-logo": "grafana" } },
+            { slug: "getting-started/deploy-otlp", attrs: { "data-sidebar-link-logo": "opentelemetry" } },
             { slug: "getting-started/prerequisites" },
             { slug: "getting-started/license" },
           ],
@@ -100,8 +103,8 @@ export default defineConfig({
               label: "Service",
               collapsed: true,
               items: [
-                { slug: "collector/v2/service", icon: linuxIcon },
-                { slug: "collector/v2/service-windows", icon: windowsIcon },
+                { slug: "collector/v2/service", attrs: { "data-sidebar-logo": "linux" } },
+                { slug: "collector/v2/service-windows", attrs: { "data-sidebar-logo": "windows" } },
               ],
             },
             { slug: "collector/v2/cli" },
@@ -125,7 +128,7 @@ export default defineConfig({
             {
               label: "Dynatrace",
               items: [
-                { slug: "backends/dynatrace" },
+                { slug: "backends/dynatrace", attrs: { "data-sidebar-logo": "dynatrace" } },
                 { slug: "backends/dynatrace/prerequisites" },
                 { slug: "backends/dynatrace/configuration" },
                 { slug: "backends/dynatrace/collector-connection" },
@@ -161,7 +164,7 @@ export default defineConfig({
               label: "Splunk",
               collapsed: true,
               items: [
-                { slug: "backends/splunk" },
+                { slug: "backends/splunk", attrs: { "data-sidebar-logo": "splunk" } },
                 { slug: "backends/splunk/configuration" },
                 {
                   label: "Application",
@@ -178,7 +181,7 @@ export default defineConfig({
               label: "Grafana",
               collapsed: true,
               items: [
-                { slug: "backends/grafana" },
+                { slug: "backends/grafana", attrs: { "data-sidebar-logo": "grafana" } },
                 {
                   label: "Application",
                   items: [
@@ -198,20 +201,14 @@ export default defineConfig({
                     },
                   ],
                 },
-                {
-                  label: "OTLP → Grafana Cloud",
-                  collapsed: true,
-                  items: [{ slug: "backends/otlp/grafana" }],
-                },
               ],
             },
             {
               label: "OTel / OTLP",
               collapsed: true,
               items: [
-                { slug: "backends/otlp" },
+                { slug: "backends/otlp", attrs: { "data-sidebar-logo": "opentelemetry" } },
                 { slug: "backends/otlp/configuration" },
-                { slug: "backends/otlp/grafana" },
                 { slug: "backends/otlp/datadog" },
               ],
             },

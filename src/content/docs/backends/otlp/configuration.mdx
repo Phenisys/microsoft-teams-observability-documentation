@@ -39,22 +39,6 @@ output:
 Keep OTLP credentials out of version control. Use secure secret management for API keys and tokens.
 </Aside>
 
-## Grafana OTLP Configuration
-
-```yaml
-output:
-  otel:
-    - name: "grafana"
-      enabled: true
-      endpoint: "https://otlp-gateway-prod-eu-west-2.grafana.net/otlp/v1/logs"
-      service_name: "ms-teams-agent"
-      deployment_environment: "prod"
-      headers:
-        Authorization: "Basic <credentials>"
-```
-
-Detailed setup: [OTLP to Grafana Cloud](../grafana/).
-
 ## Datadog OTLP Configuration
 
 ```yaml
@@ -101,9 +85,9 @@ ms-teams-agent run --config ./config.yaml --dry-run
 
 ## Verify Data Arrival
 
-1. Grafana: confirm logs are visible in your logs data source and filter on `service_name`.
-2. Datadog: confirm logs arrive in Log Explorer and contain Teams event families.
-3. Dynatrace OTLP: confirm logs arrive in Logs/Grail with expected source fields.
+1. Datadog: confirm logs arrive in Log Explorer and contain Teams event families.
+2. Dynatrace OTLP: confirm logs arrive in Logs/Grail with expected source fields.
+3. Generic OTLP receiver: confirm records are visible with the configured `service_name`.
 4. If data is not arriving, check collector logs and then follow [Collector Troubleshooting](../../../collector/troubleshooting/).
 
 ✅ Success criteria:
