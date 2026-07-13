@@ -360,7 +360,7 @@ This means you **don't need to manually configure** the OpenPipeline in the Dyna
 
 ## 7. Site File Management
 
-**Purpose:** Upload and manage the CSV file that maps network subnets to site locations (used on the [Sites](../../../backends/dynatrace/app/sites/) page).
+**Purpose:** Upload and manage the CSV file that maps network subnets to site locations (used on the [Sites](../sites/) page).
 
 <Aside type="caution">
 The sites file is required for the Sites page to display data. Without it, the Sites/Locations page will be empty. If you have not uploaded a file yet, see <a href={`${import.meta.env.BASE_URL}reference/sites-file/`}>Sites File</a> for the CSV format and a downloadable template.
@@ -494,7 +494,7 @@ After saving the template, a **preview section** appears:
 
 ## 9. AI Analysis
 
-**Purpose:** Configure the AI tool used to generate **root cause analysis on the [Call Overview](../../../backends/dynatrace/app/call-overview/) page**. The AI analyzes stream metrics (RTT, jitter, packet loss, codec, protocol) and participant data to identify the cause of quality degradation — for example, detecting that high jitter on a specific participant's subnet is the root cause.
+**Purpose:** Configure the AI tool used to generate **root cause analysis on the [Call Overview](../call-overview/) page**. The AI analyzes stream metrics (RTT, jitter, packet loss, codec, protocol) and participant data to identify the cause of quality degradation — for example, detecting that high jitter on a specific participant's subnet is the root cause.
 
 The AI panel appears as a **detail view sidebar** on the Call Overview page, accessible via the **actions menu**. Once configured, click a call ID, open the AI panel, and ask questions like "What caused the poor quality?" or "Summarize the call."
 
@@ -597,7 +597,7 @@ Auto-validation runs on page load if all fields are already saved.
 ## 10. Microsoft Configuration
 
 **Purpose:** Configure the credentials used to authenticate against the **Microsoft Graph API** to download raw call details. This is **required** for two features:
-- **Downloading call details** as JSON from the [Call Overview](../../../backends/dynatrace/app/call-overview/) page
+- **Downloading call details** as JSON from the [Call Overview](../call-overview/) page
 - **AI Analysis** ([panel 9](#9-ai-analysis)) — the AI needs raw call data from the Graph API to build context
 
 ### When to configure this
@@ -674,7 +674,7 @@ Auto-validation runs on page load if all fields are saved. During validation, th
 
 ## 11. Domains Filter
 
-**Purpose:** Configure a list of **email domains** to restrict the data shown on the [Sites](../../../backends/dynatrace/app/sites/) page. Only users whose email address ends with one of the configured domains are included in site-level analytics.
+**Purpose:** Configure a list of **email domains** to restrict the data shown on the [Sites](../sites/) page. Only users whose email address ends with one of the configured domains are included in site-level analytics.
 
 This is useful for:
 - **Filtering out external participants** (guests, vendors, customers) from your site analytics

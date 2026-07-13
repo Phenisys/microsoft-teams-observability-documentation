@@ -12,7 +12,7 @@ import { Aside } from '@astrojs/starlight/components';
 
 The Call Overview page provides a **complete, detailed analysis of a single Microsoft Teams call**. It shows who participated, where they were located, what the call quality was, stream-level metrics, and optionally an AI-generated root cause analysis.
 
-Reach this page by clicking a **call ID** in the [Calls](../../../backends/dynatrace/app/calls/) page. Only calls with a duration > 0 have a clickable link.
+Reach this page by clicking a **call ID** in the [Calls](../calls/) page. Only calls with a duration > 0 have a clickable link.
 
 Breadcrumb navigation: `Home > Calls > Call Overview`
 
@@ -41,7 +41,7 @@ The header shows the call ID with two actions:
 | Three-dot menu | Contains "Download call details" as a menu item |
 
 <Aside type="note">
-The download button is **disabled** if Microsoft credentials are not configured in [Configuration](../../../backends/dynatrace/app/configuration/).
+The download button is **disabled** if Microsoft credentials are not configured in [Configuration](../configuration/).
 </Aside>
 
 ---
@@ -217,7 +217,7 @@ An AI-powered section that analyzes stream data to identify the **root cause of 
 | Reload Analysis | Result exists + both configs valid | Re-generates the analysis, overwriting the cache |
 
 <Aside type="note">
-Both **Microsoft configuration** and **AI Analysis configuration** must be set up in [Configuration](../../../backends/dynatrace/app/configuration/) for these buttons to be enabled.
+Both **Microsoft configuration** and **AI Analysis configuration** must be set up in [Configuration](../configuration/) for these buttons to be enabled.
 </Aside>
 
 ---
@@ -231,5 +231,5 @@ Clicking the **Download** button (or via the three-dot menu) downloads the full 
 During download, a toast notification with a progress bar appears. Concurrent downloads are blocked with a warning toast.
 
 <Aside type="note">
-Requires Microsoft credentials configured in [Configuration](../../../backends/dynatrace/app/configuration/). The button is disabled otherwise.
+Requires Microsoft credentials configured in [Configuration](../configuration/). The button is disabled otherwise.
 </Aside>

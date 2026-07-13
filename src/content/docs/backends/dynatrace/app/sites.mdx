@@ -13,7 +13,7 @@ import { Aside } from '@astrojs/starlight/components';
 The Sites page lets you analyze Microsoft Teams call quality and network performance **aggregated by geographic location**. Each row in the tables represents a site (a named location associated with one or more network subnets).
 
 <Aside type="caution">
-If you haven't configured email domain filters yet, a warning toast will appear prompting you to go to [Configuration](../../../backends/dynatrace/app/configuration/). Calls won't be filtered by domain until domains are set.
+If you haven't configured email domain filters yet, a warning toast will appear prompting you to go to [Configuration](../configuration/). Calls won't be filtered by domain until domains are set.
 </Aside>
 
 Breadcrumb navigation: `Home > Sites`
@@ -136,7 +136,7 @@ A text input filtering visible rows by **location name, country, or subnet** (cl
 
 | Column | Sortable | Description |
 |--------|----------|-------------|
-| Location | Yes | Site name. Clicking navigates to [Calls](../../../backends/dynatrace/app/calls/) pre-filtered for that location. |
+| Location | Yes | Site name. Clicking navigates to [Calls](../calls/) pre-filtered for that location. |
 | Country | Yes | Country associated with the site |
 | Subnet(s) | Yes | Network subnet(s), sorted numerically |
 

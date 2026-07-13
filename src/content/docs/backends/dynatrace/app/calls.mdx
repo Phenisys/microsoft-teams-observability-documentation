@@ -89,7 +89,7 @@ A sortable, paginated data table listing all calls matching the current filter.
 |--------|----------|-------------|
 | **Health** | Yes | Call quality status shown as a colored icon. Sort order: Good → Poor → Unknown |
 | **Type** | No | Call type chip (`Peer To Peer`, `Group Call`, `User Outbound`, `UCAP Inbound`, `Conference Inbound`) |
-| **ID** | No | Unique call identifier. Link to [Call Overview](../../../backends/dynatrace/app/call-overview/) only when details are available |
+| **ID** | No | Unique call identifier. Link to [Call Overview](../call-overview/) only when details are available |
 | **Participants** | No | Participant names. Guest users summarized (e.g., "and 2 Guests") |
 | **Count** | Yes | Number of participants |
 | **Start** | No | Call start timestamp |
@@ -98,7 +98,7 @@ A sortable, paginated data table listing all calls matching the current filter.
 
 #### ID Column details
 
-- **Details available + duration > 0**: ID is a clickable link to [Call Overview](../../../backends/dynatrace/app/call-overview/). The link includes a 10-minute padding before the start and after the end.
+- **Details available + duration > 0**: ID is a clickable link to [Call Overview](../call-overview/). The link includes a 10-minute padding before the start and after the end.
 - **Details available + duration = 0**: ID is disabled. Hover shows: *"No call recording available"*.
 - **Details unavailable (for PSTN calls)**: ID is disabled. Hover shows: *"Call details are not available for PSTN calls"*.
 
@@ -144,6 +144,6 @@ A sortable, paginated data table listing all calls matching the current filter.
 
 | Action | Destination |
 |--------|-------------|
-| Click a call ID (with recording) | [Call Overview](../../../backends/dynatrace/app/call-overview/) for that call |
+| Click a call ID (with recording) | [Call Overview](../call-overview/) for that call |
 | Navigated from Users page | Filter pre-populated with the selected user's name |
 | Navigated from Sites table | Filter pre-populated with the selected location |
