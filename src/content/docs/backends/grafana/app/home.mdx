@@ -9,39 +9,90 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import grafanaAppHomePage from '../../../../../assets/images/grafana-app-home-page.png';
 
-The Home page is the landing tab. It presents a high-level summary of your Teams calling activity.
+> **Tab label:** Home — **Default time range:** Last 7 days
 
-**Default time range:** Last 7 days (adjustable via the Grafana time picker).
+The Home page is the **landing tab** of the MS Teams Observability app. It provides a high-level summary of your Teams calling activity — use it as a **daily health check** before diving into details on other pages.
+
+The time range is adjustable via the Grafana time picker (top right). All KPIs and charts recompute when the range changes.
+
+<Aside type="tip">
+For a quick health check, look at the **Healthy Calls %** KPI. If it drops significantly, drill into [Calls](../calls/) or [Sites](../sites/) to isolate the issue.
+</Aside>
 
 <figure>
   <img src={grafanaAppHomePage.src} alt="Grafana app home page" />
-  <figcaption>Home page overview with KPI cards and quality charts.</figcaption>
+  <figcaption>Home page overview with three KPI cards and two quality charts.</figcaption>
 </figure>
+
+---
 
 ## KPI Cards
 
-Three key performance indicators at the top:
+Three key performance indicators at the top of the page:
 
-| KPI | Description |
-| --- | --- |
-| **Total Calls** | Number of calls in the selected time range |
-| **Healthy Calls %** | Percentage of calls classified as Good |
-| **Unique Callers** | Number of distinct users who made or received calls |
+| KPI | Description | Interpretation |
+| --- | --- | --- |
+| **Total Calls** | Number of MS Teams calls in the selected time range | Compare day-over-day. A sudden drop may indicate collection issues. |
+| **Healthy Calls %** | Percentage of calls classified as Good (all streams within quality thresholds) | **Above 95%:** excellent. **80-95%:** acceptable. **Below 80%:** investigate on [Sites](../sites/) or [Calls](../calls/). |
+| **Unique Callers** | Number of distinct users who made or received calls | Watch for trends — declining callers may indicate user adoption issues. |
+
+---
 
 ## Charts
 
 ### Call Health Distribution
 
-A chart showing the proportion of Good, Poor, and Unclassified calls. Use this to spot quality degradation at a glance.
+A **stacked bar or donut chart** showing the proportion of Good, Poor, and Unclassified calls.
+
+| Segment | Color | Meaning |
+|---------|-------|---------|
+| Good | Green | All streams within quality thresholds |
+| Poor | Red | At least one stream exceeded a quality threshold |
+| Unclassified | Grey | Insufficient telemetry data to classify |
+
+Use this chart to spot quality degradation at a glance over time.
 
 ### Platform Distribution
 
-A pie or bar chart showing calls by participant platform (Windows, macOS, iOS, Android, Web).
+A **pie chart or bar chart** showing calls broken down by participant platform:
+
+| Slice | Color | Platform |
+|-------|-------|----------|
+| Windows | Blue | Windows desktop client |
+| macOS | Light blue | macOS desktop client |
+| iOS | Purple | iPhone/iPad app |
+| Android | Green | Android app |
+| Web | Orange | Browser-based Teams client |
+| Unknown | Grey | Platform could not be determined |
+
+---
 
 ## How It Works
 
-The Home page queries the Loki datasource using the configured data provider. All metrics are recomputed when the time range changes.
+The Home page queries the **Loki datasource** using the configured data provider:
 
-<Aside type="tip">
-For a quick health check, look at the **Healthy Calls %** KPI. If it drops significantly, drill into Calls or Sites to isolate the issue.
-</Aside>
+- **Live mode:** Data comes from the Loki datasource specified in [Provisioning](../provisioning/)
+- **Demo mode:** Data comes from built-in JSON fixtures in `src/data/`
+
+All metrics are recomputed when the time range changes.
+
+---
+
+## States
+
+| Situation | What you see |
+|-----------|-------------|
+| Loading (first time) | Loading spinner in each card/chart |
+| Loading (time range change) | Previous data fades while new data loads |
+| No data | Charts show empty state with "No data" message |
+| Network error | Error alert in the relevant section |
+| Data loaded | All KPIs and charts rendered normally |
+
+---
+
+## URL Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `from` | Time range start | `now-7d` |
+| `to` | Time range end | `now()` |

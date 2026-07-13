@@ -193,6 +193,7 @@ export default defineConfig({
                         { slug: "backends/grafana/app/home" },
                         { slug: "backends/grafana/app/sites" },
                         { slug: "backends/grafana/app/calls" },
+                        { slug: "backends/grafana/app/call-overview" },
                         { slug: "backends/grafana/app/users" },
                         { slug: "backends/grafana/app/issues" },
                         { slug: "backends/grafana/app/status" },

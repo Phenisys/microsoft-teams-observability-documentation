@@ -9,60 +9,97 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import grafanaAppStatusPage from '../../../../../assets/images/grafana-app-status-page.png';
 
-> **Tab label:** Status — `/configuration`
+> **Tab label:** Status — **Path:** `/configuration` — **No time picker** (this is a status page, not a data page)
 
-The Status tab is the operational hub for license monitoring, feature health, and connectivity testing. It has no time picker — this is a status page, not a data page.
+The Status tab is the **operational hub** for license monitoring, feature health, and connectivity testing. Use it to verify the app is correctly configured and all dependencies are reachable.
 
 <figure>
   <img src={grafanaAppStatusPage.src} alt="Grafana app status page" />
-  <figcaption>Status tab with license, feature status, and outgoing connection checks.</figcaption>
+  <figcaption>Status tab: license, feature status, and outgoing connection checks.</figcaption>
 </figure>
+
+---
 
 ## Layout
 
-Two rows, top to bottom:
+The page has two rows:
 
-**Row 1 (50/50 split):**
-- License panel
-- Feature Status panel
+| Row | Section |
+|-----|---------|
+| **Row 1 (50/50)** | [License Panel](#license-panel) (left) + [Feature Status Panel](#feature-status-panel) (right) |
+| **Row 2 (full width)** | [Outgoing Connections Panel](#outgoing-connections-panel) |
 
-**Row 2 (full width):**
-- Outgoing Connections panel
+---
 
 ## License Panel
 
-Displays your license status:
+Displays your current license status and details:
 
-| Detail | Description |
-| --- | --- |
-| **License Status** | Active, Expired, or Missing |
-| **Tenant ID** | Masked by default (click to reveal) |
-| **Expiration** | License expiry date |
-| **Features** | List of enabled collectors |
+| Detail | Description | What to look for |
+|--------|-------------|------------------|
+| **License Status** | `Active` (green), `Expired` (red), or `Missing` (grey) | Should be `Active` for live mode |
+| **Tenant ID** | Masked by default — click to reveal | Verify it matches your Microsoft 365 tenant ID |
+| **Expiration** | License expiry date | Renew before expiry to avoid service interruption |
+| **Features** | List of enabled collectors | Should match the collectors you configured |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| License shows "Missing" | License file not found or not configured | Upload the license in [Provisioning](../provisioning/) |
+| License shows "Expired" | License validity period has passed | Contact Phenisys for renewal |
+| Tenant ID doesn't match | Wrong license file | Obtain the correct license for your tenant |
+
+---
 
 ## Feature Status Panel
 
 An interactive table showing the operational status of each collector:
 
-| Column | Description |
-| --- | --- |
-| **Feature** | Collector name |
-| **Status** | Active, Disabled, or Error |
-| **Details** | Error message or last collection timestamp |
+| Column | Description | Color coding |
+|--------|-------------|--------------|
+| **Feature** | Collector name (e.g., Calls, PSTN) | — |
+| **Status** | `Active` (green), `Disabled` (grey), or `Error` (red) | Green = collecting normally. Grey = not configured. Red = error condition. |
+| **Details** | Error message or last collection timestamp | Shows the most recent information from the collector |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| All features show "Disabled" | Collector not running | Verify the collector service is started |
+| One feature shows "Error" | Feature-specific failure (e.g., Graph API throttling) | Check the collector logs for details |
+| No features listed | No health data received | Check that the collector can reach the Loki datasource |
+
+---
 
 ## Outgoing Connections Panel
 
-Tests connectivity to 4 external endpoints. Each endpoint has an individual **Ping** button:
+Tests connectivity to **external endpoints** the app depends on. Each endpoint has an individual **Ping** button, and a **Ping All** button tests all simultaneously.
 
-| Endpoint | URL | Purpose |
-| --- | --- | --- |
-| Microsoft Login | `login.microsoftonline.com` | OAuth2 token acquisition |
-| Microsoft Graph | `graph.microsoft.com` | Teams call records API |
-| GeoMap API | `ip-api.com` | IP geolocation for Call Map |
-| GitHub API | `api.github.com` | Release version checks |
+| Endpoint | URL | Purpose | Expected code |
+|----------|-----|---------|--------------|
+| Microsoft Login | `login.microsoftonline.com` | OAuth2 token acquisition for Microsoft Graph | `200` or `401` (connected) |
+| Microsoft Graph | `graph.microsoft.com` | Microsoft Teams call records API | `401` (connected, no bearer token — normal) |
+| GeoMap API | `ip-api.com` | IP geolocation for the Call Map | `200` |
+| GitHub API | `api.github.com` | Release version check | `200` |
 
-Each test shows the connection status, HTTP response code, and latency.
+**Columns:**
 
-<Aside type="tip">
-The Grafana app requires a valid Phenisys license for live mode. See [License](../../../getting-started/license/) for details.
-</Aside>
+| Column | Description |
+|--------|-------------|
+| **Service** | Name of the service. Hover for description. |
+| **Endpoint** | The URL being tested |
+| **Status** | Green (reachable), Red (unreachable), Grey (not yet tested) |
+| **Code** | HTTP response code chip (e.g., `200`, `401`, `500`) |
+| **Latency** | Round-trip time in ms |
+
+> **Note:** A `401` status is **normal** for authenticated services (Microsoft Login, Graph API). The test verifies reachability, not credential validity.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| `login.microsoftonline.com` unreachable | Firewall blocking Microsoft login | Add `login.microsoftonline.com` to the allowlist |
+| `graph.microsoft.com` unreachable | Microsoft Graph blocked | Verify network rules allow `graph.microsoft.com` |
+| `ip-api.com` unreachable | GeoIP endpoint blocked | Add `ip-api.com` to the allowlist if GeoIP is needed |
+| All endpoints red | General network issue | Check DNS resolution, proxy, and internet connectivity |

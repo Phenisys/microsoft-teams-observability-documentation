@@ -37,123 +37,324 @@ Breadcrumb navigation: `Home > Configuration`
 
 ## 1. License
 
-**Purpose:** View the status and details of your MS Teams Observability license.
+**Purpose:** View the status and details of your MS Teams Observability **license**. This panel is **read-only** — it shows your current license validity, usage, and tenant association.
 
-| Field | Description |
-|-------|-------------|
-| Start date | License start date (DD/MM/YYYY) |
-| End Date | License expiry date (DD/MM/YYYY) |
-| Days Left | Days remaining before expiry |
-| Status chip | `Trial` (blue), `Active` (green), or `Inactive` (red) |
-| Active Users meter | Current active users vs. maximum allowed. Trial = "Unlimited". |
-| Microsoft Tenant ID | Your tenant ID, masked by default |
+For license setup or renewal, see [License](../../../../getting-started/license/).
 
-**Actions:** eye icon to show/hide Tenant ID, copy button to copy it.
+### When to check this
 
-**Error state:** If the license cannot be loaded, all fields show "Error".
+- **At first login** — confirm the license is active.
+- **When a license warning banner appears** in the app header.
+- **Before expiry** — check the remaining days and plan renewal.
+- **When you see "Trial" status** — evaluate before the trial expires.
 
-**Banners:** Warning/critical banner if the license has a problem. Green "Demo license" banner when Demo Mode is active.
+### Fields
 
-<Aside type="note">
-This panel is read-only — no inputs to configure here. For license setup, see [License](../../../../getting-started/license/).
-</Aside>
+| Field | Description | Interpretation |
+|-------|-------------|----------------|
+| Start date | License start date (DD/MM/YYYY) | When your license period began |
+| End Date | License expiry date (DD/MM/YYYY) | When the license expires — after this date, the app enters restricted mode |
+| Days Left | Days remaining before expiry | **< 30 days**: consider renewing. **< 7 days**: urgent renewal needed. |
+| Status chip | `Trial` (blue), `Active` (green), or `Inactive` (red) | `Trial` = evaluation period. `Active` = valid commercial license. `Inactive` = expired or invalid. |
+| Active Users meter | Current active users vs. maximum allowed. Trial = "Unlimited". | Stay below 80% of the limit to avoid throttling. |
+| Microsoft Tenant ID | Your tenant ID, masked by default | Click the eye icon to reveal, copy button to copy — useful for support requests. |
+
+### Banners
+
+| Banner | Meaning | Action |
+|--------|---------|--------|
+| **Green** "Demo license" | Demo Mode is active with a valid demo license | Normal — no action needed |
+| **Yellow/Warning** | License approaching expiry or usage limit near capacity | Plan renewal or review user count |
+| **Red/Critical** | License expired, invalid, or usage limit exceeded | Renew immediately or contact Phenisys support |
+
+### Error state
+
+If the license cannot be loaded (network issue, backend unavailable), all fields show "Error". Check that the collector is running and can reach the license validation endpoint.
+
+### Actions
+
+| Action | Description |
+|--------|-------------|
+| Eye icon | Toggle visibility of the masked Tenant ID |
+| Copy button | Copy the Tenant ID to clipboard |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| License shows "Inactive" | License expired or invalid | Check the expiry date. Contact Phenisys for renewal. |
+| All fields show "Error" | License server unreachable | Verify the collector can reach `https://license.phenisys.com` (check [Outgoing Connections](#4-outgoing-connections)). |
+| Active Users meter shows 0 | No data collected yet | Check [Feature Status](#3-feature-status) to see if the collector is running. |
+| Tenant ID not matching | Wrong license file uploaded | Re-upload the correct license file for your tenant. |
 
 ---
 
 ## 2. Demo Mode
 
-**Purpose:** Enable or disable Demo Mode, which replaces all live data with sample data.
+**Purpose:** Enable or disable **Demo Mode**, which replaces all live data with built-in sample data. Useful for:
+- **Evaluating the app** without a collector or Microsoft Teams data
+- **Demonstrations** to stakeholders or clients
+- **Testing UI behavior** without affecting production data
 
-**Current status:** `Active` (green) or `Inactive` (grey) chip next to the title.
+### Current status
 
-| Button | Appears when | Behavior |
-|--------|-------------|---------|
-| Enable | Demo Mode is off | Opens a confirmation modal to enable |
-| Disable | Demo Mode is on | Opens a confirmation modal to disable |
+A chip next to the title shows the current state: `Active` (green) or `Inactive` (grey).
 
-When Demo Mode is active, the following features are **restricted**: custom timeframe selection, exporting call details, AI-driven insights.
+### Buttons
+
+| Button | Appears when | What happens |
+|--------|-------------|--------------|
+| **Enable** | Demo Mode is off | Opens a confirmation modal. Once confirmed, all app pages switch to mock data. |
+| **Disable** | Demo Mode is on | Opens a confirmation modal. Once confirmed, the app returns to live data mode. |
+
+### What changes when Demo Mode is active
+
+| Feature | Available in Demo Mode? |
+|---------|------------------------|
+| Browsing all pages (Home, Sites, Calls, Users, Issues) | ✅ Yes — with mock data |
+| Interacting with UI (filters, tables, charts) | ✅ Yes |
+| Custom timeframe selection | ❌ Restricted — only the preset timeframe works |
+| Exporting call details | ❌ Restricted |
+| AI-driven insights | ❌ Restricted — requires live Microsoft Graph data |
+
+### How to tell Demo Mode is active
+
+- A **green "Demo" banner** appears in the app header
+- The Configuration page shows the Demo Mode chip as `Active` (green)
+- Mock data replaces all live data — the sample calls and users resemble realistic but fictional data
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| Demo Mode won't disable | Network issue preventing license validation | Check [Outgoing Connections](#4-outgoing-connections) for `license.phenisys.com` reachability. |
+| Mock data looks the same after enabling | Page cache not refreshed | Manually refresh the page or navigate between tabs. |
 
 ---
 
 ## 3. Feature Status
 
-**Purpose:** View the health status of each data collection feature based on the last 7 days.
+**Purpose:** View the **health status of each data collection feature** from the MS Teams Observability agent over the last 7 days. Use this to verify that the collector is running and all expected data sources are active.
 
-| Column | Description |
-|--------|-------------|
-| Feature | Name of the collection feature |
-| Status | `Enabled` (green) or `Disabled` (grey) |
-| Health | `No errors` (green) or `X errors` (red) — only shown for enabled features |
+### When to check this
 
-**Cell action on Health column (right-click):** "Open details with" — sends the error log query to a Dynatrace app.
+- **After installing or upgrading** the collector — confirm all features are enabled.
+- **When pages show no data** — verify the relevant collector feature is running without errors.
+- **Routine health check** — ensure all collection features are green.
 
-**Empty state:** "No features found. Please ensure that the MS Teams Observability Agent is properly configured and running."
+### Table
 
-**Pagination:** 5 / 10 / 20 rows per page.
+| Column | Description | Color coding |
+|--------|-------------|--------------|
+| **Feature** | Name of the collection feature (e.g., Calls, PSTN, Auto Attendant) | — |
+| **Status** | `Enabled` (green) or `Disabled` (grey) | Green = actively collecting. Grey = feature not configured in the collector. |
+| **Health** | `No errors` (green) or `X errors` (red) — only shown for enabled features | Red = check the collector logs for the error. Green = no issues in the last 7 days. |
+
+### Cell action
+
+Right-click the **Health** column → "Open details with" → sends the error log query to a Dynatrace app for deeper investigation.
+
+### Empty state
+
+"No features found. Please ensure that the MS Teams Observability Agent is properly configured and running."
+
+### Pagination
+
+5 / 10 / 20 rows per page.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| All features show "Disabled" | Collector not running or not configured | Verify the collector service is started and the config file has features enabled. |
+| A specific feature shows errors | Feature-specific issue (e.g., Graph API throttling, invalid credentials) | Right-click the health cell → "Open details with" to see the error logs. |
+| No features listed at all | No collection health data in the last 7 days | Check that the collector is running and can reach Dynatrace. Check [Outgoing Connections](#4-outgoing-connections). |
 
 ---
 
 ## 4. Outgoing Connections
 
-**Purpose:** Verify that the app can reach all external services it depends on (Microsoft Graph API, AI endpoints, etc.).
+**Purpose:** Verify that the app can reach all **external services** it depends on. This is a **diagnostic tool** for troubleshooting connectivity issues — if a feature isn't working, check here first.
 
-| Column | Description |
+### When to check this
+
+- **A feature isn't working** (e.g., AI Analysis returns no response, license status shows error).
+- **After network changes** (firewall rules, proxy changes, DNS updates).
+- **Routine health check** during maintenance.
+
+### Table
+
+| Column | Description | Color coding |
+|--------|-------------|--------------|
+| **Status** | Connection status icon | Green = reachable. Red = unreachable. Grey = not yet tested. |
+| **Code** | HTTP response code chip (e.g., `200`, `401`, `500`) | `200`-`399` = green. `400`+ = red or orange depending on severity. |
+| **Service** | Name of the service. Hover the information icon for a description. | — |
+| **Endpoint** | The URL being tested | — |
+| **Message** | Human-readable status from the last ping | — |
+| **Latency** | Round-trip latency in ms | Color-coded by performance thresholds. |
+
+### Endpoints tested
+
+| Endpoint | Purpose | Expected code |
+|----------|---------|--------------|
+| `login.microsoftonline.com` | OAuth2 token acquisition | `200` (connected, token exchange works) or `401` (connected, but test query rejected — normal) |
+| `graph.microsoft.com` | Microsoft Graph API for call records | `401` is normal here (the test doesn't have a valid bearer token) |
+| `api.openai.com` or equivalent | AI analysis API endpoint | `401` is normal (test call without auth) |
+| `license.phenisys.com` | License validation server | `200` if the license is valid |
+| `github.com` / `api.github.com` | Release version check | `200` |
+
+> **Note:** A `401` (Unauthorized) status is often **normal** for services that require authentication — the test verifies that the endpoint is reachable, not that credentials are valid. For credential validation, use the **Test** button in the relevant panel (Microsoft Configuration, AI Analysis).
+
+### Actions
+
+| Action | Description |
 |--------|-------------|
-| Status | Green (reachable), red (unreachable), grey (not yet tested) |
-| Code | HTTP response code chip (e.g., `200`, `401`, `500`) |
-| Service | Name of the service. Hover the information icon for description. |
-| Endpoint | The URL being tested |
-| Message | Human-readable status from the last ping |
-| Latency | Round-trip latency in ms, color-coded by performance thresholds |
+| **Ping** (per row) | Tests that specific endpoint individually |
+| **Ping All** (toolbar) | Tests all endpoints simultaneously — runs every test in parallel |
 
-**Row actions:** **Ping** individual endpoint.
+### Troubleshooting
 
-**Toolbar actions:** **Ping All** — tests all endpoints simultaneously.
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| `login.microsoftonline.com` shows red/unreachable | Firewall blocking Microsoft login | Add `login.microsoftonline.com` to the firewall allowlist. Check proxy settings. |
+| `graph.microsoft.com` unreachable | Microsoft Graph API blocked | Verify network rules allow `graph.microsoft.com`. The collector also needs this. |
+| `license.phenisys.com` unreachable | License validation server blocked | Add `license.phenisys.com` to the allowlist. Without this, the license cannot be validated. |
+| `api.openai.com` unreachable | OpenAI API blocked (if using OpenAI) | Add the AI provider's endpoint to the allowlist. |
+| All endpoints red | General network issue | Check DNS resolution, proxy configuration, and internet connectivity from the Dynatrace environment. |
 
 ---
 
 ## 5. Bucket Configuration
 
-**Purpose:** Configure the Dynatrace storage bucket where MS Teams log data is stored.
+**Purpose:** Configure the Dynatrace **Grail storage bucket** where the collector writes all MS Teams log data. The app reads from this bucket to display calls, sites, users, and issues.
 
-| State | What you see |
-|-------|-------------|
-| Loading | Spinner |
-| Bucket exists | Bucket details (name, retention, etc.) |
-| Bucket not found | Form to create the bucket |
-| Error | Warning with error message and "Copy details" / "See documentation" buttons |
+This is the **foundation of the data pipeline** — without a valid bucket, every page shows empty data.
 
-**When creating a bucket:**
+### When to configure this
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Display Name | No | Human-readable name |
-| Retention Days | Yes | How many days logs are retained |
+- **First-time setup** of the MS Teams Observability app.
+- **Bucket was deleted** or needs to be recreated.
+- **Retention period** needs adjustment.
+
+### How it works
+
+The app looks for a bucket named `ms_teams` (by default) when it starts:
+
+| State | What you see | What to do |
+|-------|-------------|------------|
+| **Loading** | Spinner | Wait — the app is checking bucket existence |
+| **Bucket exists** | Bucket details: name, retention days, status | Everything is fine. No action needed. |
+| **Bucket not found** | A creation form | Fill in the fields below and create it |
+| **Error** | Warning with error message | Check permissions (see below) |
+
+### Creating a bucket
+
+When the bucket doesn't exist, a form appears:
+
+| Field | Required | Description | Recommendation |
+|-------|----------|-------------|----------------|
+| Display Name | No | Human-readable name for the bucket | Leave empty to use the default |
+| Retention Days | Yes | How many days logs are retained in Grail before automatic deletion | **30 days** is a good starting point. Longer retention (90, 365) increases storage costs. |
+
+#### Retention Days — what to choose
+
+| Duration | Use case |
+|----------|----------|
+| **7 days** | Minimal — troubleshooting only, no historical analysis |
+| **30 days** | Good default — enough for monthly reporting |
+| **90 days** | Quarterly analysis — higher storage cost |
+| **365 days** | Annual trend analysis — significant storage cost |
+
+### Permissions required
+
+The app needs these permissions to manage the bucket:
+- `storage:bucket-definitions:read` — check if bucket exists
+- `storage:bucket-definitions:write` — create the bucket
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| "You don't have the required permissions" (403) | User token missing `storage:bucket-definitions:read`/`write` scopes | Contact your Dynatrace administrator to add these OAuth scopes to the app. |
+| Bucket not found after creation | Bucket name differs from what the app expects | The app uses the name from settings. Check that the created bucket matches the expected name. |
+| All pages show no data | Bucket exists but is empty or collector hasn't written yet | Verify the collector is running and writing to the correct bucket. Check [Feature Status](#3-feature-status). |
 
 ---
 
 ## 6. OpenPipeline
 
-**Purpose:** Configure the OpenPipeline data ingestion pipeline that routes MS Teams data into Dynatrace.
+**Purpose:** Configure the **OpenPipeline data ingestion pipeline** that automatically routes MS Teams log data from the collector into the correct Grail bucket and applies data processing rules (masking, enrichment, routing).
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Access Token | Yes | Dynatrace API token with `settings.read` and `settings.write` scopes (masked) |
+The OpenPipeline acts as the **data traffic controller** — it receives logs from the collector via the Dynatrace API and ensures they land in the right bucket with the right structure.
 
-**Validation indicator:**
+### When to configure this
 
-| Status | Message |
-|--------|---------|
-| Green | "Open Pipeline Configuration is valid" |
-| Yellow | "Open Pipeline Configuration is being validated" |
-| Red | "No valid Open Pipeline Configuration detected" |
+- **First-time setup** of the app — you need OpenPipeline to route collector data into Grail.
+- **Pipeline was reset** or needs regeneration.
+- **Data processing rules** need to be updated (field masking, log source routing).
 
-| Button | Description |
-|--------|-------------|
-| Save | Persists the access token |
-| Validate | Tests the token |
-| Generate Configuration | Automatically generates the OpenPipeline configuration |
-| Reset | Clears the saved token |
+### How to set it up
+
+The panel requires a **Dynatrace API token** with specific scopes. Once configured, you can either validate the existing pipeline or generate a new one automatically.
+
+### Fields
+
+| Field | Required | Description | Default |
+|-------|----------|-------------|---------|
+| Access Token | Yes | Dynatrace API token with `settings.read` and `settings.write` scopes, stored in a masked input field. The token must belong to a user with permissions to create and manage OpenPipeline configurations. | None |
+
+#### How to create the API token
+
+1. In Dynatrace, go to **Access tokens → Create new token**.
+2. Under **Captures and processors**, select these scopes:
+   - `settings.read` — read existing pipeline configuration
+   - `settings.write` — create/update pipeline configuration
+3. Give the token a recognizable name (e.g., `MS Teams OpenPipeline`).
+4. Copy the generated token and paste it into the **Access Token** field.
+5. Click **Validate** to confirm the token works.
+
+### Validation
+
+| Indicator | Status | Message |
+|-----------|--------|---------|
+| Green | Valid | "Open Pipeline Configuration is valid" |
+| Yellow | Validating | "Open Pipeline Configuration is being validated" |
+| Red | Invalid | "No valid Open Pipeline Configuration detected" |
+
+### Buttons
+
+| Button | When to use | What happens |
+|--------|-------------|--------------|
+| **Save** | After entering the token | Persists the token. |
+| **Validate** | After saving, to verify the pipeline | Tests the token and checks if the OpenPipeline configuration exists and is correct. |
+| **Generate Configuration** | After validation, if no pipeline exists | Automatically generates and deploys a complete OpenPipeline configuration that routes MS Teams log sources, masking rules, and retention policies. This is the **recommended** way to set up — no manual pipeline editing needed. |
+| **Reset** | To clear the saved token | Removes the stored token from settings. |
+
+### Generate Configuration — what it does
+
+When you click **Generate Configuration**, the app automatically creates:
+
+- **Ingestion rules** that route data from the collector endpoints to the correct Grail bucket
+- **Processing rules** for log source classification (routing each `MSTeams_*` log source to the right bucket field)
+- **Field masking rules** (optional, if configured)
+- **Default retention** matching your bucket configuration
+
+This means you **don't need to manually configure** the OpenPipeline in the Dynatrace UI — the app does it for you.
+
+### Impact on other pages
+
+| Page | Effect when configured |
+|------|----------------------|
+| All data pages (Home, Calls, Sites, Users, Issues) | Data flows correctly from the collector to Grail. Without this, pages show empty data. |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| "No valid Open Pipeline Configuration detected" | Token is missing, invalid, or pipeline not yet generated | Generate the configuration using the **Generate Configuration** button. |
+| Validation fails after saving token | Token lacks `settings.read` scope | Check the token scopes in Dynatrace → Access tokens. |
+| "Failed to generate configuration" | Token lacks `settings.write` scope | Add `settings.write` scope to the token. |
+| Data flowing but not appearing in app | Pipeline rules not matching log sources | Re-generate the configuration. Check [Feature Status](#3-feature-status) for collector health. |
 
 ---
 
@@ -229,135 +430,355 @@ The app needs these Dynatrace storage permissions to manage the sites file:
 
 ## 8. IPAM
 
-**Purpose:** Configure a URL template for linking IP addresses to your IPAM solution. When configured, right-clicking an IP in the Sites or Call Overview tables shows a "Lookup IPAM" option.
+**Purpose:** Configure a **URL template for linking IP addresses** to your IP Address Management (IPAM) solution. When configured, right-clicking any IP address in the **Sites** or **Call Overview** tables shows a **"Lookup IPAM"** option, opening your IPAM system to that specific IP.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Link Template | Yes | URL containing the `{{ip}}` placeholder. Must be `http://` or `https://`. |
+This saves time during troubleshooting — instead of copying an IP and searching for it manually, you click once and jump directly to the right IP in your IPAM.
 
-**Example:** `https://ipam.company.com/ip/{{ip}}/details`
+### When to configure this
 
-**Preview section:** Enter a test IP to preview the resolved URL. A copy button copies the preview URL.
+- **You use an IPAM solution** (e.g., SolarWinds, Infoblox, phpIPAM, NetBox).
+- **You frequently troubleshoot network issues** and need to identify switch ports, VLANs, or device names from IP addresses.
+- **Optional** — the app works fine without this; only the IPAM lookup feature is unavailable.
 
-**Validation indicator:**
+### Fields
 
-| Status | Message |
-|--------|---------|
-| Green | "Template is valid and ready to use" |
-| Yellow | "Contains `{{ip}}` but has validation errors" |
-| Red | "Template must contain the `{{ip}}` variable" |
+| Field | Required | Description | Default |
+|-------|----------|-------------|---------|
+| Link Template | Yes | URL template containing the `{{ip}}` placeholder. When you right-click an IP in the app, `{{ip}}` is replaced with the actual IP address. Must be a valid `http://` or `https://` URL. | None |
+
+**Example template:** `https://ipam.company.com/ip/{{ip}}/details`
+
+This would turn IP `10.64.0.15` into: `https://ipam.company.com/ip/10.64.0.15/details`
+
+### Preview
+
+After saving the template, a **preview section** appears:
+1. Enter a test IP (e.g., `10.0.0.1`) in the preview input.
+2. The resolved URL is displayed immediately.
+3. Click **Copy** to copy the preview URL.
+4. Click **Test Link** to open the preview URL in a new browser tab.
+
+### Validation
+
+| Indicator | Status | Message |
+|-----------|--------|---------|
+| Green | Valid | "Template is valid and ready to use" |
+| Yellow | Warning | "Contains `{{ip}}` but has validation errors" |
+| Red | Invalid | "Template must contain the `{{ip}}` variable" |
+
+### Buttons
 
 | Button | Enabled when | Description |
 |--------|-------------|-------------|
-| Save | Template is valid | Saves the IPAM link template |
-| Test Link | Template is valid | Opens the preview URL in a new tab |
-| Reset | Always | Clears the saved IPAM link |
+| **Save** | Template is valid and contains `{{ip}}` | Saves the IPAM link template |
+| **Test Link** | Template is valid | Opens the resolved preview URL in a new tab — use this to verify the template works |
+| **Reset** | Always | Clears the saved IPAM link |
+
+### Where IPAM lookup appears
+
+| Page | Context |
+|------|---------|
+| **Sites** | Right-click any IP in the Network Statistics table or the Site Inventory |
+| **Call Overview** | Right-click any IP in the Streams Information table (any IP column) |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| "Template must contain the `{{ip}}` variable" | URL doesn't include `{{ip}}` | Add `{{ip}}` in the URL where the IP should appear (e.g., `https://ipam.../search?q={{ip}}`). |
+| "Link must be a valid URL" | URL is malformed or missing protocol | Ensure the URL starts with `http://` or `https://`. |
+| "Lookup IPAM" doesn't appear on right-click | Template not saved or invalid | Check that the template is saved and shows a green validation indicator. |
+| Test Link opens a blank page | IPAM URL is incorrect or unreachable | Verify the template URL is correct by pasting the preview URL directly in a browser. |
 
 ---
 
 ## 9. AI Analysis
 
-**Purpose:** Configure the AI tool used to generate root cause analysis on the [Call Overview](../../../backends/dynatrace/app/call-overview/) page.
+**Purpose:** Configure the AI tool used to generate **root cause analysis on the [Call Overview](../../../backends/dynatrace/app/call-overview/) page**. The AI analyzes stream metrics (RTT, jitter, packet loss, codec, protocol) and participant data to identify the cause of quality degradation — for example, detecting that high jitter on a specific participant's subnet is the root cause.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Tool | Yes | Select the AI model via radio buttons |
-| Token | Yes | Select the credential from the Dynatrace vault |
-| Prompt | Yes | System prompt sent to the AI (pre-filled with the default). The text area is resizable. |
+The AI panel appears as a **detail view sidebar** on the Call Overview page, accessible via the **actions menu**. Once configured, click a call ID, open the AI panel, and ask questions like "What caused the poor quality?" or "Summarize the call."
 
-**Available AI tools:**
+### When to configure this
 
-| Tool | Available |
-|------|-----------|
-| ChatGPT 4o-mini | Yes |
-| ChatGPT 4o | Yes |
-| ChatGPT o1-preview | Yes |
-| Microsoft Copilot | Coming soon |
-| Dynatrace Copilot | Coming soon |
+- **You want automated root cause analysis** for poor-quality calls.
+- **You have an OpenAI or Anthropic API key** stored in the Dynatrace vault.
+- **Microsoft credentials** must also be configured ([panel 10](#10-microsoft-configuration)) — the AI context includes raw call details fetched from the Microsoft Graph API.
 
-**Validation indicator:**
+### Fields
 
-| Status | Message |
-|--------|---------|
-| Green | "AI Configuration is valid" |
-| Yellow | "AI Configuration is being tested" |
-| Red | "No valid AI Configuration detected" |
+| Field | Required | Description | Default |
+|-------|----------|-------------|---------|
+| API compatibility | Yes | Determines the API format. Choose **OpenAI** for models hosted by OpenAI (GPT-4o, GPT-4o-mini) or **Anthropic** for Claude models hosted by Anthropic. | `OpenAI` |
+| Base URL | Yes | Pre-filled automatically when you select the API compatibility. Only change this if you are using a **proxy or compatible endpoint** (e.g., Azure OpenAI, self-hosted LLM with OpenAI-compatible API). Must be a valid URL ending in `/v1`. | `https://api.openai.com/v1` (OpenAI) / `https://api.anthropic.com/v1` (Anthropic) |
+| Model | Yes | The model name to use. Enter it directly as text, or click **List** to fetch available models from the API (requires a valid token and base URL first). After fetching, a dropdown replaces the text input for easier selection. | `gpt-4o-mini` |
+| Token | Yes | Select a **Dynatrace vault credential** of type **Token** that stores your API key. The vault must contain the API key for the provider (OpenAI or Anthropic). Credentials are managed in the Dynatrace platform — see [Managing credentials in Dynatrace](https://docs.dynatrace.com/docs/manage/credentials). | None |
+| System Prompt | Yes | The **system prompt** sent to the AI at the start of every analysis. It defines the AI's role, tone, and scope. The pre-filled prompt (see below) is a good default for most environments. Resize the text area vertically. | Pre-filled with the default prompt |
 
-| Button | Description |
-|--------|-------------|
-| Save | Persists the AI configuration |
-| Test | Tests the connection. On failure, a "Copy Details" action is available. |
-| Reset | Clears the configuration and resets the prompt to default |
+#### How to set up the Token (step by step)
+
+1. In Dynatrace, go to **Settings → Credentials** (or **Vault**).
+2. Create a new credential of type **Token**.
+3. Paste your OpenAI or Anthropic API key as the token value.
+4. Give it a recognizable name (e.g., `OpenAI API Key`).
+5. Back in the AI Analysis panel, select this credential in the **Token** dropdown.
+
+#### Using the "List" button
+
+Click **List** after selecting a Token and Base URL — the app calls the API provider's model list endpoint and populates a dropdown. This avoids typos in model names. If your provider doesn't support model listing, simply type the model name in the text input and click **Save**.
+
+#### Default System Prompt
+
+```text
+You are a Microsoft Teams call quality analyst. Your sole expertise is diagnosing issues
+in Teams call data (call records, stream details, participant metrics, network paths).
+
+RULES:
+- Answer only questions related to the Teams call data provided in this conversation.
+- If asked anything outside this scope, reply: "I can only answer questions about the
+  Teams call data in this analysis."
+- For the first message of a conversation: give a very brief summary (2-3 sentences) of
+  the overall call quality and key findings, then ask what specific aspect the user would
+  like to investigate.
+- For subsequent messages: answer directly and concisely. Use bullet points where
+  appropriate.
+- No emojis.
+- Use technical terms appropriate for IT professionals, developers, and telecom
+  consultants (RTT, jitter, packet loss, MOS, subnet, relay, protocol, etc.).
+- When identifying issues, include specific metrics and thresholds where relevant.
+- If the call quality is good, state it clearly and briefly.
+- If data is insufficient to answer, say so rather than guessing.
+```
+
+You can customize this prompt to match your organization's tone or to add domain-specific context. For example, you could add: "Focus on network-related issues first, then device issues."
+
+#### What happens when you ask the AI
+
+1. The app collects all call data (participants, streams, geolocations, metrics) from the current Call Overview.
+2. It sends this data along with your question to the configured AI endpoint.
+3. The AI analyzes the data and returns a Markdown-formatted answer.
+4. **Each conversation is cached per call ID** — navigating away and back preserves the chat.
+
+### Validation
+
+| Indicator | Status | Message |
+|-----------|--------|---------|
+| Green | Valid | "AI Configuration is valid" |
+| Yellow | Testing | "AI Configuration is being tested" |
+| Red | Invalid | "No valid AI Configuration detected" |
+
+Auto-validation runs on page load if all fields are already saved.
+
+### Buttons
+
+| Button | When to use | What happens |
+|--------|-------------|--------------|
+| **Save** | After entering or modifying any field | Persists the configuration. A success or failure toast appears. |
+| **Test** | To verify the configuration works | Calls the AI endpoint with a minimal test. On failure, a toast shows the first 80 characters of the error, with a **Copy Details** button for troubleshooting. |
+| **Reset** | To clear all settings | Resets every field to its default value, including the prompt. A confirmation toast appears. |
+
+### Impact on other pages
+
+| Page | Effect when configured |
+|------|----------------------|
+| Call Overview | An "AI Analysis" button appears in the actions menu. Clicking it opens the chat sidebar with analysis of that specific call. |
+| Configuration | The panel shows a green "AI Configuration is valid" indicator. |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| "No valid AI Configuration detected" | Token is missing, invalid, or expired | Check the vault credential. Test with the **Test** button. |
+| Test passes but AI doesn't respond on Call Overview | Microsoft credentials not configured | Configure [panel 10](#10-microsoft-configuration). |
+| "Failed to fetch models" | API key permissions or network restriction | Verify the API key has model listing permissions. Check that `Base URL` is reachable from your Dynatrace environment. |
+| AI responses in French instead of English | Prompt customization changed the language | Review the System Prompt — the default is in English. Add a language instruction if needed. |
 
 ---
 
 ## 10. Microsoft Configuration
 
-**Purpose:** Configure the credentials used to authenticate against the Microsoft Graph API.
+**Purpose:** Configure the credentials used to authenticate against the **Microsoft Graph API** to download raw call details. This is **required** for two features:
+- **Downloading call details** as JSON from the [Call Overview](../../../backends/dynatrace/app/call-overview/) page
+- **AI Analysis** ([panel 9](#9-ai-analysis)) — the AI needs raw call data from the Graph API to build context
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Credential Name | Yes | Select from the Dynatrace vault (Username/Password or Certificate) |
-| Client ID | No | Azure AD application (client) ID |
-| Tenant ID | Yes | Azure AD tenant ID |
-| Grant Type | Yes | `Client Credentials` or `Demo` |
-| Scope | Yes | OAuth2 scope (e.g., `https://graph.microsoft.com/.default`) |
+### When to configure this
 
-**Validation indicator:**
+- **You want to use the AI Analysis** feature on the Call Overview page.
+- **You need to download raw call records** as JSON files for offline analysis.
+- **You have an Azure AD app registration** with the `CallRecords.Read.All` permission.
 
-| Status | Message |
-|--------|---------|
-| Green | "Microsoft Configuration is valid" |
-| Yellow | "Microsoft Configuration is being tested" |
-| Red | "No valid Microsoft Configuration detected" |
+### Prerequisites (Azure side)
 
-Validation runs automatically on page load if credentials are already configured.
+Before configuring this panel, create an app registration in Azure AD:
 
-| Button | Description |
-|--------|-------------|
-| Save | Persists the Microsoft configuration |
-| Test | Tests the connection. Shows detailed error toast on failure. |
-| Reset | Clears all fields |
+1. Go to **Azure Portal → App registrations → New registration**.
+2. Give it a name (e.g., `MS Teams Observability`).
+3. Under **Certificates & secrets**, create a **client secret**.
+4. Under **API permissions**, add **Microsoft Graph → Application permissions → `CallRecords.Read.All`**.
+5. Click **Grant admin consent**.
+6. Note the **Tenant ID**, **Client ID**, and **Client secret**.
 
-<Aside type="note">
-This configuration is required for downloading call details and enabling AI Analysis on the [Call Overview](../../../backends/dynatrace/app/call-overview/) page.
-</Aside>
+### Fields
+
+| Field | Required | Description | Default |
+|-------|----------|-------------|---------|
+| Credential Name | Yes | Select a **Dynatrace vault credential** that stores the Azure AD client secret. Create a credential of type **Username/Password** — use the **Client ID** as the username and the **client secret** as the password. Or use **Certificate** if you prefer certificate-based auth. | None |
+| Client ID | No | Azure AD application (client) ID. Leave empty if you stored it as the username in the vault credential above. | None |
+| Tenant ID | Yes | Your Azure AD tenant ID (a GUID like `12345678-1234-1234-1234-123456789abc`). Found in Azure Portal → Azure Active Directory → Overview. | None |
+| Grant Type | Yes | Authentication flow. **Client Credentials** for app-only access (recommended for backend services). **Demo** for testing without real credentials (only works with demo data). | `Client Credentials` |
+| Scope | Yes | The OAuth2 scope for the Microsoft Graph API. The default `.default` scopes it to the permissions you granted in Azure AD. Only change this if you need a specific scope. | `https://graph.microsoft.com/.default` |
+
+#### How to set up the Credential Name (step by step)
+
+1. In Dynatrace, go to **Settings → Credentials**.
+2. Create a new credential of type **Username/Password**.
+3. **Username:** paste your Azure AD **Client ID**.
+4. **Password:** paste the **client secret** you created in Azure AD.
+5. Give it a recognizable name (e.g., `Azure Graph API`).
+6. Back in the Microsoft Configuration panel, select this credential in the **Credential Name** dropdown.
+
+### Validation
+
+| Indicator | Status | Message |
+|-----------|--------|---------|
+| Green | Valid | "Microsoft Configuration is valid" |
+| Yellow | Testing | "Microsoft Configuration is being tested" |
+| Red | Invalid | "No valid Microsoft Configuration detected" |
+
+Auto-validation runs on page load if all fields are saved. During validation, the app attempts an OAuth2 token exchange with `login.microsoftonline.com`.
+
+### Buttons
+
+| Button | When to use | What happens |
+|--------|-------------|--------------|
+| **Save** | After entering or modifying any field | Persists the configuration. A success or failure toast appears. |
+| **Test** | To verify the configuration works | Attempts to obtain an OAuth2 token from Microsoft. On failure, a detailed error toast helps diagnose the issue (invalid tenant, expired secret, wrong scope, etc.). |
+| **Reset** | To clear all settings | Clears all fields. A confirmation toast appears. |
+
+### Impact on other pages
+
+| Page | Effect when configured |
+|------|----------------------|
+| Call Overview | **Download** button becomes enabled. **AI Analysis** becomes functional (Microsoft data is sent as context to the AI). |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| "No valid Microsoft Configuration detected" | Incorrect tenant ID, client ID, or secret | Verify the vault credential contents and the Tenant ID. Use the **Test** button. |
+| "Invalid tenant" error | Tenant ID is wrong | Check your Azure AD tenant ID in Azure Portal. |
+| "Invalid client secret" | Secret expired or wrong | Go back to Azure Portal → App registration → Certificates & secrets, create a new secret, and update the vault credential. |
+| "Insufficient privileges" | `CallRecords.Read.All` permission missing | Check the Azure AD app registration permissions. Ensure admin consent was granted. |
+| Test works but AI doesn't respond | AI Analysis not configured | Configure [panel 9](#9-ai-analysis). Microsoft config alone is not sufficient. |
 
 ---
 
 ## 11. Domains Filter
 
-**Purpose:** Configure the list of email domains used to filter call data on the [Sites](../../../backends/dynatrace/app/sites/) page. Only users whose email matches one of these domains are included.
+**Purpose:** Configure a list of **email domains** to restrict the data shown on the [Sites](../../../backends/dynatrace/app/sites/) page. Only users whose email address ends with one of the configured domains are included in site-level analytics.
 
-**Format:** Each domain must be in the format `@example.com` or `@sub.example.com`.
+This is useful for:
+- **Filtering out external participants** (guests, vendors, customers) from your site analytics
+- **Focusing on internal users only** — the Sites page aggregates data per location, and external users can distort the picture
+- **Multi-tenant setups** where you want to isolate data per domain
 
-**Adding a domain:**
-1. Type the domain in the input field (e.g., `@mycompany.com`)
-2. Press **Enter** or click **Add**
-3. The domain appears as a chip
+### When to configure this
 
-**Removing a domain:** Click the × button on any domain chip.
+- **You want the Sites page to show only internal users.**
+- **External participants** (guests from other organizations) are common in your Teams calls.
+- **Optional** — the Sites page works without this, but you'll see a warning toast reminding you to configure it.
 
-**Chip colors:**
-- **Green with checkmark** — domain has been saved
-- **Neutral/white** — domain added locally but not yet saved
+### How it works
+
+The domain filter is applied at the DQL query level on the Sites page. Calls involving only external users (no matching domain) are excluded from site aggregations.
+
+| Setting | Behavior |
+|---------|----------|
+| **No domains configured** | All users included. Warning toast appears on the Sites page: "You should configure your domains." |
+| **One or more domains** | Only users with matching email domains are included in Sites analytics. |
+
+### Format
+
+| Rule | Example |
+|------|---------|
+| Each domain must start with `@` | `@mycompany.com` ✅ |
+| Subdomains are supported | `@sub.mycompany.com` ✅ |
+| Multiple domains can be added | `@mycompany.com`, `@mycompany.fr`, `@acquired-company.com` |
+
+### How to add/remove domains
+
+1. **Add:** Type the domain in the input field (e.g., `@mycompany.com`) and press **Enter** or click **Add**.
+2. **Remove:** Click the **×** button on any domain chip.
+3. **Unsaved domains** appear as neutral/white chips. Once saved, they turn **green with a checkmark**.
+
+### Buttons
 
 | Button | Description |
 |--------|-------------|
-| Save | Persists the current domain list |
-| Reset | Clears all domains (locally and saved) |
+| **Save** | Persists the current domain list. Unsaved chips become saved (green). |
+| **Reset** | Clears all domains (both saved and unsaved chips). |
 
-<Aside type="caution">
-If no domains are configured, a warning toast will appear on the [Sites](../../../backends/dynatrace/app/sites/) page reminding you to configure them.
-</Aside>
+### Impact on other pages
+
+| Page | Effect when configured |
+|------|----------------------|
+| **Sites** | Only internal users (matching domains) are included in all analytics — map, NPA, call quality, network stats. If no domains are configured, a warning toast appears. |
+| **Calls** | No direct effect — the filter only applies to Sites page aggregations. |
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| Sites page shows "Configure domains" warning | No domains configured | Add at least one domain and click **Save**. |
+| Some users missing from Sites data | Their email domain isn't in the list | Check that all relevant domains are added. External users (guests) won't match internal domains by design. |
+| Domain doesn't match expected users | Format is wrong | Ensure the domain starts with `@` (e.g., `@company.com` not `company.com`). |
 
 ---
 
 ## 12. Permissions
 
-**Purpose:** Configure user roles and access permissions for the app.
+**Purpose:** View the **effective permissions** granted to the application based on the OAuth2 scopes configured for the Dynatrace app. This is a **read-only diagnostic table** — it shows which scopes the app has been granted and which are missing.
 
-This panel manages which Dynatrace user groups have access to the application and what actions they can perform. Refer to your Dynatrace administrator for details on available groups and roles.
+### When to use this
+
+- **The app isn't loading data** or shows permission errors.
+- **You're troubleshooting** why a specific feature isn't working.
+- **After updating OAuth scopes** in the Dynatrace app settings, to verify the changes took effect.
+
+### Permissions Table
+
+The table lists all OAuth scopes declared by the app and their current status:
+
+| Column | Description |
+|--------|-------------|
+| **Name** | The OAuth scope name (e.g., `storage:files:read`, `storage:files:write`). Hover shows the full scope string. |
+| **Granted** | Status indicator: `True` (green) — the app has this permission. `False` (red) — the app does NOT have this permission. `Condition` (blue) — permission is conditional on additional context. |
+| **Comment** | A human-readable description of what the scope is used for in the app. |
+
+The table is searchable — type in the **Search permission...** field to filter by scope name.
+
+### What scopes mean for functionality
+
+| Missing scope | Feature affected |
+|--------------|-----------------|
+| `storage:files:read` / `write` / `delete` | **Site File Management** — cannot upload, read, or delete the sites CSV file |
+| `storage:bucket-definitions:read` | **Bucket Configuration** — cannot check if the Grail bucket exists |
+| `settings.read` / `settings.write` | **OpenPipeline** — cannot validate or generate the pipeline configuration |
+| Grail query scopes | **All data pages** — cannot query call, site, user, or issue data |
+
+### How to fix missing permissions
+
+1. Go to **Dynatrace → Apps → MS Teams Observability → Settings**.
+2. Under **OAuth scopes**, ensure all required scopes are checked.
+3. Save the configuration.
+4. Return to this panel and verify the scopes now show `True`.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Solution |
+|---------|-------------|----------|
+| A scope shows `False` | The OAuth scope was not granted when the app was installed | Update the app's OAuth scopes in Dynatrace app settings and re-authorize. |
+| All scopes show `False` | The app doesn't have permission to check its own scopes | This is a chicken-and-egg issue — contact your Dynatrace administrator. |
+| Permission was granted but still shows `False` | Changes may take a few minutes to propagate | Wait 2-3 minutes and refresh the page. |
 
 ---
 

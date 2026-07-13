@@ -1,0 +1,226 @@
+---
+title: Application — Call Overview
+description: Complete analysis of a single MS Teams call — verdict, quality analysis, network diagnostics, and endpoint matrix.
+sidebar:
+  label: Call Overview
+  order: 6
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+> **Drilldown path:** Click any Call ID on the [Calls](../calls/) or [Users](../users/) pages.
+
+The Call Overview opens as a **drilldown page** (not a separate tab) when you click a Call ID. The breadcrumb navigation shows **Calls → Call `{id}`** for easy navigation back to the list.
+
+The page is organized into four sections from top to bottom, accessible by scrolling.
+
+**Default time range:** The time range from the parent page (Calls or Users) is preserved — the URL carries `from`/`to` and `parentFrom`/`parentTo` parameters for seamless back navigation.
+
+---
+
+## Missing Parameters State
+
+If `callId`, `from`, or `to` is missing from the URL:
+
+- **Error alert:** "Call ID, start time, or end time is missing."
+- **Action link:** "← Go to Calls" to return to the Calls page.
+
+---
+
+## Section 1: Verdict & Participants
+
+### Call Overview Header
+
+The header shows key call metadata:
+
+| Element | Description |
+|---------|-------------|
+| **Call ID** | Unique identifier (copy available) |
+| **Timestamps** | Start → End with duration in `HH:MM:SS` |
+| **Organizer** | UPN or display name of the call organizer |
+| **Participant count** | Total distinct participants |
+| **Quality KPI** | Call health indicator (Good / Poor / Unclassified) |
+
+### Call KPI Row
+
+A row of KPI cards showing the worst metrics across all streams:
+
+| KPI | Unit | Tones | Description |
+|-----|------|-------|-------------|
+| Max Latency | ms | Good / Warning / Bad / Neutral | Highest round-trip time across all streams |
+| Max Jitter | ms | Good / Warning / Bad / Neutral | Highest jitter value |
+| Max Packet Loss | % | Good / Warning / Bad / Neutral | Highest packet loss percentage |
+| Protocol | — | — | Most used transport protocol |
+
+### Call Map (40% width)
+
+A geographic map showing **participant locations** based on:
+- **Site subnet mapping** — location resolved from the subnet CSV (building icon)
+- **GeoIP** (optional) — public IP geolocation via ip-api.com (globe icon), if enabled in [Provisioning](../provisioning/)
+- **Unknown** — participants whose location could not be determined
+
+Participants are plotted as markers. Connections between participants are drawn to visualize the call topology.
+
+> **Note:** GeoIP must be explicitly enabled in Provisioning. When disabled, only site-mapped locations appear.
+
+### Call Details Panel (60% width)
+
+The participant table with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| **Participant** | Name or UPN. Icons distinguish internal (building) vs external (globe) vs guest (question mark). |
+| **Role** | Organizer or Participant. A "starter" chip marks the call initiator. |
+| **Location** | Resolved from site mapping, GeoIP, or "Unknown" |
+| **IP(s)** | IP addresses used across all streams |
+| **Subnet(s)** | Network subnets observed |
+| **Protocol(s)** | Transport protocols used (UDP = green, TCP = red) |
+
+**Row color coding:** rows where any stream has Poor quality are highlighted in red.
+
+---
+
+## Section 2: Quality Analysis
+
+### Evidence Panel
+
+A table that classifies **each stream** by quality with metric/value/threshold:
+
+| Column | Description |
+|--------|-------------|
+| **Quality** | Good (green), Poor (red), Unclassified (grey) |
+| **Participant** | Name of the participant |
+| **Media** | Audio / Video / Screen Share |
+| **Direction** | Receiving (↓) or Sending (↑) |
+| **Metric** | The metric that caused the classification (e.g., `jitter`, `packetLoss`, `rtt`) |
+| **Value** | Actual measured value (e.g., `45 ms`) |
+| **Threshold** | The threshold that was exceeded (e.g., `> 30 ms`) |
+| **Evidence** | Summary of the issue (e.g., "High jitter on audio receive stream") |
+| **Severity** | Color-coded severity level |
+
+This panel is the **fastest way to identify the root cause** of poor call quality — it surfaces exactly which stream and metric exceeded which threshold.
+
+### Streams Table
+
+A detailed table where **each row represents one media stream** with full metrics:
+
+| Column | Unit | Description |
+|--------|------|-------------|
+| **Participant** | — | Name of the participant |
+| **Media Type** | — | Audio (🎤), Video (🎯), Screen Share (🖥️) |
+| **Direction** | — | Receiving (↓) or Sending (↑) |
+| **Start / End** | Timestamp | Stream start and end times |
+| **Duration** | HH:MM:SS | Stream duration |
+| **RTT / Latency** | ms | Round-trip time, color-coded by thresholds |
+| **Jitter** | ms | Network jitter, color-coded |
+| **Packet Loss** | % | Packet loss ratio, shown as `X.XX%` |
+| **Codec** | — | Audio/video codec used (e.g., `SILK`, `H264`) |
+| **Resolution** | — | Video resolution (e.g., `1280x720`) |
+| **Framerate** | fps | Video framerate |
+
+### Call Timeline
+
+A visual timeline of the call showing **stream overlap** — each participant's audio/video/screen streams are plotted as colored bars along the call duration. This helps identify:
+
+- When participants joined/left
+- When multiple streams were active simultaneously
+- Gaps or overlaps in media activity
+
+---
+
+## Section 3: Network Diagnostics
+
+### IP Insights
+
+An interactive panel with multiple views:
+
+| View | Description |
+|------|-------------|
+| **ASN Distribution** | Bar chart showing which autonomous systems handled the traffic |
+| **Shared IPs** | Identifies participants sharing the same public IP (NAT traversal pattern — likely on the same physical network) |
+| **Relay Usage** | Shows which media relay servers were used and by whom |
+| **Private IPs** | Lists private IP usage patterns |
+
+Use this panel to detect:
+- Participants behind the same NAT gateway (shared public IP)
+- Unusual relay paths that may indicate routing issues
+- Traffic distribution across ISPs or network segments
+
+### Network Path
+
+A table showing **network path hops** per participant:
+
+| Column | Description |
+|--------|-------------|
+| **Participant** | Name of the participant |
+| **Hop** | Hop number in the traceroute |
+| **IP Address** | Router/gateway IP at this hop |
+| **RTT** | Round-trip time to this hop in ms |
+
+This panel helps identify where in the network path latency is introduced.
+
+### Network IP Inventory
+
+A table showing all IP addresses observed in the call, grouped by participant:
+
+| Column | Description |
+|--------|-------------|
+| **Participant** | Name |
+| **IP** | IP address |
+| **Type** | Local, Reflexive (NAT), or Relay |
+| **Location** | GeoIP location (if enabled) |
+| **ASN** | Autonomous system number |
+
+---
+
+## Section 4: Endpoints
+
+### Device Participants Panel (Endpoint Matrix)
+
+A table showing **per-participant endpoint information**:
+
+| Column | Description |
+|--------|-------------|
+| **Participant** | Name |
+| **Platform** | Windows, macOS, iOS, Android, Web — shown as a colored chip |
+| **Host** | Computer/host device name |
+| **Audio Input** | Microphone device name |
+| **Audio Output** | Speaker/headphone device name |
+| **Signal Level** | Audio input signal level (good/warning/bad) |
+| **CPU** | Processor information |
+| **Client Version** | MS Teams client version |
+| **Connection Type** | Wired, WiFi, Cellular, etc. |
+
+**Tissue indicator:** Each row shows a "tissue" label — green (healthy) or red (issue detected) — based on device-level problems (low signal, high CPU, missing audio devices).
+
+### Bot Activity Panel (conditional)
+
+Shown **only when the call includes bot participants** (e.g., recording bots, transcription bots). Displays:
+
+| Column | Description |
+|--------|-------------|
+| **Participant** | Bot name |
+| **Bot Role** | The bot's role in the call |
+| **Bot App ID** | Application ID of the bot |
+| **Streams** | Total, Good, Poor stream counts |
+| **Protocols** | Transport protocols used by the bot |
+
+---
+
+## Navigation
+
+| Action | Destination |
+|--------|-------------|
+| Click breadcrumb "Calls" | Back to the Calls page with the same time range |
+| Click breadcrumb "Call `{id}`" | Current page (no effect) |
+| Browser back | Returns to the previous page (Calls or Users) |
+
+## States
+
+| Situation | What you see |
+|-----------|-------------|
+| Loading | "Loading call overview…" placeholder |
+| Missing URL params | Error alert with "← Go to Calls" link |
+| No data for this call ID | "No call data available for this ID." |
+| Data loaded | Full page with all sections rendered |
+| Network error | Error alert with error message |

@@ -7,45 +7,139 @@ sidebar:
 ---
 
 import { Aside } from '@astrojs/starlight/components';
-import grafanaAppUsersPage from '../../../../../assets/images/grafana-app-users-page.png';
 
-The Users page provides per-user analytics for every MS Teams user who made or received calls. The default time range is 7 days.
+> **Tab label:** Users — **Default time range:** Last 7 days
 
-<figure>
-  <img src={grafanaAppUsersPage.src} alt="Grafana app users page" />
-  <figcaption>Users page with identity, network, device, and recent call details.</figcaption>
-</figure>
+The Users page provides **per-user analytics** for every MS Teams user who made or received calls. Each row represents a user with aggregated data from all their calls in the selected time window.
+
+Default sort: **Calls (Poor count descending)** — users with the most poor-quality calls appear first.
+
+---
 
 ## Filter Bar
 
-Chip-based filters (key/operator/value) synced to the URL, allowing complex queries like "platform = windows AND callHealth = poor".
+Chip-based filters (key/operator/value) synced to the URL (`?filter=...`), allowing complex queries.
+
+### Available filter keys
+
+| Key | Type | Operators | Description |
+|-----|------|-----------|-------------|
+| `name` | String | `=`, `!=`, `~` (contains), `starts with`, `ends with`, `in ()`, `not in ()` | User display name |
+| `email` | String | Same as above | User email address |
+| `ip` | String | `=`, `!=`, `~`, `starts with`, `ends with` | Any IP address observed for this user |
+| `platform` | Enum | `=`, `!=`, `in ()`, `not in ()` | Platform used (see valid values below) |
+| `protocol` | Enum | `=`, `!=`, `in ()`, `not in ()` | Transport protocol (see valid values below) |
+
+**Valid values for `platform`:** `Windows`, `macOS`, `iOS`, `Android`, `Web`, `Unknown`
+
+**Valid values for `protocol`:** `UDP`, `TCP`, `SRTP`
+
+---
 
 ## Users Table
 
-Each row represents a user with grouped data:
+A sortable, paginated table with **expandable rows**. Click any row to see the full detail panel.
 
-### Identity
-- Display name, email, AAD object ID
+### Main Table Columns
 
-### Network
-- IPs, subnets, protocols used, connection types, protocol statistics
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| **User** | No | Display name (clickable — navigates to [Calls](../calls/) pre-filtered for that user) and email address (shown below the name) |
+| **Calls** | By poor count descending (default) | **Total** calls, **Good** (green), **Poor** (red if > 0), and **Poor %** (tone: good < 5%, warning > 0, bad ≥ 5%) |
+| **Network** | By first protocol | Protocol badges (UDP = green, TCP = red, SRTP = blue), first IP address, first subnet |
+| **Activity** | By last seen descending (default) | **Last seen** (`Xm ago` / `Xh ago` / `Xd ago`), **Avg duration**, **Platforms** |
 
-### Calls
-- Total, Good, Poor, Unclassified counts
-- Average, minimum, and maximum call duration
+### Header Tooltips
 
-### Devices
-- Platforms used (Windows, macOS, iOS, Android, Web)
-- Host devices, input/output audio devices
-- Teams products and client versions
+Hover the info-circle icon on any column header for a brief description of what the column represents.
 
-### Recent Calls
-- Last 5 calls with Call ID, health, and duration
-- Each Call ID links to the Call Overview with the time range preserved.
+### Expanded Row Details
 
-### Last Seen
-- Timestamp of the user's most recent call
+Click any row to expand it and see the full detail panel, organized into sections:
 
-<Aside type="tip">
-Click a Call ID in the Recent Calls column to drill into the Call Overview. The time range from the Users page is preserved in the navigation.
-</Aside>
+#### Identity
+
+| Field | Description |
+|-------|-------------|
+| **ID** | User's AAD object ID (with copy button) |
+| **Name** | User display name (link to Calls filtered for this user) |
+| **Mail** | Email address |
+| **Last seen** | Date/time of most recent activity |
+
+#### Call Quality
+
+| Field | Tone |
+|-------|------|
+| Total / Good / Poor / Unclassified call counts | Poor count: red if > 0, green otherwise |
+| **Poor %** | Color-coded: < 5% = good, 0-5% = warning, ≥ 5% = bad |
+
+#### Durations
+
+| Field | Description |
+|-------|-------------|
+| **Average** | Mean call duration (`Xh Ym` / `Xm Ys`) |
+| **Maximum** | Longest call duration |
+| **Minimum** | Shortest call duration |
+
+#### Network
+
+| Field | Description |
+|-------|-------------|
+| **IPs** | All IP addresses observed (copyable list) |
+| **Subnets** | Network subnets as badges |
+| **Connection** | Connection type (wired, wifi, cellular, etc.) |
+| **Protocols** | Transport protocols with color mapping (UDP = green, TCP = red, SRTP = blue) |
+| **Protocol stats** | Per-protocol count breakdown |
+
+#### Device
+
+| Field | Description |
+|-------|-------------|
+| **Platforms** | Platform badges (Windows, macOS, iOS, Android, Web) |
+| **Products** | Microsoft Teams product badges (Teams, Skype, etc.) |
+| **Teams versions** | Client version badges |
+| **Hosts** | Host/device names |
+| **Input devices** | Audio input devices (microphones) |
+| **Output devices** | Audio output devices (speakers/headphones) |
+
+#### Recent Calls (last 5)
+
+Each entry shows:
+
+| Element | Description |
+|---------|-------------|
+| **Call ID** | First 8 characters + link to [Call Overview](../call-overview/) with time range preserved |
+| **Health** | Good (green) / Poor (red) / Unclassified (grey) |
+| **Time** | Start → End timestamps |
+| **Duration** | Call duration |
+
+---
+
+## URL Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `filter` | Chip-based filter expression (JSON-encoded) | `[{"key":"platform","operator":"=","value":"Windows"}]` |
+| `from` | Timeframe start | `now()-7d` |
+| `to` | Timeframe end | `now()` |
+
+---
+
+## Navigation from this page
+
+| Action | Destination |
+|--------|-------------|
+| Click a user name | [Calls](../calls/) page, pre-filtered for that user, same time range |
+| Click a Call ID in Recent Calls | [Call Overview](../call-overview/) for that call |
+| Browser back | Returns to the previous page with the same time range |
+
+---
+
+## States
+
+| Situation | What you see |
+|-----------|-------------|
+| Loading | "Loading users data…" message |
+| No users match filters | "No users match the current filters." |
+| No data at all | Empty table |
+| Network error | Error alert |

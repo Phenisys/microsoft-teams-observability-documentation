@@ -1,6 +1,6 @@
 ---
 title: Application — Provisioning
-description: Grafana provisioning settings for the MS Teams Observability app — Microsoft Graph, datasource, domains, IPAM, subnet mappings, and GeoIP toggle.
+description: Grafana plugin configuration — Microsoft Graph, datasource, domains, IPAM, subnet mappings, and GeoIP toggle.
 sidebar:
   label: Provisioning
   order: 9
@@ -8,50 +8,165 @@ sidebar:
 
 import { Aside } from '@astrojs/starlight/components';
 
-> **Path:** Administration → Plugins → MS Teams Observability → Configuration
+> **Path:** Grafana → **Administration → Plugins → MS Teams Observability → Configuration**
 
-The provisioning page exposes 6 configuration sections. Each section saves independently without page reload, and changes are synchronized live across the app.
+The Provisioning page exposes **6 configuration sections**. Each section saves independently without page reload, and changes are synchronized live across the app. An error alert appears at the top if plugin settings cannot be synced.
 
-## Microsoft Graph
+---
 
-Configure the Microsoft Graph API connection for live call data retrieval:
+## 1. Microsoft Graph
 
-- Tenant ID
-- Client ID
-- Client secret (stored securely, masked in UI)
+**Purpose:** Configure the Microsoft Graph API connection for **live call data retrieval**. Required for live mode — without this, the app only works in demo mode.
 
-## Data Source
+### Fields
+
+| Field | Required | Description | Default |
+|-------|----------|-------------|---------|
+| **Tenant ID** | Yes | Your Azure AD tenant ID (GUID) | None |
+| **Client ID** | Yes | Azure AD application (client) ID | None |
+| **Client Secret** | Yes | Azure AD client secret (stored securely, masked in UI) | None |
+
+### How to set up (Azure side)
+
+1. Go to **Azure Portal → App registrations → New registration**.
+2. Give it a name (e.g., `MS Teams Observability`).
+3. Under **Certificates & secrets**, create a **client secret**.
+4. Under **API permissions**, add **Microsoft Graph → Application permissions → `CallRecords.Read.All`**.
+5. Click **Grant admin consent**.
+6. Note the **Tenant ID**, **Client ID**, and **Client secret**.
+7. Enter them in this panel and click **Save**.
+
+### Impact
+
+| Feature | Without config | With config |
+|---------|---------------|-------------|
+| Demo Mode | ✅ Works | ✅ Works |
+| Live Mode | ❌ Not available | ✅ Works |
+| Call Overview | ✅ Works (no download) | ✅ Works with download |
+
+---
+
+## 2. Data Source
+
+**Purpose:** Configure the Loki datasource connection and toggle between Demo and Live mode.
+
+### Fields
+
+| Setting | Required | Description | Default |
+|---------|----------|-------------|---------|
+| **Demo Mode** | Yes | Toggle between demo data (built-in JSON fixtures) and live mode (Loki queries) | `On` |
+| **Loki Datasource UID** | Conditional | The Grafana UID of the Loki datasource to query. Required when Demo Mode is **Off**. | None |
+
+### How to find the Loki Datasource UID
+
+1. Go to **Grafana → Connections → Data Sources**.
+2. Find your Loki datasource.
+3. The UID is shown in the URL or in the datasource settings page (e.g., `P208D7C6E71A2D3B4`).
+
+### When to use Demo Mode
+
+| Situation | Mode |
+|-----------|------|
+| First-time evaluation | Demo Mode |
+| No collector installed yet | Demo Mode |
+| Collector is running and writing to Loki | Live Mode (switch Demo Mode Off) |
+| Demos and presentations | Demo Mode |
+
+---
+
+## 3. Domain Filter
+
+**Purpose:** Filter the [Sites](../sites/) view to **internal users only**. Only users with email addresses matching the configured domains appear in site-level analytics.
 
 | Setting | Description |
-| --- | --- |
-| **Demo Mode** | Toggle between demo data (built-in fixtures) and live mode (Loki queries) |
-| **Loki Datasource UID** | The Grafana UID of the Loki datasource to query |
+|---------|-------------|
+| **Domain List** | Comma-separated list of email domains (e.g., `@mycompany.com, @mycompany.fr`) |
 
-## Domain Filter
+### When to configure
 
-Comma-separated list of email domains to include in the Sites view. Only users with matching domains appear in site-level analytics. Useful for filtering internal users from external guests.
+- External participants (guests, vendors) are common in your Teams calls
+- You want site analytics focused on internal users only
 
-## IPAM
+### Behavior
 
-An optional link template for your IP Address Management solution. When configured, IP addresses in the Network Diagnostics panels become clickable links.
+| Setting | Result |
+|---------|--------|
+| Empty (no domains) | All users included in Sites analytics |
+| One or more domains | Only users with matching email domains are included |
 
-## Subnet Location
+---
 
-Upload a CSV mapping of subnets to geographic locations. The format is:
+## 4. IPAM
+
+**Purpose:** Configure an optional URL template for linking IP addresses to your **IP Address Management** (IPAM) solution.
+
+| Setting | Description | Example |
+|---------|-------------|---------|
+| **Link Template** | URL containing `{{ip}}` placeholder | `https://ipam.company.com/ip/{{ip}}/details` |
+
+When configured, IP addresses in the **Network Diagnostics** panels on the [Call Overview](../call-overview/) page become clickable links, opening your IPAM system to that specific IP.
+
+---
+
+## 5. Subnet Location
+
+**Purpose:** Upload a **CSV mapping** of network subnets to geographic locations. This is required for the [Sites](../sites/) page, which uses this mapping to aggregate call quality by location.
+
+### CSV Format
 
 ```
 subnet,location,latitude,longitude
 10.0.0.0/24,Paris Office,48.8566,2.3522
+10.1.0.0/16,London Office,51.5074,-0.1278
 ```
 
-Supports full CRUD: add, edit, delete mappings. An **"Unsaved changes"** indicator appears when mappings are modified before saving.
+| Column | Type | Description |
+|--------|------|-------------|
+| `subnet` | CIDR | Network subnet (e.g., `10.64.0.0/24`) |
+| `location` | String | Human-readable location name |
+| `latitude` | Number | -90 to 90 |
+| `longitude` | Number | -180 to 180 |
 
-## GeoIP Toggle
+### CRUD Operations
 
-| Setting | Description |
-| --- | --- |
-| **Enable GeoIP** | Toggle to enable or disable IP geolocation via ip-api.com |
+The section supports full **Create, Read, Update, Delete** of subnet mappings:
+
+| Action | Description |
+|--------|-------------|
+| **Upload CSV** | Import a full set of mappings |
+| **Add row** | Manually add a single subnet/location entry |
+| **Edit** | Modify an existing mapping |
+| **Delete** | Remove a mapping |
+| **Unsaved changes** indicator | Appears when mappings are modified before saving |
+
+### When to configure
+
+- **First-time setup** of the app — without subnet mappings, the Sites page shows no location data.
+- **Adding new offices** or network segments.
+- **Network changes** (new subnets, datacenter migrations).
+
+---
+
+## 6. GeoIP Toggle
+
+**Purpose:** Enable or disable IP geolocation via **ip-api.com** for the [Call Map](../call-overview/#call-map-40-width).
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Enable GeoIP** | Toggle to enable/disable IP geolocation | `Off` |
+
+### When to enable
+
+- You want the Call Map to show approximate geographic locations for participants based on their public IP addresses.
+- Your organization allows third-party API calls for geolocation.
 
 <Aside type="caution">
-When GeoIP is enabled, participant IP addresses are sent to ip-api.com for geolocation. This constitutes third-party data egress. Document this in your privacy policy and disable the toggle if your organization requires it.
+When GeoIP is enabled, **participant IP addresses are sent to ip-api.com** for geolocation. This constitutes **third-party data egress**. Document this in your privacy policy and disable the toggle if your organization restricts external data sharing.
 </Aside>
+
+### Impact
+
+| Setting | Call Map behavior |
+|---------|-------------------|
+| GeoIP **Off** (default) | Only site-mapped locations appear (from the Subnet Location CSV). Unmapped IPs show as "Unknown". |
+| GeoIP **On** | Public IPs are geolocated via ip-api.com. Unmapped IPs show approximate city-level locations. |
