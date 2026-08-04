@@ -1,6 +1,6 @@
 ---
 title: Metrics Dictionary Guide
-description: Complete field reference for MS Teams Observability event types, metrics, and dashboard fields.
+description: Complete field reference for MS Teams Observability event types, metrics, and log models, auto-generated from the collector.
 sidebar:
   label: Metrics Dictionary
   order: 1
@@ -24,117 +24,320 @@ This page is the canonical field reference for all event families exported by th
 | `MSTeams_RemoteCollectionHealth` | Remote collection status (extension) | Verify extension-based agent health |
 | `MSTeams_CollectionHealth` | Collector status | Verify ingestion health |
 
-## Field Reference by Event Family
 
-### MSTeams_CallRecords_CallMetadata
 
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `call.id` | string | `550e8400-e29b-41d4-a716-446655440000` | Unique call identifier | Calls, Call Overview |
-| `type` | string | `call` | Call type enum | Overview, Calls |
-| `callHealth` | string | `poor` | High-level call quality status (`good`/`poor`/`bad`) | Overview, Calls |
-| `startDateTime` | datetime | `2026-05-22T14:30:00Z` | Call start time | All dashboards |
-| `timestamp` | datetime | `2026-05-22T14:35:00Z` | Record ingestion timestamp | All dashboards |
-| `caller` | object | `{ "upn": "...", "displayName": "..." }` | Caller identity | Users |
-| `callee` | object | `{ "upn": "...", "displayName": "..." }` | Callee identity | Users |
-| `durationSeconds` | number | `320` | Call duration in seconds | Call Overview, Overview |
-| `mediaPaths` | array | `["audio", "video"]` | Media modalities used | Calls |
+## Models Summary
 
-### MSTeams_CallRecords_StreamDetails
+| Model | Log source | Fields |
+|-------|------------|-------:|
+| [`AutoAttendantLog`](#autoattendantlog) | `MSTeams_CallRecords_AutoAttendant` | `28` |
+| [`CallMetadataLog`](#callmetadatalog) | `MSTeams_CallRecords_CallMetadata` | `12` |
+| [`CallQueueLog`](#callqueuelog) | `MSTeams_CallRecords_CallQueue` | `21` |
+| [`CollectionHealthLog`](#collectionhealthlog) | `MSTeams_CollectionHealth` | `10` |
+| [`RemoteCollectionHealthLog`](#remotecollectionhealthlog) | `MSTeams_RemoteCollectionHealth` | `10` |
+| [`DirectRoutingCallLog`](#directroutingcalllog) | `MSTeams_CallRecords_DirectRouting` | `22` |
+| [`PstnCallLog`](#pstncalllog) | `MSTeams_CallRecords_PSTN` | `22` |
+| [`ServiceHealthLog`](#servicehealthlog) | `MSTeams_ServiceAnnouncement` | `17` |
+| [`StreamDetailsLog`](#streamdetailslog) | `MSTeams_CallRecords_StreamDetails` | `89` |
 
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `call.id` | string | `550e8400-...` | Parent call identifier | Call Overview |
-| `mediaLabel` | string | `main-audio` | Stream media label | Call Overview |
-| `streamDirection` | string | `callerToCallee` | Directional flow (`callerToCallee`/`calleeToCaller`) | Stream analysis |
-| `streamHealth` | string | `good` | Stream-level quality | Stream analysis |
-| `averageRoundTripTimeMs` | number | `45.2` | Average RTT in milliseconds | Quality widgets |
-| `averageJitterMs` | number | `12.5` | Average jitter in milliseconds | Quality widgets |
-| `averagePacketLossRatePercent` | number | `1.8` | Average packet loss percentage | Quality widgets |
-| `averageVideoFrameLossPercentage` | number | `0.5` | Video frame loss percentage | Video quality |
-| `averageVideoFrameRate` | number | `29.97` | Video frame rate in fps | Video quality |
-| `startDateTime` | datetime | `2026-05-22T14:30:00Z` | Stream start time | Call Overview |
+## AutoAttendantLog
 
-### MSTeams_CallRecords_PSTN
+- Log source: `MSTeams_CallRecords_AutoAttendant`
 
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `call.id` | string | `...` | Unique call identifier | Calls |
-| `callerNumber` | string | `+1-555-0123` | Calling party phone number | PSTN |
-| `calleeNumber` | string | `+1-555-0456` | Called party phone number | PSTN |
-| `callDurationSeconds` | number | `180` | PSTN call duration | PSTN |
-| `startDateTime` | datetime | `...` | PSTN call start time | PSTN |
-
-### MSTeams_CallRecords_DirectRouting
-
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `call.id` | string | `...` | Unique call identifier | Direct Routing |
-| `sipResponseCode` | number | `200` | SIP response code | Direct Routing |
-| `startDateTime` | datetime | `...` | SIP call start time | Direct Routing |
-
-### MSTeams_CallRecords_AutoAttendant
-
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `call.id` | string | `...` | Unique call identifier | Auto Attendant |
-| `startDateTime` | datetime | `...` | Call start time | Auto Attendant |
-
-### MSTeams_CallRecords_CallQueue
-
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `call.id` | string | `...` | Unique call identifier | Call Queue |
-| `startDateTime` | datetime | `...` | Call start time | Call Queue |
-
-### MSTeams_ServiceAnnouncement
-
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `title` | string | `Teams - Call quality degraded` | Incident title | Issues |
-| `status` | string | `serviceDegradation` | Incident status enum | Issues |
-| `startDateTime` | datetime | `...` | Incident start time | Issues |
-| `lastUpdated` | datetime | `...` | Last update timestamp | Issues |
-
-### MSTeams_CollectionHealth
-
-| Field | Type | Example | Meaning | Used in dashboards |
-|---|---|---|---|---|
-| `collectionCycleId` | string | `...` | Unique cycle identifier | Collector health |
-| `cycleStartTime` | datetime | `...` | Collection cycle start | Collector health |
-| `cycleEndTime` | datetime | `...` | Collection cycle end | Collector health |
-| `recordCount` | number | `1500` | Number of records collected | Collector health |
-| `exportSuccess` | boolean | `true` | Export status summary | Collector health |
-
-## Common Dashboard Dimensions
-
-These dimensions are used across dashboards for filtering and grouping:
-
-| Dimension | Description | Applies to |
+| Name | Type | Description |
 |---|---|---|
-| `call.id` | Unique call identifier | All call-related dashboards |
-| `type` | Call type (`call`, `pstn`, `directRouting`, etc.) | Overview, Calls |
-| `callHealth` | Overall call quality (`good`/`poor`/`bad`) | Overview, Calls, Call Overview |
-| `startDateTime` | Event start time (used for time-based queries) | All dashboards |
-| `timestamp` | Record ingestion timestamp | All dashboards |
-| `mediaLabel` | Stream identifier (`main-audio`, `main-video`, etc.) | Call Overview, Stream analysis |
-| `streamDirection` | Directional flow (`callerToCallee`/`calleeToCaller`) | Stream analysis |
-| `streamHealth` | Stream quality level | Stream analysis |
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `call_id` | `str \| None` | Unique call identifier (GUID). Use this to correlate with other call-record logs. |
+| `timestamp` | `datetime \| None` | Collection timestamp for the log entry (UTC datetime). |
+| `duration` | `Any \| None` | Duration of the call in seconds. |
+| `first_is_caller` | `Any \| None` | Whether the first user in the record is the caller. |
+| `first_upn` | `str \| None` | UserPrincipalName (sign-in name) of the first user in the record. |
+| `pstn_call_type` | `str \| None` | Type of PSTN call (e.g. user call, conference call). |
+| `pstn_connectivity_type` | `str \| None` | PSTN connectivity type (Calling Plan, Direct Routing, Teams Phone Mobile, ACS). |
+| `pstn_call_duration` | `Any \| None` | Duration of the PSTN leg of the call, in seconds. |
+| `record_timestamp` | `datetime \| None` | Timestamp of the source record as reported by the upstream service. |
+| `start_date_time` | `datetime \| None` | Call start time (UTC datetime). |
+| `aa_call_flow` | `str \| None` | The Auto Attendant call flow used for the call. |
+| `aa_call_result` | `str \| None` | Final result of the call in the Auto Attendant (e.g. terminated, transferred). |
+| `aa_caller_action_counts` | `Any \| None` | Count of actions selected by the caller in the Auto Attendant during the call. |
+| `aa_chain_duration_secs` | `Any \| None` | Duration of the call inside the Auto Attendant chain, in seconds. |
+| `aa_chain_index` | `Any \| None` | Position of the Auto Attendant in the call chain (nesting). |
+| `aa_chain_start_time` | `datetime \| None` | Time when the Auto Attendant chain started. |
+| `aa_count` | `Any \| None` | Number of Auto Attendants the call passed through. |
+| `aa_directory_search_method` | `str \| None` | Method used to search the directory (DTMF or voice). |
+| `aa_id` | `str \| None` | Auto Attendant unique identifier (GUID). |
+| `aa_identity` | `str \| None` | Name or identity of the Auto Attendant. |
+| `aa_transfer_action` | `str \| None` | Transfer action taken by the Auto Attendant. |
+| `avg_aa_chain_duration_seconds` | `float \| None` | Average duration of the Auto Attendant chain, in seconds. |
+| `avg_call_duration` | `float \| None` | Average call duration, in seconds. |
+| `total_audio_stream_duration` | `float \| None` | Total audio stream duration, in seconds. |
+| `total_call_count` | `float \| None` | Total number of calls (1 per record, used for sums). |
 
-## Common Quality Metrics
+## CallMetadataLog
 
-| Metric | Source family | Description |
+- Log source: `MSTeams_CallRecords_CallMetadata`
+
+| Name | Type | Description |
 |---|---|---|
-| `averageRoundTripTimeMs` | StreamDetails | Network latency between endpoints |
-| `averageJitterMs` | StreamDetails | Jitter (delay variation) in milliseconds |
-| `averagePacketLossRatePercent` | StreamDetails | Percentage of lost packets |
-| `averageVideoFrameLossPercentage` | StreamDetails | Video frame loss rate |
-| `averageVideoFrameRate` | StreamDetails | Video frames per second |
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source, set to 'MSTeams_CallRecords_CallMetadata' for this model. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `timestamp` | `datetime \| None` | Collection timestamp for the log entry (UTC datetime). |
+| `call_start` | `datetime \| None` | Call start time (UTC datetime). |
+| `call_id` | `str` | Unique call identifier (GUID). Use this to correlate with other call-record logs. |
+| `call_type` | `str` | Call type and direction (e.g. peerToPeer, group, PSTN outbound/inbound). |
+| `call_health` | `str` | Aggregated health classification for the call across all streams (e.g. Good, Poor, Unclassified). |
+| `call_modalities` | `list[str]` | Modalities observed in the call (e.g. audio, video, screenSharing). |
+| `call_duration` | `int` | Duration of the call in milliseconds. |
+| `call_participants` | `list[str]` | List of participant identifiers present in the call (user ids or endpoint ids). |
+| `count_participants` | `int` | Number of participants counted using legacy rules (user/guest identities only). |
+
+## CallQueueLog
+
+- Log source: `MSTeams_CallRecords_CallQueue`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `call_id` | `str \| None` | Unique call identifier (GUID). Use this to correlate with other call-record logs. |
+| `dialog_id` | `str \| None` | Dialog identifier, used for troubleshooting purposes. |
+| `timestamp` | `datetime \| None` | Collection timestamp for the log entry (UTC datetime). |
+| `duration` | `Any \| None` | Duration of the call in seconds. |
+| `agent_name` | `str \| None` | UserPrincipalName of the agent who handled the call. |
+| `record_timestamp` | `datetime \| None` | Timestamp of the source record as reported by the upstream service. |
+| `start_date_time` | `datetime \| None` | Call start time (UTC datetime). |
+| `pstn_call_type` | `str \| None` | Type of PSTN call (e.g. user call, conference call). |
+| `pstn_connectivity_type` | `str \| None` | PSTN connectivity type (Calling Plan, Direct Routing, Teams Phone Mobile, ACS). |
+| `pstn_call_duration` | `Any \| None` | Duration of the PSTN leg of the call, in seconds. |
+| `cq_agent_count` | `Any \| None` | Number of agents configured in the call queue. |
+| `cq_agent_opt_in_count` | `Any \| None` | Number of agents opted-in to the call queue. |
+| `cq_call_result` | `str \| None` | Final result of the call (abandoned, agent answered, overflowed, timed out, no agents, other). |
+| `cq_duration_seconds` | `Any \| None` | Call duration inside the call queue, in seconds. |
+| `cq_final_state_action` | `str \| None` | Final state action of the call (overflow, timeout, no agents) with routing outcome. |
+| `cq_id` | `str \| None` | Call queue unique identifier (GUID). |
+| `cq_identity` | `str \| None` | Name of the resource account attached to the call queue. |
+| `cq_target_type` | `str \| None` | Target type of the call outcome (abandoned, agent answered, overflowed, timed out, no agents). |
+
+## CollectionHealthLog
+
+- Log source: `MSTeams_CollectionHealth`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `timestamp` | `datetime \| None` | Health log emission timestamp. |
+| `version` | `str \| None` | Collector application version. |
+| `stats` | `HealthStats \| None` | Canonical collection-health KPIs grouped by collect, process, deliver, and overall phases. |
+| `license` | `HealthLicense \| None` | License status snapshot included in health logs. |
+| `features` | `HealthFeatures \| None` | Feature toggle states at collection time. |
+| `output` | `HealthOutput \| dict[str, Any] \| None` | Configured output destination URLs (compatibility section). |
+| `cycle` | `HealthCycle \| None` | Cycle metadata. |
+
+## RemoteCollectionHealthLog
+
+- Log source: `MSTeams_RemoteCollectionHealth`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `timestamp` | `datetime \| None` | Health log emission timestamp. |
+| `version` | `str \| None` | Collector application version. |
+| `stats` | `HealthStats \| None` | Canonical collection-health KPIs grouped by collect, process, deliver, and overall phases. |
+| `license` | `HealthLicense \| None` | License status snapshot included in health logs. |
+| `features` | `HealthFeatures \| None` | Feature toggle states at collection time. |
+| `output` | `HealthOutput \| dict[str, Any] \| None` | Configured output destination URLs (compatibility section). |
+| `cycle` | `HealthCycle \| None` | Cycle metadata. |
+
+## DirectRoutingCallLog
+
+- Log source: `MSTeams_CallRecords_DirectRouting`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `call_id` | `str \| None` | Unique call identifier. |
+| `user_principal_name` | `str \| None` | UserPrincipalName (sign-in name) in Microsoft Entra ID. |
+| `user_display_name` | `str \| None` | Display name of the user. |
+| `start_date_time` | `datetime \| None` | Call start time. |
+| `invite_date_time` | `datetime \| None` | The date and time when the initial invite was sent. |
+| `failure_date_time` | `datetime \| None` | Only exists for failed (not fully established) calls. |
+| `timestamp` | `datetime \| None` | Collection timestamp for the log entry (UTC datetime). |
+| `duration` | `int \| None` | Duration of the call in seconds. |
+| `call_type` | `str \| None` | Call type and direction. |
+| `successful_call` | `bool \| None` | Success or attempt. |
+| `callee_number` | `str \| None` | Number of the user or bot who received the call. E.164 format, but might include other data. |
+| `caller_number` | `str \| None` | Number of the user or bot who made the call. E.164 format, but might include other data. |
+| `media_path_location` | `str \| None` | The datacenter used for media path in a nonbypass call. |
+| `signaling_location` | `str \| None` | The datacenter used for signaling for both bypass and nonbypass calls. |
+| `final_sip_code` | `int \| None` | The final response code with which the call ended. For more information, see RFC 3261. |
+| `call_end_sub_reason` | `int \| None` | In addition to the SIP codes, Microsoft has subcodes that indicate the specific issue. |
+| `final_sip_code_phrase` | `str \| None` | Description of the SIP code and Microsoft subcode. |
+| `trunk_fqdn` | `str \| None` | Fully qualified domain name of the session border controller. |
+| `media_bypass_enabled` | `bool \| None` | Indicates whether the trunk was enabled for media bypass. |
+
+## PstnCallLog
+
+- Log source: `MSTeams_CallRecords_PSTN`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `call_id` | `str \| None` | Call identifier. Not guaranteed to be unique. |
+| `user_principal_name` | `str \| None` | The user principal name (sign-in name) in Microsoft Entra ID. |
+| `user_display_name` | `str \| None` | Display name of the user. |
+| `start_date_time` | `datetime \| None` | Call start time. |
+| `timestamp` | `datetime \| None` | Collection timestamp for the log entry (UTC datetime). |
+| `duration` | `int \| None` | How long the call was connected, in seconds. |
+| `charge` | `float \| str \| None` | Amount of money or cost of the call that is charged to your account. |
+| `call_type` | `str \| None` | Indicates whether the call was a PSTN outbound or inbound call and the type of call |
+| `currency` | `str \| None` | Type of currency used to calculate the cost of the call (ISO 4217). |
+| `callee_number` | `str \| None` | Number dialed in E.164 format. |
+| `caller_number` | `str \| None` | Number that received the call for inbound calls or the number dialed for outbound calls. |
+| `usage_country_code` | `str \| None` | Country code of the user. For details, see ISO 3166-1 alpha-2. |
+| `tenant_country_code` | `str \| None` | Country code of the tenant. For details, see ISO 3166-1 alpha-2. |
+| `connection_charge` | `float \| str \| None` | Connection fee price. |
+| `destination_name` | `str \| None` | Country or region dialed. |
+| `license_capability` | `str \| None` | The license used for the call. |
+| `inventory_type` | `str \| None` | User's phone number type, such as a service or toll-free number. |
+| `operator` | `str \| None` | The telecommunications operator which provided PSTN services for this call. |
+| `call_duration_source` | `str \| None` | The source of the call duration data. |
+
+## ServiceHealthLog
+
+- Log source: `MSTeams_ServiceAnnouncement`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `str \| None` | Affected service |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `timestamp` | `datetime \| None` | Collection timestamp (UTC datetime). |
+| `start_date_time` | `datetime \| None` | Call start time (UTC datetime). |
+| `end_date_time` | `datetime \| None` | End time of the service event. |
+| `issue_id` | `str \| None` | ServiceHealthIssue.id |
+| `title` | `str \| None` | Issue title |
+| `classification` | `str \| None` | ServiceHealthClassificationType value |
+| `origin` | `str \| None` | Issue origin (microsoft/thirdParty/etc.) |
+| `impact` | `str \| None` | Impact description from the SDK |
+| `service_health_status` | `ServiceHealthStatus \| None` | ServiceHealthStatus value |
+| `feature` | `str \| None` | Feature name |
+| `feature_group` | `str \| None` | Feature group |
+| `post_content` | `str \| None` | Content of the most recent post |
+| `post_type` | `PostType \| None` | PostType of the most recent post |
+| `post_format` | `BodyType \| None` | ContentType of the most recent post |
+
+## StreamDetailsLog
+
+- Log source: `MSTeams_CallRecords_StreamDetails`
+
+| Name | Type | Description |
+|---|---|---|
+| `service` | `ServiceMetadata \| None` | Build metadata attached to the service that produced the log. |
+| `log_source` | `str` | Identifier for the log source (log family) of this record. |
+| `loglevel` | `LogLevel` | Technical log severity level. |
+| `timestamp` | `datetime \| None` | Collection timestamp for the log entry. |
+| `stream_id` | `str \| None` | Unique identifier for the stream. |
+| `stream_start` | `datetime \| None` | UTC time when the stream started. |
+| `stream_duration` | `int \| None` | Duration of the stream in seconds. |
+| `stream_direction` | `str \| None` | Direction of the stream. |
+| `stream_media` | `str \| None` | Media type of the stream (audio, video, screen-sharing). |
+| `call_id` | `str \| None` | Unique call identifier. |
+| `call_type` | `str \| None` | Call type and direction. |
+| `caller_id` | `str \| None` | Identifier of the calling endpoint or user. |
+| `caller_display_name` | `str \| None` | Display name of the caller. |
+| `caller_upn` | `str \| None` | UserPrincipalName (sign-in name) of the caller. |
+| `caller_device_name` | `str \| None` | Name of the caller's device. |
+| `caller_device_cpu` | `str \| None` | CPU information for the caller's device. |
+| `caller_platform` | `str \| None` | Platform of the caller's client. |
+| `caller_product_family` | `str \| None` | Product family of the caller's client. |
+| `caller_teams_version` | `str \| None` | Teams client version reported by the caller. |
+| `caller_is_bot` | `bool` | True if the caller endpoint is a Graph service/bot (serviceUserAgent). |
+| `caller_bot_role` | `str \| None` | Graph ServiceRole of the caller bot (e.g. customBot, voicemail). |
+| `caller_bot_app_id` | `str \| None` | Application ID of the caller bot, extracted from userAgent headerValue. |
+| `caller_network_ip` | `str \| None` | Caller network IP address. |
+| `caller_network_subnet` | `str \| None` | Caller network subnet. |
+| `caller_network_reflexive_ip` | `str \| None` | Caller reflexive (NAT) IP address. |
+| `caller_network_relay_ip` | `str \| None` | Relay IP address used by the caller if any. |
+| `caller_network_connection_type` | `str \| None` | Caller network connection type (wired/wifi/mobile). |
+| `caller_network_transport` | `str \| None` | Transport protocol used by the caller's network. |
+| `caller_audio_input_device` | `str \| None` | Caller audio input device name. |
+| `caller_audio_input_driver` | `str \| None` | Driver version for the caller's audio input device. |
+| `caller_audio_input_signal` | `int \| None` | Signal level of the caller's audio input. |
+| `caller_audio_input_noise` | `int \| None` | Noise level measured on the caller's audio input. |
+| `caller_audio_output_device` | `str \| None` | Caller audio output device name. |
+| `caller_audio_output_driver` | `str \| None` | Driver version for the caller's audio output device. |
+| `caller_audio_cpu_insufficiency` | `float \| None` | Fraction of the call where the caller's client reported insufficient CPU for audio processing. |
+| `caller_audio_input_failure` | `float \| None` | Fraction of the call with input failures on the caller side. |
+| `caller_audio_output_failure` | `float \| None` | Fraction of the call with output failures on the caller side. |
+| `caller_audio_device_glitch` | `float \| None` | Fraction of the call with device glitches on the caller side. |
+| `caller_audio_low_speech_noise` | `float \| None` | Fraction of time the caller's speech-to-noise ratio was low. |
+| `caller_audio_low_speech_level` | `float \| None` | Fraction of time the caller's speech level was low. |
+| `caller_audio_clipping` | `float \| None` | Fraction of audio frames clipped on the caller side. |
+| `caller_audio_howling` | `int \| None` | Howling events count detected for the caller. |
+| `caller_audio_output_zero_volume` | `float \| None` | Fraction of the call where the caller's output volume was zero. |
+| `caller_audio_output_mute` | `float \| None` | Fraction of the call where the caller's output was muted. |
+| `callee_audio_input_device` | `str \| None` | Callee audio input device name. |
+| `callee_audio_input_driver` | `str \| None` | Driver version for the callee's audio input device. |
+| `callee_audio_input_signal` | `int \| None` | Signal level of the callee's audio input. |
+| `callee_audio_input_noise` | `int \| None` | Noise level measured on the callee's audio input. |
+| `callee_audio_output_device` | `str \| None` | Callee audio output device name. |
+| `callee_audio_output_driver` | `str \| None` | Driver version for the callee's audio output device. |
+| `callee_audio_cpu_insufficiency` | `float \| None` | Fraction of the call where the callee's client reported insufficient CPU for audio processing. |
+| `callee_audio_input_failure` | `float \| None` | Fraction of the call with input failures on the callee side. |
+| `callee_audio_output_failure` | `float \| None` | Fraction of the call with output failures on the callee side. |
+| `callee_audio_device_glitch` | `float \| None` | Fraction of the call with device glitches on the callee side. |
+| `callee_audio_low_speech_noise` | `float \| None` | Fraction of time the callee's speech-to-noise ratio was low. |
+| `callee_audio_low_speech_level` | `float \| None` | Fraction of time the callee's speech level was low. |
+| `callee_audio_clipping` | `float \| None` | Fraction of audio frames clipped on the callee side. |
+| `callee_audio_howling` | `int \| None` | Howling events count detected for the callee. |
+| `callee_audio_output_zero_volume` | `float \| None` | Fraction of the call where the callee's output volume was zero. |
+| `callee_audio_output_mute` | `float \| None` | Fraction of the call where the callee's output was muted. |
+| `caller_trace_route_hops` | `list[TraceRouteHopLog]` | Traceroute hops observed from the caller to the media endpoint. |
+| `callee_trace_route_hops` | `list[TraceRouteHopLog]` | Traceroute hops observed from the callee to the media endpoint. |
+| `stream_health` | `StreamHealthStatus` | Computed health classification for the stream. |
+| `stream_health_cause` | `str \| None` | Primary cause for the stream health classification. |
+| `stream_health_cause_details` | `str \| None` | Detailed information about the stream health cause. |
+| `avg_rtt_ms` | `int \| None` | Average network round-trip time in milliseconds. |
+| `avg_jitter_ms` | `int \| None` | Average network jitter in milliseconds. |
+| `avg_packet_loss_pct` | `float \| None` | Average packet loss rate as a percentage. |
+| `avg_video_frame_loss_pct` | `float \| None` | Average percentage of video frames lost. |
+| `avg_video_frame_rate` | `float \| None` | Average video frames per second. |
+| `post_fec_packet_loss_rate` | `float \| None` | Packet loss rate after forward error correction (FEC). |
+| `video_codec` | `str \| None` | Codec name used to encode video for transmission on the network. |
+| `callee_id` | `str \| None` | Identifier of the callee endpoint or user. |
+| `callee_display_name` | `str \| None` | Display name of the callee. |
+| `callee_upn` | `str \| None` | UserPrincipalName (sign-in name) of the callee. |
+| `callee_device_name` | `str \| None` | Name of the callee's device. |
+| `callee_device_cpu` | `str \| None` | CPU information for the callee's device. |
+| `callee_platform` | `str \| None` | Platform of the callee's client. |
+| `callee_product_family` | `str \| None` | Product family of the callee's client. |
+| `callee_teams_version` | `str \| None` | Teams client version reported by the callee. |
+| `callee_is_bot` | `bool` | True if the callee endpoint is a Graph service/bot (serviceUserAgent). |
+| `callee_bot_role` | `str \| None` | Graph ServiceRole of the callee bot (e.g. customBot, voicemail). |
+| `callee_bot_app_id` | `str \| None` | Application ID of the callee bot, extracted from userAgent headerValue. |
+| `callee_network_ip` | `str \| None` | Callee network IP address. |
+| `callee_network_subnet` | `str \| None` | Callee network subnet. |
+| `callee_network_reflexive_ip` | `str \| None` | Callee reflexive (NAT) IP address. |
+| `callee_network_relay_ip` | `str \| None` | Relay IP address used by the callee if any. |
+| `callee_network_connection_type` | `str \| None` | Callee network connection type (wired/wifi/mobile). |
+| `callee_network_transport` | `str \| None` | Transport protocol used by the callee's network. |
 
 ## Operational Tip
 
 If dashboard quality drops while `MSTeams_ServiceAnnouncement` shows an active incident, investigate Microsoft-side impact before changing local configuration.
 
 <Aside type="note">
-Legacy documentation may mention `MSGraphAPI_*` sources. Current naming uses `MSTeams_*`. Fields listed above represent common columns exposed in dashboards; the full Graph API response includes additional fields available for custom queries.
+Legacy documentation may mention `MSGraphAPI_*` sources. Current naming uses `MSTeams_*`.
 </Aside>

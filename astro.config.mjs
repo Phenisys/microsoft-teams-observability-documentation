@@ -248,7 +248,6 @@ export default defineConfig({
           label: "Architecture & Concepts",
           items: [
             { slug: "concepts/data-flow" },
-            { slug: "reference/metrics-dictionary" },
             { slug: "concepts/demo-vs-live" },
           ],
         },
