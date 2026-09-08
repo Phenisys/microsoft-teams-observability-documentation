@@ -279,6 +279,7 @@ Use the `advanced` section to tune throttling behavior and call processing throu
 
 ```yaml
 advanced:
+  proxy_url: "http://proxy.example.com:8080"
   scheduler:
     respect_persisted_backoff: false
     backoff_buffer_seconds: 5
@@ -295,6 +296,12 @@ advanced:
       list_per_second: 2
       detail_per_second: 75
 ```
+
+### Microsoft traffic proxy
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `advanced.proxy_url` | `null` | Optional HTTP/HTTPS forward proxy for Azure AD token, Microsoft Graph, and VAAC traffic. Exporters remain direct. The URL must start with `http://` or `https://`. |
 
 ### Scheduler controls
 
