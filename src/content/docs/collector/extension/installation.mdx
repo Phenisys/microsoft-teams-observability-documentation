@@ -155,6 +155,7 @@ Use this table to map values from your existing `config.yaml` to the extension U
 |---|---|---|
 | `microsoft_authentication.graph.cloud_deployment` | **Microsoft Cloud Deployment** | Supported values: `global`, `us_gov_gcc_high`, `us_gov_dod`, `china` |
 | `advanced.ca_bundle_path` | **Custom CA Bundle Path** | Absolute PEM path on the ActiveGate host |
+| `advanced.proxy_url` | **Forward Proxy URL** | Optional HTTP/HTTPS proxy for Microsoft traffic only; Dynatrace log export remains direct |
 
 #### Dynatrace output
 
@@ -207,9 +208,15 @@ Enable **Show Advanced options** in the extension UI to configure the following 
 | `advanced.calls.throttle.jitter_percent` | **Advanced - Calls throttle: Jitter (0.0-1.0)** | `0.2` | 0.0–1.0 |
 | `advanced.calls.throttle.escalation_multiplier` | **Advanced - Calls throttle: Escalation multiplier** | `2.0` | 1.0–10.0 |
 | `advanced.calls.throttle.escalation_max_seconds` | **Advanced - Calls throttle: Escalation max (seconds)** | `3600` | 1–86400 |
-| `advanced.calls.rate_limits.list_per_second` | **Advanced - Calls rate limits: LIST requests per second** | `1.0` | 0.01–100.0 |
-| `advanced.calls.rate_limits.detail_per_second` | **Advanced - Calls rate limits: DETAIL requests per second** | `20.0` | 0.01–100.0 |
+| `advanced.calls.rate_limits.list_per_second` | **Advanced - Calls rate limits: LIST requests per second** | `2` | 0.01–100.0 |
+| `advanced.calls.rate_limits.detail_per_second` | **Advanced - Calls rate limits: DETAIL requests per second** | `75` | 0.01–100.0 |
 | `telemetry.timeout_seconds` | **Advanced - Telemetry: Timeout (seconds)** | `10` | 1–3600 |
+
+### Static data directory
+
+Set **Static data directory** (`dataDir`) to an absolute path when the extension process working directory is not stable or when state and logs must survive restarts in a fixed location. The extension creates the directory when needed and stores `state.db` and `logs/` there. Leave the field empty to keep the default location.
+
+Example: `/var/lib/teams-observability-agent/`.
 
 ---
 
