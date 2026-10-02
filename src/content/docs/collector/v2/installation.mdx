@@ -15,7 +15,22 @@ import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 - [ ] Admin consent granted for `CallRecords.Read.All`, `Reports.Read.All`, `ServiceHealth.Read.All`
 - [ ] Collector host with outbound access to `graph.microsoft.com`, `login.microsoftonline.com`, and your backend endpoint
 - [ ] Valid license file (see [License](../../../getting-started/license/))
-- [ ] Download collector binary from the latest release
+- [ ] Download the collector binary for your platform — see [Download the Collector](#download-the-collector)
+
+## Download the Collector
+
+The current release is **Collector 2.10.0**. Download the binary matching your collector host from the [collector releases](https://github.com/Phenisys/microsoft-teams-observability/releases/latest):
+
+| Platform | File |
+| --- | --- |
+| Linux (x86-64) | `ms-teams-agent.bin` |
+| Windows (x86-64) | `ms-teams-agent.exe` |
+
+SHA-256 checksums for both files are published in the release notes.
+
+<Aside type="caution">
+Do not deploy collector builds older than **2.10.0**. Releases up to and including 2.9.0 embed aiohttp `3.13.3`, which is affected by **CVE-2026-69244** — an out-of-bounds heap read in the HTTP parser error path that allows a client-side denial of service. **Collector 2.10.0** ships aiohttp `3.14.3`, where this is fixed.
+</Aside>
 
 ## Build Your Config
 
