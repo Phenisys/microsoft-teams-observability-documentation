@@ -155,7 +155,9 @@ Use this table to map values from your existing `config.yaml` to the extension U
 |---|---|---|
 | `microsoft_authentication.graph.cloud_deployment` | **Microsoft Cloud Deployment** | Supported values: `global`, `us_gov_gcc_high`, `us_gov_dod`, `china` |
 | `advanced.ca_bundle_path` | **Custom CA Bundle Path** | Absolute PEM path on the ActiveGate host |
-| `advanced.proxy_url` | **Forward Proxy URL** | Optional HTTP/HTTPS proxy for Microsoft traffic only; Dynatrace log export remains direct |
+| `advanced.proxy_url` | **Forward Proxy URL** | Optional HTTP/HTTPS forward proxy for **all** outbound traffic |
+
+This applies to every outbound call the extension makes: Azure AD, Microsoft Graph, VAAC **and** the log export to Dynatrace. Inline credentials are supported in the URL (`http://user:password@proxy.example.com:8080` — percent-encode any special character in the username or password). If the proxy intercepts TLS (SSL decryption), also set **Custom CA Bundle Path**, otherwise certificate validation fails.
 
 #### Dynatrace output
 
