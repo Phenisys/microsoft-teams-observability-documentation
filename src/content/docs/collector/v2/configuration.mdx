@@ -297,11 +297,14 @@ advanced:
       detail_per_second: 75
 ```
 
-### Microsoft traffic proxy
+### Outbound proxy
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `advanced.proxy_url` | `null` | Optional HTTP/HTTPS forward proxy for Azure AD token, Microsoft Graph, and VAAC traffic. Exporters remain direct. The URL must start with `http://` or `https://`. |
+| `advanced.proxy_url` | `null` | Optional HTTP/HTTPS forward proxy for **all** outbound traffic — Azure AD token requests, Microsoft Graph, VAAC and the log exporters (Dynatrace, Splunk, OTLP). Must start with `http://` or `https://`. Inline credentials are supported: `http://user:password@proxy.example.com:8080` (percent-encode special characters in the username or password). |
+| `advanced.ca_bundle_path` | `null` | Optional path to a PEM bundle used to verify TLS certificates. Required **in addition to** `proxy_url` when the proxy intercepts TLS (SSL decryption), otherwise certificate validation fails. |
+
+Proxy support for the log exporters requires **collector 2.11.0 or later**; earlier builds route Microsoft traffic only and send logs directly. Leave `proxy_url` unset to connect directly.
 
 ### Scheduler controls
 
