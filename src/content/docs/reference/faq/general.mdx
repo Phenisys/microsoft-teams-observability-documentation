@@ -1,0 +1,148 @@
+---
+title: General FAQ
+description: Questions that apply to every MS Teams Observability deployment mode and backend — licensing, configuration, network, sizing, validation.
+sidebar:
+  label: General
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="note">
+Canonical pages: <a href={`${import.meta.env.BASE_URL}getting-started/license/`}>License</a>, <a href={`${import.meta.env.BASE_URL}getting-started/prerequisites/`}>Prerequisites</a>, <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>, and <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Collector Configuration</a>.
+</Aside>
+
+## Licensing and Activation
+
+### How do I obtain a trial license?
+
+A trial license can be provided by the vendor or the team responsible for the product. It is required to activate the application and start testing in a target environment.
+
+### Where do I configure the license?
+
+In your YAML config file, set `license.filepath` to the path of your license file:
+
+```yaml
+license:
+  filepath: /etc/ms-teams-observability-agent/license.json
+```
+
+Backend-specific license fields are described in the backend pages: <a href={`${import.meta.env.BASE_URL}reference/faq/standalone/`}>Standalone</a>, <a href={`${import.meta.env.BASE_URL}reference/faq/extension/`}>Dynatrace Extension</a>.
+
+### Is a full redeployment required after updating the license?
+
+No. A reload of the configuration or a restart of the collector component is sufficient in most cases.
+
+### Can a Microsoft tenant error be caused by a missing or invalid license?
+
+Yes. A missing, expired, or invalid license can prevent correct initialisation of certain features and produce tenant recognition or configuration errors.
+
+## Configuration
+
+### What are the minimum configuration requirements?
+
+- A valid license file
+- Microsoft Graph credentials (`tenant_id`, `client_id`, and one auth method)
+- Required API permissions
+- Network connectivity between the Collector, Microsoft Graph API, and the output platform (Dynatrace, Splunk, or OTLP)
+
+### Is the `sites.csv` file mandatory?
+
+No, it is optional. However, without it the Sites dashboard will show all calls as "No Mapped Calls" and site compliance analysis will not be possible. See <a href={`${import.meta.env.BASE_URL}reference/sites-file/`}>Sites File</a>.
+
+### Is there a debug mode?
+
+Yes. Pass `--log-level DEBUG` to the `run` command to enable verbose logging. Debug logs are strongly recommended for diagnosing authentication, collection, or configuration issues.
+
+## Deployment and Network
+
+### Where can the Collector be installed?
+
+On any server meeting the technical and network prerequisites. It is not limited to a specific Dynatrace component unless your architecture requires it.
+
+### Must the Collector run on an ActiveGate?
+
+No. The essential requirement is that the host has the necessary network access, system resources, and permissions. ActiveGate is one option, described in the <a href={`${import.meta.env.BASE_URL}reference/faq/extension/`}>Dynatrace Extension FAQ</a>.
+
+### Does the Collector location matter?
+
+Yes. The location can influence:
+
+- Network latency
+- Communication stability
+- Security compliance
+- Quality of data flows to Microsoft Graph and the output platform
+
+### What network flows and ports must be opened?
+
+The Collector must reach the required Microsoft Graph endpoints and your output platform. Validate:
+
+- Outbound flows to Microsoft Graph API
+- Outbound flows to the Dynatrace, Splunk, or OTLP endpoint
+- DNS resolution
+- Proxy configuration (if applicable)
+- Firewall/filtering rules
+
+The docs define required outbound hosts and HTTPS connectivity, but no universal port matrix is valid for all enterprise proxies and backends. Validate endpoint and port requirements against your security policy.
+
+## Sizing and Capacity
+
+### What are the CPU, memory, and storage requirements?
+
+They depend primarily on:
+
+- Call volume
+- Number of supervised users
+- Collection frequency
+- Level of detail in the collected data
+
+No single baseline is published because usage varies by tenant call volume and enabled features. Start with standard VM sizing and monitor `MSTeams_CollectionHealth` plus host metrics.
+
+### How do I size the Collector for high call volumes?
+
+Consider:
+
+- Total session count
+- Peak activity periods
+- Data granularity
+- Retry and recovery mechanisms
+- Local processing capacity
+
+A pilot or load test is recommended for high-volume environments.
+
+## Cloud and Costs
+
+### Is the solution compatible with Microsoft 365 GovCloud?
+
+Compatibility with GCC, GCC High, or DoD must be explicitly validated. It depends on supported Microsoft endpoints, authentication mechanisms, and product compliance constraints. The national cloud is selected in configuration (`microsoft_authentication.graph.cloud_deployment`).
+
+### Does Microsoft Graph API usage incur additional costs?
+
+This depends on the APIs used, existing Microsoft licenses, and service conditions. Validate based on the actual functional scope implemented.
+
+## Initial Validation
+
+### What is a safe first-run sequence?
+
+1. Run `ms-teams-agent validate --config ./config.yaml`.
+2. Run `ms-teams-agent test-connection --config ./config.yaml`.
+3. Run one cycle with `--ignore-state`.
+4. Verify ingestion in backend.
+5. Enable or restart service mode.
+
+Use <a href={`${import.meta.env.BASE_URL}collector/troubleshooting/`}>Collector Troubleshooting</a> if any step fails.
+
+### What should I verify first when data is missing?
+
+1. Microsoft authentication and admin consent.
+2. Outbound connectivity to Microsoft and backend endpoints.
+3. At least one enabled output.
+4. Backend-side checks (Grail/OpenPipeline, HEC/index, or Loki).
+
+Continue with the backend troubleshooting page: <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace</a>, <a href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}>Splunk</a>, or <a href={`${import.meta.env.BASE_URL}backends/grafana/`}>Grafana</a>, once collector checks are green.
+
+## Optional Features
+
+### Can I enable Auto Attendant and Call Queue collection?
+
+Yes. Enable `autoattendant_collection` and `callqueue_collection` in configuration. Review prerequisites first: <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>.

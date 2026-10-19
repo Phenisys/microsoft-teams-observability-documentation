@@ -24,15 +24,22 @@ Yes. Missing or invalid license state can prevent tenant initialization and caus
 
 Yes. Several panels include **Test** or **Validate** actions and automatic validation states. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
 
+### Why can't I save parameters in the Configuration tab?
+
+Possible causes:
+
+- Backend endpoint unreachable
+- Connectivity problem between the Application and the Collector
+- Permission error
+- Configuration inconsistency or application anomaly
+
+An HTTP 404 error on save typically means a route is not exposed. Check that the Collector backend is running and reachable.
+
 ## Sites & Mapping
-
-### Is `sites.csv` mandatory?
-
-No. It is optional in collector configuration, but it is required for complete site mapping and to avoid unmapped-call behavior. See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/#optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
 
 ### Why do I see "No Mapped Calls"?
 
-Subnets are not mapped to site definitions. Configure and load `sites.csv`. See <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/#optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
+Subnets are not mapped to site definitions. Configure and load `sites.csv`, which is optional in general but required for the Sites page to work. See <a href={`${import.meta.env.BASE_URL}reference/sites-file/`}>Sites File</a>, <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/#optional-sitescsv-mapping`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/dashboards/`}>Dynatrace Dashboards</a>.
 
 ### What does the "Undetermined" site status mean?
 
@@ -63,10 +70,6 @@ Call Overview documents participant, stream, network, and endpoint fields such a
 ### Can I download raw call details?
 
 Yes. Call Overview supports Graph call-details JSON download when Microsoft configuration is set. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/call-overview/`}>Application Call Overview</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/app/configuration/`}>Application Configuration</a>.
-
-### Where is data stored?
-
-The documented architecture stores logs in a dedicated Grail bucket named `ms_teams` and processes them through OpenPipeline. See <a href={`${import.meta.env.BASE_URL}backends/dynatrace/configuration/`}>Configure Dynatrace</a> and <a href={`${import.meta.env.BASE_URL}backends/dynatrace/`}>Dynatrace Overview</a>.
 
 ## Access & Permissions
 
