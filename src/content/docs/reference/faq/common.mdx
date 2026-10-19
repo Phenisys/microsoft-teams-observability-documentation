@@ -48,3 +48,21 @@ No single baseline is published because usage varies by tenant call volume and e
 ### Can I enable Auto Attendant and Call Queue collection?
 
 Yes. Enable `autoattendant_collection` and `callqueue_collection` in configuration. Review prerequisites first: <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Configuration</a> and <a href={`${import.meta.env.BASE_URL}collector/azure-permissions/`}>Azure Permissions</a>.
+
+## Grafana Backend
+
+### Is Grafana supported both on-premises and in Grafana Cloud?
+
+Yes. Both Grafana OnPrem and Grafana Cloud are supported. A tenant ID is required for Grafana OnPrem.
+
+### Are encrypted credentials supported?
+
+Not yet. Encrypted credentials are on the short-term roadmap.
+
+### What is the proven capacity?
+
+Proven up to 70,000 active users. The upper limit is not yet known.
+
+### How are access restrictions and retention handled?
+
+Access restrictions and retention rely on Grafana Loki rights.
