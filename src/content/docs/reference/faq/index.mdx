@@ -1,6 +1,6 @@
 ---
 title: FAQ
-description: Frequently asked questions for MS Teams Observability, organized by deployment scope and topic.
+description: Frequently asked questions for MS Teams Observability, organized by topic, deployment mode, and backend.
 sidebar:
   label: Overview
   order: 5
@@ -8,7 +8,7 @@ sidebar:
 
 import { Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Use this section for scenario-based questions that are not fully covered in step-by-step guides.
+Use this section for scenario-based questions that are not fully covered in step-by-step guides. Each topic has one canonical page; other pages link to it rather than repeat it.
 
 <Aside type="tip">
 Canonical sources:
@@ -18,31 +18,47 @@ Canonical sources:
 - Collector config: <a href={`${import.meta.env.BASE_URL}collector/v2/configuration/`}>Collector Configuration</a>
 </Aside>
 
+## Where to start
+
+| Your question | Go to |
+|---|---|
+| Licence, network, sizing, validation, cloud compatibility | <a href={`${import.meta.env.BASE_URL}reference/faq/general/`}>General</a> |
+| Where data is stored, how long it is kept, who can access it | <a href={`${import.meta.env.BASE_URL}reference/faq/data-security/`}>Data & Security</a> |
+| Running the collector as a host service | <a href={`${import.meta.env.BASE_URL}reference/faq/standalone/`}>Standalone</a> |
+| Running the collector on ActiveGate | <a href={`${import.meta.env.BASE_URL}reference/faq/extension/`}>Dynatrace Extension</a> |
+| Using the Dynatrace App (configuration, sites, calls) | <a href={`${import.meta.env.BASE_URL}reference/faq/dynatrace-app/`}>Dynatrace App</a> |
+| Using the Grafana app (OnPrem or Cloud) | <a href={`${import.meta.env.BASE_URL}reference/faq/grafana/`}>Grafana</a> |
+
 <CardGrid>
   <LinkCard
-    title="Common"
-    description="Operational checks and high-value questions across all deployment modes."
-    href={`${import.meta.env.BASE_URL}reference/faq/common/`}
+    title="General"
+    description="Licence, configuration, network, sizing, initial validation, cloud compatibility."
+    href={`${import.meta.env.BASE_URL}reference/faq/general/`}
   />
   <LinkCard
     title="Data & Security"
-    description="Collection scope, retention, transmission, and access control."
+    description="Collected data, storage, retention, transmission, access control, credentials."
     href={`${import.meta.env.BASE_URL}reference/faq/data-security/`}
-  />
-  <LinkCard
-    title="Dynatrace App"
-    description="App configuration, dashboard behavior, mapping, and permissions."
-    href={`${import.meta.env.BASE_URL}reference/faq/dynatrace-app/`}
-  />
-  <LinkCard
-    title="Dynatrace Extension"
-    description="ActiveGate deployment and extension-specific operations."
-    href={`${import.meta.env.BASE_URL}reference/faq/dynatrace-extension/`}
   />
   <LinkCard
     title="Standalone"
     description="Host-based deployment and local service operations."
     href={`${import.meta.env.BASE_URL}reference/faq/standalone/`}
+  />
+  <LinkCard
+    title="Dynatrace Extension"
+    description="ActiveGate deployment, national cloud, CA bundle, extension logs."
+    href={`${import.meta.env.BASE_URL}reference/faq/extension/`}
+  />
+  <LinkCard
+    title="Dynatrace App"
+    description="App configuration, sites mapping, call analysis, permissions."
+    href={`${import.meta.env.BASE_URL}reference/faq/dynatrace-app/`}
+  />
+  <LinkCard
+    title="Grafana"
+    description="OnPrem and Grafana Cloud, capacity, access and retention through Loki."
+    href={`${import.meta.env.BASE_URL}reference/faq/grafana/`}
   />
 </CardGrid>
 
@@ -52,3 +68,4 @@ Canonical sources:
 2. If collector checks are green, continue with backend troubleshooting:
    - <a href={`${import.meta.env.BASE_URL}backends/dynatrace/troubleshooting/`}>Dynatrace</a>
    - <a href={`${import.meta.env.BASE_URL}backends/splunk/troubleshooting/`}>Splunk</a>
+   - <a href={`${import.meta.env.BASE_URL}backends/grafana/`}>Grafana</a>
