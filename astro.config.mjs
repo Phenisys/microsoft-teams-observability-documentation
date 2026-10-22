@@ -12,6 +12,7 @@ const base = env.PUBLIC_BASE_PATH ?? "/";
 export default defineConfig({
   site: "https://phenisys.github.io",
   base,
+  compressHTML: true,
   redirects: {
     "/collector/standalone/": "/collector/",
     "/collector/v2/": "/collector/",
