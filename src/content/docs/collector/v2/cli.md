@@ -6,7 +6,7 @@ sidebar:
   order: 4
 ---
 
-Practical guide to the most-used `ms-teams-agent` commands for Standalone operations. For complete flags and subcommands, see [CLI Reference](../../reference/cli-reference/).
+Practical guide to the most-used `ms-teams-agent` commands for Standalone operations. For complete flags and subcommands, see [CLI Reference](../../../reference/cli-reference/).
 
 ## Command Shape
 
