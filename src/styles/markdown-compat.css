@@ -1,0 +1,10 @@
+/*
+ * Keep the Astro 6 / Starlight 0.38 spacing for nested lists.
+ * Starlight 0.41+ gives a trailing nested <ul>/<ol> inside a "loose" list item
+ * (an item that also contains a <p>) a 1.25rem bottom margin. The previous
+ * version gave it none, which shifted every such list by 20px.
+ * Remove this rule if the nested-list spacing is changed on purpose.
+ */
+.sl-markdown-content li > :is(ul, ol):last-child {
+	margin-bottom: 0 !important;
+}

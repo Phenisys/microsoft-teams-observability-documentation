@@ -2,6 +2,7 @@
 
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+import { unified } from "@astrojs/markdown-remark";
 import mermaid from "astro-mermaid";
 import { loadEnv } from "vite";
 
@@ -12,7 +13,16 @@ const base = env.PUBLIC_BASE_PATH ?? "/";
 export default defineConfig({
   site: "https://phenisys.github.io",
   base,
+  // Astro 7 defaults to compressHTML: 'jsx', which drops spaces between inline elements.
+  // Measured vs the Astro 6 build: 'jsx' loses 11,087 inter-element spaces across 81
+  // pages; true loses 0 (it adds 640 in the header social links, which are invisible
+  // in the flex layout; pixel diff unchanged on 24 captures). Keep true.
   compressHTML: true,
+  // Keep the remark/rehype markdown pipeline. Sätteri (Astro 7 default) renders
+  // "---" table separators as em dashes; getting-started/index.mdx then differs
+  // visually (0.32% mobile pixels) from the Astro 6 build. With unified on Starlight
+  // 0.41: 0.0%.
+  markdown: { processor: unified() },
   redirects: {
     "/collector/standalone/": "/collector/",
     "/collector/v2/": "/collector/",
@@ -43,7 +53,7 @@ export default defineConfig({
       },
       favicon: "/favicon.ico",
       lastUpdated: true,
-      customCss: ["./src/styles/sidebar-logos.css"],
+      customCss: ["./src/styles/sidebar-logos.css", "./src/styles/markdown-compat.css"],
       components: {
         Footer: "./src/components/Footer.astro",
       },
