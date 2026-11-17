@@ -33,17 +33,7 @@ Do not deploy collector builds older than **2.10.0**. Releases up to and includi
 </Aside>
 
 <Aside type="note">
-**2.12.1** adds secret references (`${env:...}` / `${file:...}`) so credentials can stay
-out of the YAML file, pins the license verification key to the packaged official key, makes
-OpenTelemetry export lossless — every submitted record is accounted for, and an incomplete
-export can no longer let collection state advance — and makes `--dry-run` fully read-only.
-It supersedes **2.12.0**, which introduced the secret references together with the
-dependency upgrades. See [Secret references](../configuration/#secret-references) and
-[License](../configuration/#license).
-</Aside>
-
-<Aside type="note">
-**2.11.1** additionally routes **all** outbound traffic through `advanced.proxy_url` — Azure AD, Microsoft Graph, VAAC **and** the log exporters (Dynatrace, Splunk, OTLP) — and upgrades four transitive dependencies to patched versions. On networks where the log endpoint is reachable only through a proxy, use **2.11.0 or later**; see [Outbound proxy](../configuration/#outbound-proxy).
+**All** outbound traffic — Azure AD, Microsoft Graph, VAAC **and** the log exporters (Dynatrace, Splunk, OTLP) — can be routed through `advanced.proxy_url`. On networks where the log endpoint is reachable only through a proxy, set it; see [Outbound proxy](../configuration/#outbound-proxy).
 </Aside>
 
 ## Build Your Config

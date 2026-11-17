@@ -134,15 +134,9 @@ license:
 The collector will not start without a valid license file.
 
 The license signature is verified against the official public key embedded in the
-distributed binary or package. That trust anchor cannot be replaced by configuration,
-by an environment variable, or by a file placed next to the executable. `license.filepath`
-is the only configurable license setting.
-
-<Aside type="note">
-Up to **2.11.1**, an undocumented `MS_TEAMS_PUBLIC_KEY_PATH` environment variable could
-substitute the verification key. It is retired as of **2.12.1** and no longer read;
-remove it from any service drop-in or wrapper script.
-</Aside>
+distributed binary or package. That trust anchor is not configurable: no setting, no
+environment variable and no file placed next to the executable can substitute it.
+`license.filepath` is the only configurable license setting.
 
 ## Output Platforms
 
@@ -369,7 +363,7 @@ advanced:
 | `advanced.proxy_url` | `null` | Optional HTTP/HTTPS forward proxy for **all** outbound traffic — Azure AD token requests, Microsoft Graph, VAAC and the log exporters (Dynatrace, Splunk, OTLP). Must start with `http://` or `https://`. Inline credentials are supported: `http://user:password@proxy.example.com:8080` (percent-encode special characters in the username or password). |
 | `advanced.ca_bundle_path` | `null` | Optional path to a PEM bundle used to verify TLS certificates. Required **in addition to** `proxy_url` when the proxy intercepts TLS (SSL decryption), otherwise certificate validation fails. |
 
-Proxy support for the log exporters requires **collector 2.11.0 or later**; earlier builds route Microsoft traffic only and send logs directly. Leave `proxy_url` unset to connect directly.
+Outbound proxy support covers Microsoft traffic (Azure AD, Microsoft Graph, VAAC) and the log exporters (Dynatrace, Splunk, OTLP). Leave `proxy_url` unset to connect directly.
 
 ### Scheduler controls
 
