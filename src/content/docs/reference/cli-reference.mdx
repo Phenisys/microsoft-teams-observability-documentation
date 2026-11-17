@@ -44,17 +44,24 @@ ms-teams-agent run --config <FILE> [options]
 | `--call-id` | Optional. Process a specific call ID. |
 | `--ignore-state` | Optional. Ignore existing state file. |
 | `--state-file` | Optional. Override state DB path. |
-| `--dry-run` | Optional. Run collection without exporting to backends. |
+| `--dry-run` | Optional. Run collection without exporting to backends and without persisting collection state. |
+
+`--dry-run` reads the existing state database through an in-memory snapshot: the file
+is never created, rewritten, migrated or vacuumed, no configuration migration is written
+back, and nothing is sent to exporters, collection health or telemetry. Local operational
+logs are still written. If an existing state database cannot be read, the run aborts
+instead of continuing with empty state.
 
 ## `validate`
 
 ```bash
-ms-teams-agent validate --config <FILE>
+ms-teams-agent validate --config <FILE> [--skip-secrets]
 ```
 
 | Option | Description |
 | --- | --- |
 | `--config` | Required. Path to YAML config file. |
+| `--skip-secrets` | Optional. Validate schema and non-secret values without resolving `${env:...}` / `${file:...}` secret references. |
 
 ## `migrate-config`
 

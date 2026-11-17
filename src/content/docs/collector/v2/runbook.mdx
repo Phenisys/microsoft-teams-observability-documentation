@@ -81,7 +81,7 @@ ms-teams-agent state show
 
 ## Operational Notes
 
-- Use `--dry-run` only for testing because it does not export data.
+- `--dry-run` performs a full cycle without exporting and without persisting anything: the state database is read in memory, no configuration migration is written back, and nothing reaches the backends. It is safe to run against a production host.
 - If data seems delayed, wait at least one full collection interval.
 - Keep license and credentials at stable system paths with restricted permissions.
 

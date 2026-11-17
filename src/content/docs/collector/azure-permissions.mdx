@@ -57,6 +57,10 @@ flowchart TD
 2. In **Client secrets**, click **New client secret**.
 3. Copy the secret **Value** immediately after creation.
 4. Put this value in `microsoft_authentication.graph.client_secret`.
+   To keep it out of the configuration file, use a reference instead of the literal
+   value — `client_secret: "${env:GRAPH_CLIENT_SECRET}"` or
+   `client_secret: "${file:/etc/ms-teams-observability-agent/graph.secret}"`.
+   See [Secret references](../v2/configuration/#secret-references).
   </TabItem>
   <TabItem label="Certificate (PEM)">
 1. Open **Certificates and secrets**.

@@ -39,6 +39,24 @@ output:
 Keep OTLP credentials out of version control. Use secure secret management for API keys and tokens.
 </Aside>
 
+### Delivery behaviour
+
+Each collector cycle is submitted to the backend in bounded batches, with a flush between
+batches. The collector counts every record it submits: a cycle is reported as successful
+only when every record has been delivered. When a batch fails, times out, or cannot be
+confirmed, the remaining records are reported as failed, the export returns a failure, and
+the collection state — deduplication marks and checkpoints — is not advanced, so the data
+is collected again on the next cycle.
+
+Consequence: delivery is **at-least-once**. After a partial failure, records already
+accepted by the backend can be received twice.
+
+<Aside type="note">
+Two standard OpenTelemetry environment variables are honoured for this exporter:
+`OTEL_BLRP_MAX_QUEUE_SIZE` and `OTEL_BLRP_MAX_EXPORT_BATCH_SIZE`. Lowering the batch size
+increases the number of requests per cycle; it does not change the delivery guarantee.
+</Aside>
+
 ## Datadog OTLP Configuration
 
 ```yaml
