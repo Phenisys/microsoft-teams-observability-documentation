@@ -82,12 +82,12 @@ microsoft_authentication:
   graph:
     tenant_id: "<tenant_id>"
     client_id: "<client_id>"
-    client_secret: "<client_secret>"
+    client_secret: "${env:GRAPH_CLIENT_SECRET}"
     scope: "https://graph.microsoft.com/.default"
     grant_type: "client_credentials"
   vaac:
     username: "<vaac_username>"
-    password: "<vaac_password>"
+    password: "${env:VAAC_PASSWORD}"
 
 license:
   filepath: "/etc/ms-teams-observability-agent/license.json"
@@ -128,6 +128,19 @@ When the collector loads a legacy-format YAML config, Standalone automatically:
 3. rewrites the migrated YAML to disk.
 
 This auto-migration runs on startup when needed.
+
+<Aside type="caution">
+The `.bak` file holds the previous configuration **as it was on disk**, including any
+literal secret it contained. Secret references are not resolved before the rewrite, so a
+configuration that uses `${env:...}` / `${file:...}` never places a credential in the
+backup. When migrating a configuration that still contains literal secrets, remove the
+`.bak` once the migration is verified.
+</Aside>
+
+<Aside type="note">
+`--dry-run` never triggers this rewrite: migrations are applied in memory only and no
+`.bak` is created.
+</Aside>
 
 ## When to Use `migrate-config` vs Auto-Migration
 

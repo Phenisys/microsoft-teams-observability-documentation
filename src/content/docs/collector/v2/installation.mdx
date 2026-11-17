@@ -19,7 +19,7 @@ import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Download the Collector
 
-The current release is **Collector 2.11.1**. Download the binary matching your collector host from the [collector releases](https://github.com/Phenisys/microsoft-teams-observability/releases/latest):
+The current release is **Collector 2.12.1**. Download the binary matching your collector host from the [collector releases](https://github.com/Phenisys/microsoft-teams-observability/releases/latest):
 
 | Platform | File |
 | --- | --- |
@@ -33,7 +33,7 @@ Do not deploy collector builds older than **2.10.0**. Releases up to and includi
 </Aside>
 
 <Aside type="note">
-**2.11.1** additionally routes **all** outbound traffic through `advanced.proxy_url` — Azure AD, Microsoft Graph, VAAC **and** the log exporters (Dynatrace, Splunk, OTLP) — and upgrades four transitive dependencies to patched versions. On networks where the log endpoint is reachable only through a proxy, use **2.11.0 or later**; see [Outbound proxy](../configuration/#outbound-proxy).
+**All** outbound traffic — Azure AD, Microsoft Graph, VAAC **and** the log exporters (Dynatrace, Splunk, OTLP) — can be routed through `advanced.proxy_url`. On networks where the log endpoint is reachable only through a proxy, set it; see [Outbound proxy](../configuration/#outbound-proxy).
 </Aside>
 
 ## Build Your Config

@@ -33,7 +33,14 @@ ms-teams-agent validate --config ./config.yaml
 
 # Validate config + test Microsoft Graph auth + test all exporters
 ms-teams-agent test-connection --config ./config.yaml
+
+# Structure-only check: validate schema and non-secret values without
+# resolving ${env:...} / ${file:...} secret references
+ms-teams-agent validate --config ./config.yaml --skip-secrets
 ```
+
+`--skip-secrets` is available on `validate` only. `run` and `test-connection` always
+require every referenced secret to be resolvable, and refuse to start otherwise.
 
 ## Config Migration Command
 
@@ -63,7 +70,8 @@ Options:
 # Continuous collection (main operation)
 ms-teams-agent run --config ./config.yaml
 
-# Test pipeline without exporting to backends
+# Rehearse the pipeline without exporting to backends and without persisting
+# any collection state (reads the existing state database in memory only)
 ms-teams-agent run --config ./config.yaml --dry-run
 
 # Debug a specific call
